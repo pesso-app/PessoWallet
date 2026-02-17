@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1C5CCF">
+    <title>Profile - Pesso</title>
+    <!-- Manifest PWA -->    
+    <link rel="manifest" href="manifest.json">
+    <!-- Style CSS / ICONS -->
+    <link rel="icon" type="image/png" href="assets/img/favicon.png" sizes="32x32">    
+    <link rel="apple-touch-icon" href="assets/icon/iconicon-192.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="fade-in">
+
+    <!-- App Capsule -->
+    <div id="appCapsule" class="pfix">
+
+        <div class="section mt-2 mb-5">
+            <div class="profile-head">
+                <div class="avatar" onclick="changeAvatar()">
+                    <span id="avatarInitial">S</span>
+                </div>
+                <div class="in">
+                    <div class="editable-name" onclick="editName()">
+                        <h3 class="name" id="displayName">Sixto M. Henriquez</h3>
+                        <ion-icon name="create-outline"></ion-icon>
+                    </div>
+                    
+                    <div class="editable-role" onclick="editRole()" style="margin-top:6px;">
+                        <h5 class="subtext" id="userRole">Designer</h5>
+                        <ion-icon name="pencil-outline" style="font-size:12px; color:var(--primary);"></ion-icon>
+                    </div>
+                    <p style="font-size:11px; color:var(--text-secondary); margin-top:4px;">Tap to edit name or occupation</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Balance Preview -->
+        <div class="section mt-4">
+            <div class="row">
+                <div class="col-12 pr-5 text-center">
+                    <span class="balance" id="profileBalance">$0.00</span>
+                    <p class="text-balance">Total Balance</p>
+                </div>
+                <div class="col-12 mt-3 text-center">
+                    <button class="btn btn-success rounded btn-block btn-lg" onclick="showToast('Premium coming soon!')">
+                        Get Premium
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu Items -->
+        <div class="col-12 mt-5 pb-4">
+            <ul class="listview image-listview flush transparent mb-1">
+                <li>
+                    <a href="#" class="item" onclick="editName()">
+                        <div class="icon-box bg-light">
+                            <ion-icon name="person-outline"></ion-icon>
+                        </div>
+                        <div class="in font-weight-bold">
+                            Personal Info
+                            <span style="color:var(--text-secondary); font-size:13px; display:block; margin-top:4px;">
+                                Tap to edit your name
+                            </span>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="item" onclick="editRole()">
+                        <div class="icon-box bg-light">
+                            <ion-icon name="briefcase-outline"></ion-icon>
+                        </div>
+                        <div class="in font-weight-bold">
+                            Occupation
+                            <span style="color:var(--text-secondary); font-size:13px; display:block; margin-top:4px;" id="occupationDisplay">
+                                Designer
+                            </span>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="item" onclick="showToast('Security settings coming soon')">
+                        <div class="icon-box bg-light">
+                            <ion-icon name="shield-checkmark-outline"></ion-icon>
+                        </div>
+                        <div class="in font-weight-bold">
+                            Privacy & Security
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="item" onclick="toggleNotifications()">
+                        <div class="icon-box bg-light">
+                            <ion-icon name="notifications-outline"></ion-icon>
+                        </div>
+                        <div class="in font-weight-bold">
+                            Notifications
+                            <span id="notifStatus" style="color:var(--primary); font-size:13px; float:right;">ON</span>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="item" onclick="toggleDarkMode()">
+                        <div class="icon-box bg-light">
+                            <ion-icon name="moon-outline" id="darkModeIcon"></ion-icon>
+                        </div>
+                        <div class="in font-weight-bold">
+                            Dark Mode
+                            <label class="ios-toggle" style="float:right; margin-top:-6px;">
+                                <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="item" onclick="showToast('Support coming soon')">
+                        <div class="icon-box bg-light">
+                            <ion-icon name="help-circle-outline"></ion-icon>
+                        </div>
+                        <div class="in font-weight-bold">
+                            Support
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Logout Section -->
+        <div class="col-12 mt-5 pb-5 text-center">
+            <button class="btn btn-text-danger rounded" onclick="showLogoutModal()">
+                Log Out
+            </button>
+            <div class="section mt-5 pb-4">
+                <span class="text-balance">from</span>
+                <p class="wflogo font-weight-bold">Pesso</p>
+                <br>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Logout Modal -->
+    <div id="logoutModal" class="modal hidden">
+        <div class="modal-dialog dialogbox">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Log Out</h5>
+                </div>
+                <div class="modal-body text-center">
+                    Are you sure you want to log out?
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-inline">
+                        <button class="btn btn-text-secondary" onclick="hideLogoutModal()">Cancel</button>
+                        <button class="btn btn-text-danger" onclick="confirmLogout()">Log Out</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Name Edit Modal -->
+    <div id="nameModal" class="modal hidden">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Name</h5>
+                    <button class="close-btn" onclick="hideNameModal()">
+                        <ion-icon name="close-outline"></ion-icon>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group boxed">
+                        <div class="input-wrapper">
+                            <label class="label">Your Name</label>
+                            <input type="text" class="form-control" id="nameInput" placeholder="Enter your name">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-text-secondary" onclick="hideNameModal()">Cancel</button>
+                    <button class="btn btn-text-primary" onclick="saveName()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Role/Occupation Edit Modal -->
+    <div id="roleModal" class="modal hidden">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Occupation</h5>
+                    <button class="close-btn" onclick="hideRoleModal()">
+                        <ion-icon name="close-outline"></ion-icon>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group boxed">
+                        <div class="input-wrapper">
+                            <label class="label">Your Occupation</label>
+                            <input type="text" class="form-control" id="roleInput" placeholder="What do you do? (e.g. Designer, Developer, Student)">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-text-secondary" onclick="hideRoleModal()">Cancel</button>
+                    <button class="btn btn-text-primary" onclick="saveRole()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- Bottom Menu -->
+<!-- Menú Flotante iOS 26 - Reemplazar en index.html, goals.html, alerts.html, profile.html -->
+<div class="floating-menu-container">
+    <nav class="floating-menu">
+        <a href="index.html" class="menu-item" data-page="home">
+            <ion-icon name="home-outline"></ion-icon>
+            <strong>Home</strong>
+            <div class="active-indicator"></div>
+        </a>
+
+        <a href="goals.html" class="menu-item" data-page="goals">
+            <ion-icon name="flag-outline"></ion-icon>
+            <strong>Goals</strong>
+            <div class="active-indicator"></div>
+        </a>
+
+        <a href="alerts.html" class="menu-item" data-page="activity">
+            <ion-icon name="notifications-outline"></ion-icon>
+            <strong>Activity</strong>
+            <div class="active-indicator"></div>
+        </a>
+
+        <a href="profile.html" class="menu-item" data-page="me">
+            <ion-icon name="person-outline"></ion-icon>
+            <strong>Me</strong>
+            <div class="active-indicator"></div>
+        </a>
+    </nav>
+</div>
+
+<script>
+    // Script para manejar el menú flotante
+    (function() {
+        // Detectar página actual y marcar como activa
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        const pageMap = {
+            'index.html': 'home',
+            'goals.html': 'goals',
+            'alerts.html': 'activity',
+            'activity.html': 'activity',
+            'profile.html': 'me'
+        };
+        
+        const currentKey = pageMap[currentPage] || 'home';
+        
+        document.querySelectorAll('.menu-item').forEach(item => {
+            if (item.getAttribute('data-page') === currentKey) {
+                item.classList.add('active');
+            }
+            
+            // Efecto ripple al click
+            item.addEventListener('click', function(e) {
+                createRipple(this, e);
+                
+                // Haptic feedback si está disponible
+                if (navigator.vibrate) {
+                    navigator.vibrate(8);
+                }
+            });
+        });
+        
+        function createRipple(element, event) {
+            const ripple = document.createElement('span');
+            ripple.classList.add('ripple');
+            
+            const rect = element.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = event.clientX - rect.left - size / 2;
+            const y = event.clientY - rect.top - size / 2;
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            
+            element.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        }
+        
+        // Prevenir zoom en double tap (iOS)
+        document.addEventListener('dblclick', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+    })();
+</script>
+
+    <!-- Ionicons -->
+    <script type="module" src="https://unpkg.com/ionicons@5.0.0/dist/ionicons/ionicons.js"></script>
+    <script>
+        // Load saved data
+        const savedName = localStorage.getItem('pesso_user') || 'Sixto M. Henriquez';
+        const savedRole = localStorage.getItem('pesso_role') || 'Designer';
+        
+        document.getElementById('displayName').textContent = savedName;
+        document.getElementById('userRole').textContent = savedRole;
+        document.getElementById('occupationDisplay').textContent = savedRole;
+        document.getElementById('avatarInitial').textContent = savedName.charAt(0).toUpperCase();
+        document.getElementById('nameInput').value = savedName;
+        document.getElementById('roleInput').value = savedRole;
+
+        // Load balance
+        const savedBalance = localStorage.getItem('pesso_balance') || '0.00';
+        document.getElementById('profileBalance').textContent = `$${savedBalance}`;
+
+        // Load dark mode preference
+        const isDarkMode = localStorage.getItem('pesso_dark_mode') === 'true';
+        if (isDarkMode) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.getElementById('darkModeToggle').checked = true;
+            document.getElementById('darkModeIcon').setAttribute('name', 'sunny-outline');
+        }
+
+        // Dark Mode Toggle - Global
+        function toggleDarkMode() {
+            const isDark = document.getElementById('darkModeToggle').checked;
+            const icon = document.getElementById('darkModeIcon');
+            
+            if (isDark) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('pesso_dark_mode', 'true');
+                icon.setAttribute('name', 'sunny-outline');
+                showToast('Dark mode enabled');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('pesso_dark_mode', 'false');
+                icon.setAttribute('name', 'moon-outline');
+                showToast('Light mode enabled');
+            }
+        }
+
+        // Edit Name
+        function editName() {
+            document.getElementById('nameModal').classList.remove('hidden');
+        }
+
+        function hideNameModal() {
+            document.getElementById('nameModal').classList.add('hidden');
+        }
+
+        function saveName() {
+            const newName = document.getElementById('nameInput').value.trim();
+            if (newName) {
+                localStorage.setItem('pesso_user', newName);
+                document.getElementById('displayName').textContent = newName;
+                document.getElementById('avatarInitial').textContent = newName.charAt(0).toUpperCase();
+                showToast('Name updated!');
+                hideNameModal();
+            }
+        }
+
+        // Edit Role/Occupation
+        function editRole() {
+            document.getElementById('roleModal').classList.remove('hidden');
+        }
+
+        function hideRoleModal() {
+            document.getElementById('roleModal').classList.add('hidden');
+        }
+
+        function saveRole() {
+            const newRole = document.getElementById('roleInput').value.trim();
+            if (newRole) {
+                localStorage.setItem('pesso_role', newRole);
+                document.getElementById('userRole').textContent = newRole;
+                document.getElementById('occupationDisplay').textContent = newRole;
+                showToast('Occupation updated!');
+                hideRoleModal();
+            }
+        }
+
+        function changeAvatar() {
+            showToast('Avatar change coming soon!');
+        }
+
+        function toggleNotifications() {
+            const status = document.getElementById('notifStatus');
+            const current = status.textContent;
+            status.textContent = current === 'ON' ? 'OFF' : 'ON';
+            status.style.color = current === 'ON' ? 'var(--text-secondary)' : 'var(--primary)';
+            showToast(`Notifications ${status.textContent}`);
+        }
+
+        function showLogoutModal() {
+            document.getElementById('logoutModal').classList.remove('hidden');
+        }
+
+        function hideLogoutModal() {
+            document.getElementById('logoutModal').classList.add('hidden');
+        }
+
+        function confirmLogout() {
+            localStorage.removeItem('pesso_session');
+            window.location.href = 'index.html';
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3000);
+        }
+
+        // Close modals on outside click
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.classList.add('hidden');
+            }
+        });
+    </script>
+
+<script>
+// Manejo de modales con clase body
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.body.classList.add('modal-open');
+    }
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add('hidden');
+        document.body.classList.remove('modal-open');
+    }
+}
+
+// Cerrar al hacer click fuera
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('modal')) {
+        e.target.classList.add('hidden');
+        document.body.classList.remove('modal-open');
+    }
+});
+
+// Cerrar con botón X o Cancel
+document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const modal = this.closest('.modal');
+        if (modal) {
+            modal.classList.add('hidden');
+            document.body.classList.remove('modal-open');
+        }
+    });
+});
+</script>
+
+</body>
+</html>

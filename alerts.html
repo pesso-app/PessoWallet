@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<script>
+// Manejo de modales con clase body
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.body.classList.add('modal-open');
+    }
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add('hidden');
+        document.body.classList.remove('modal-open');
+    }
+}
+
+// Cerrar al hacer click fuera
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('modal')) {
+        e.target.classList.add('hidden');
+        document.body.classList.remove('modal-open');
+    }
+});
+
+// Cerrar con botón X o Cancel
+document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const modal = this.closest('.modal');
+        if (modal) {
+            modal.classList.add('hidden');
+            document.body.classList.remove('modal-open');
+        }
+    });
+});
+</script>
+
+
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1C5CCF">
+    <title>Activity - Pesso</title>
+    <!-- Manifest PWA -->    
+    <link rel="manifest" href="manifest.json">
+    <!-- Style CSS / ICONS -->
+    <link rel="icon" type="image/png" href="assets/img/favicon.png" sizes="32x32">    
+    <link rel="apple-touch-icon" href="assets/icon/iconicon-192.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="fade-in">
+
+    <!-- App Capsule -->
+    <div id="appCapsule" class="pfix">
+
+        <div class="header-large-title">
+            <h1 class="title">Activity</h1>
+            <p class="subtitle" style="color: var(--text-secondary);">Your transactions</p>
+        </div>
+
+        <!-- Search -->
+        <form class="search-form" onsubmit="return false;">
+            <div class="searchbox">
+                <i class="input-icon">
+                    <ion-icon name="search-outline"></ion-icon>
+                </i>
+                <input type="text" class="form-control" placeholder="Search transactions" id="searchAlerts">
+            </div>
+        </form>
+
+        <!-- Filters -->
+        <div class="wide-block pt-2 pb-2">
+            <ul class="nav-tabs" id="alertTabs">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active" onclick="switchTab('all'); return false;">
+                        All
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="switchTab('add'); return false;">
+                        Added
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="switchTab('withdraw'); return false;">
+                        Withdrawn
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="switchTab('transfer'); return false;">
+                        Transfers
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Transactions List -->
+            <div id="transactionsList" class="transactions-container">
+                <!-- Transacciones cargadas dinámicamente -->
+            </div>
+            
+            <p class="text-center mt-3" style="color:var(--text-secondary); font-size:13px;">
+                <span id="transactionCount">0 transactions</span>
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Bottom Menu -->
+<!-- Menú Flotante iOS 26 - Reemplazar en index.html, goals.html, alerts.html, profile.html -->
+<div class="floating-menu-container">
+    <nav class="floating-menu">
+        <a href="index.html" class="menu-item" data-page="home">
+            <ion-icon name="home-outline"></ion-icon>
+            <strong>Home</strong>
+            <div class="active-indicator"></div>
+        </a>
+
+        <a href="goals.html" class="menu-item" data-page="goals">
+            <ion-icon name="flag-outline"></ion-icon>
+            <strong>Goals</strong>
+            <div class="active-indicator"></div>
+        </a>
+
+        <a href="alerts.html" class="menu-item" data-page="activity">
+            <ion-icon name="notifications-outline"></ion-icon>
+            <strong>Activity</strong>
+            <div class="active-indicator"></div>
+        </a>
+
+        <a href="profile.html" class="menu-item" data-page="me">
+            <ion-icon name="person-outline"></ion-icon>
+            <strong>Me</strong>
+            <div class="active-indicator"></div>
+        </a>
+    </nav>
+</div>
+
+<script>
+    // Script para manejar el menú flotante
+    (function() {
+        // Detectar página actual y marcar como activa
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        const pageMap = {
+            'index.html': 'home',
+            'goals.html': 'goals',
+            'alerts.html': 'activity',
+            'activity.html': 'activity',
+            'profile.html': 'me'
+        };
+        
+        const currentKey = pageMap[currentPage] || 'home';
+        
+        document.querySelectorAll('.menu-item').forEach(item => {
+            if (item.getAttribute('data-page') === currentKey) {
+                item.classList.add('active');
+            }
+            
+            // Efecto ripple al click
+            item.addEventListener('click', function(e) {
+                createRipple(this, e);
+                
+                // Haptic feedback si está disponible
+                if (navigator.vibrate) {
+                    navigator.vibrate(8);
+                }
+            });
+        });
+        
+        function createRipple(element, event) {
+            const ripple = document.createElement('span');
+            ripple.classList.add('ripple');
+            
+            const rect = element.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = event.clientX - rect.left - size / 2;
+            const y = event.clientY - rect.top - size / 2;
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            
+            element.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        }
+        
+        // Prevenir zoom en double tap (iOS)
+        document.addEventListener('dblclick', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+    })();
+</script>
+
+    <!-- Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- Ionicons -->
+    <script type="module" src="https://unpkg.com/ionicons@5.0.0/dist/ionicons/ionicons.js"></script>
+    <script>
+        // ==================== CONFIGURACIÓN ====================
+        const DB_NAME = 'PessoDB';
+        const DB_VERSION = 4;
+        
+        let db = null;
+        let currentTab = 'all';
+        let allTransactions = [];
+
+        // ==================== INICIALIZACIÓN ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Aplicar tema
+            const isDarkMode = localStorage.getItem('pesso_dark_mode') === 'true';
+            if (isDarkMode) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+            
+            initAlerts();
+        });
+
+        async function initAlerts() {
+            try {
+                await initDB();
+                await loadTransactions();
+                setupSearch();
+            } catch (error) {
+                console.error('Error inicializando alerts:', error);
+            }
+        }
+
+        async function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                
+                request.onerror = () => {
+                    console.error('Error abriendo DB:', request.error);
+                    reject(request.error);
+                };
+                
+                request.onsuccess = () => {
+                    db = request.result;
+                    console.log('Alerts: DB conectada');
+                    resolve(db);
+                };
+                
+                request.onupgradeneeded = (event) => {
+                    console.log('Alerts: Actualizando DB');
+                    const db = event.target.result;
+                    
+                    if (!db.objectStoreNames.contains('envelopes')) {
+                        db.createObjectStore('envelopes', { keyPath: 'id' });
+                    }
+                    if (!db.objectStoreNames.contains('goals')) {
+                        db.createObjectStore('goals', { keyPath: 'id' });
+                    }
+                    if (!db.objectStoreNames.contains('notifications')) {
+                        const notifStore = db.createObjectStore('notifications', { 
+                            keyPath: 'id', 
+                            autoIncrement: true 
+                        });
+                        notifStore.createIndex('date', 'date', { unique: false });
+                    }
+                };
+            });
+        }
+
+        async function loadTransactions() {
+            try {
+                allTransactions = await getRecentTransactions(30);
+                renderTransactions();
+                updateCount();
+            } catch (error) {
+                console.error('Error cargando transacciones:', error);
+            }
+        }
+
+        function renderTransactions() {
+            const list = document.getElementById('transactionsList');
+            if (!list) return;
+            
+            const filtered = currentTab === 'all' 
+                ? allTransactions 
+                : allTransactions.filter(t => t.type === currentTab);
+            
+            if (filtered.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <ion-icon name="receipt-outline" style="font-size: 48px; color: var(--text-secondary);"></ion-icon>
+                        <p>${currentTab === 'all' ? 'No transactions yet' : `No ${currentTab} transactions`}</p>
+                        <p style="font-size:13px; margin-top:8px;">
+                            ${currentTab === 'all' ? 'Your activity will appear here' : 'Try another filter'}
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+            
+            list.innerHTML = filtered.map(trx => {
+                const date = new Date(trx.date);
+                const timeStr = formatTimeAgo(date);
+                const icon = getTransactionIcon(trx.type);
+                const color = getTransactionColor(trx.type);
+                const sign = trx.type === 'add' ? '+' : trx.type === 'withdraw' ? '-' : '↔';
+                const amount = trx.amount ? `$${trx.amount.toFixed(2)}` : '';
+                
+                return `
+                    <div class="transaction-item" data-type="${trx.type}">
+                        <div class="transaction-icon ${color}">
+                            <ion-icon name="${icon}"></ion-icon>
+                        </div>
+                        <div class="transaction-content">
+                            <div class="transaction-header">
+                                <span class="transaction-title">${trx.title}</span>
+                                <span class="transaction-amount ${trx.type}">${sign}${amount}</span>
+                            </div>
+                            <div class="transaction-desc">${trx.description}</div>
+                            <div class="transaction-time">${timeStr}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateCount() {
+            const countEl = document.getElementById('transactionCount');
+            if (countEl) {
+                countEl.textContent = `${allTransactions.length} transaction${allTransactions.length !== 1 ? 's' : ''}`;
+            }
+        }
+
+        function getTransactionIcon(type) {
+            const icons = {
+                'add': 'arrow-down-outline',
+                'withdraw': 'arrow-up-outline',
+                'transfer': 'swap-horizontal-outline',
+                'goal': 'trophy-outline',
+                'goal_created': 'flag-outline'
+            };
+            return icons[type] || 'notifications-outline';
+        }
+
+        function getTransactionColor(type) {
+            const colors = {
+                'add': 'bg-success',
+                'withdraw': 'bg-danger',
+                'transfer': 'bg-info',
+                'goal': 'bg-primary',
+                'goal_created': 'bg-warning'
+            };
+            return colors[type] || 'bg-primary';
+        }
+
+        function formatTimeAgo(date) {
+            const now = new Date();
+            const diff = now - date;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+            
+            if (minutes < 1) return 'Just now';
+            if (minutes < 60) return `${minutes}m ago`;
+            if (hours < 24) return `${hours}h ago`;
+            if (days < 7) return `${days}d ago`;
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        async function getRecentTransactions(days = 30) {
+            return new Promise((resolve) => {
+                if (!db) {
+                    console.log('DB no lista');
+                    resolve([]);
+                    return;
+                }
+                
+                if (!db.objectStoreNames.contains('notifications')) {
+                    console.warn('Object store notifications no existe');
+                    resolve([]);
+                    return;
+                }
+                
+                try {
+                    const tx = db.transaction('notifications', 'readonly');
+                    const store = tx.objectStore('notifications');
+                    const request = store.getAll();
+                    
+                    request.onsuccess = () => {
+                        const allNotifications = request.result || [];
+                        console.log('Notificaciones cargadas:', allNotifications.length);
+                        
+                        const cutoffDate = new Date();
+                        cutoffDate.setDate(cutoffDate.getDate() - days);
+                        
+                        const filtered = allNotifications
+                            .filter(n => new Date(n.date) >= cutoffDate)
+                            .sort((a, b) => new Date(b.date) - new Date(a.date));
+                        
+                        resolve(filtered);
+                    };
+                    
+                    request.onerror = () => {
+                        console.error('Error obteniendo notificaciones');
+                        resolve([]);
+                    };
+                } catch (error) {
+                    console.error('Error en transacción:', error);
+                    resolve([]);
+                }
+            });
+        }
+
+        // ==================== TABS ====================
+        function switchTab(tabName) {
+            currentTab = tabName;
+            
+            // Actualizar UI de tabs
+            document.querySelectorAll('.nav-link').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Encontrar el tab correcto
+            const tabs = document.querySelectorAll('.nav-link');
+            tabs.forEach(tab => {
+                const text = tab.textContent.trim().toLowerCase();
+                if ((tabName === 'all' && text === 'all') ||
+                    (tabName === 'add' && text === 'added') ||
+                    (tabName === 'withdraw' && text === 'withdrawn') ||
+                    (tabName === 'transfer' && text === 'transfers')) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            renderTransactions();
+        }
+
+        // ==================== SEARCH ====================
+        function setupSearch() {
+            const searchInput = document.getElementById('searchAlerts');
+            if (!searchInput) return;
+            
+            searchInput.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                const items = document.querySelectorAll('.transaction-item');
+                
+                items.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    item.style.display = text.includes(term) ? 'flex' : 'none';
+                });
+            });
+        }
+
+        // ==================== UTILIDADES ====================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            if (!toast) {
+                alert(message);
+                return;
+            }
+            
+            toast.textContent = message;
+            toast.classList.remove('hidden');
+            
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+    </script>
+
+<script>
+// Manejo de modales con clase body
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.body.classList.add('modal-open');
+    }
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add('hidden');
+        document.body.classList.remove('modal-open');
+    }
+}
+
+// Cerrar al hacer click fuera
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('modal')) {
+        e.target.classList.add('hidden');
+        document.body.classList.remove('modal-open');
+    }
+});
+
+// Cerrar con botón X o Cancel
+document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const modal = this.closest('.modal');
+        if (modal) {
+            modal.classList.add('hidden');
+            document.body.classList.remove('modal-open');
+        }
+    });
+});
+</script>
+    
+</body>
+</html>
