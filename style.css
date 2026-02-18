@@ -37,7 +37,8 @@
         }
         
         #appCapsule {
-            padding-top: calc(8px + env(safe-area-inset-top)) !important;
+            padding-top: calc(20px + env(safe-area-inset-top));
+            padding-bottom: calc(40px + env(safe-area-inset-bottom));
         }
         
         .header-large-title {
@@ -57,7 +58,7 @@
 body {
     background: var(--bg);
     color: var(--text);
-    min-height: 100vh;
+    min-height: 100vh;s
     min-height: -webkit-fill-available;
     padding-top: env(safe-area-inset-top);
     padding-bottom: calc(100px + env(safe-area-inset-bottom));
