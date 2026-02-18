@@ -14,6 +14,46 @@
     <link rel="icon" type="image/png" href="assets/img/favicon.png" sizes="32x32">    
     <link rel="apple-touch-icon" href="assets/icon/iconicon-192.png">
     <link rel="stylesheet" href="style.css">
+<!-- Agrega esto en el head de goals.html, justo antes del cierre </head> -->
+<style>
+    /* FAB Position Fixed Correcto */
+    #fabAddGoal {
+        position: fixed !important;
+        top: calc(70px + env(safe-area-inset-top)) !important;
+        right: 20px !important;
+        width: 50px !important;
+        height: 50px !important;
+        border-radius: 50% !important;
+        background: var(--primary) !important;
+        color: white !important;
+        border: none !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 28px !important;
+        box-shadow: 0 4px 15px rgba(28, 92, 207, 0.4) !important;
+        cursor: pointer !important;
+        z-index: 1000 !important;
+        -webkit-transform: translateZ(0) !important;
+        transform: translateZ(0) !important;
+        will-change: transform !important;
+    }
+    
+    #fabAddGoal:active {
+        transform: scale(0.9) !important;
+    }
+    
+    /* Asegurar que el menú siempre esté arriba */
+    .floating-menu-container {
+        z-index: 9999 !important;
+    }
+    
+    /* Espacio extra abajo para el menú */
+    #appCapsule {
+        padding-bottom: calc(120px + env(safe-area-inset-bottom)) !important;
+    }
+</style>
+
 </head>
 
 <body class="fade-in">
@@ -363,17 +403,14 @@
 
 function renderGoals() {
     const goalsList = document.getElementById('goalsList');
-    if (!goalsList) {
-        console.error('No se encontró goalsList');
-        return;
-    }
+    if (!goalsList) return;
     
     goalsList.innerHTML = '';
     
     if (goals.length === 0) {
         goalsList.innerHTML = `
             <div class="empty-state">
-                <ion-icon name="flag-outline" style="font-size: 48px;"></ion-icon>
+                <ion-icon name="flag-outline" style="font-size: 48px; color: var(--text-secondary);"></ion-icon>
                 <p>No goals yet</p>
                 <p style="font-size:13px; margin-top:8px;">Tap + to create your first goal</p>
             </div>
@@ -386,37 +423,112 @@ function renderGoals() {
         const target = goal.target || 1;
         const percent = Math.min(100, (saved / target) * 100);
         const emoji = goal.emoji || '🎯';
+        const remaining = target - saved;
         
-        // Círculo SVG corregido - radio 26 para coincidir con CSS
-        const radius = 26;
-        const circumference = 2 * Math.PI * radius;
-        const strokeDashoffset = circumference - (percent / 100) * circumference;
+        // Color según progreso
+        let progressColor = 'var(--primary)';
+        if (percent >= 100) progressColor = 'var(--success)';
+        else if (percent >= 75) progressColor = '#30D158';
+        else if (percent >= 50) progressColor = '#FF9500';
+        else if (percent >= 25) progressColor = '#FF9F0A';
         
         const card = document.createElement('div');
-        card.className = 'ios-card';
+        card.className = 'ios-card goal-card-modern';
+        card.style.cssText = `
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(245,245,247,0.8) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+            position: relative;
+            overflow: hidden;
+            transform: translateZ(0);
+        `;
+        
+        // Barra de progreso decorativa arriba
+        const progressBar = `
+            <div style="position: absolute; top: 0; left: 0; right: 0; height: 4px; background: rgba(0,0,0,0.05);">
+                <div style="width: ${percent}%; height: 100%; background: ${progressColor}; transition: width 0.5s ease;"></div>
+            </div>
+        `;
+        
+        // Fecha formateada
+        let dateText = '';
+        if (goal.date) {
+            const date = new Date(goal.date);
+            const daysLeft = Math.ceil((date - new Date()) / (1000 * 60 * 60 * 24));
+            if (daysLeft > 0) {
+                dateText = `<span style="font-size: 12px; color: var(--text-secondary);">⏰ ${daysLeft} days left</span>`;
+            } else if (daysLeft === 0) {
+                dateText = `<span style="font-size: 12px; color: var(--danger);">📅 Due today</span>`;
+            } else {
+                dateText = `<span style="font-size: 12px; color: var(--danger);">⚠️ Overdue</span>`;
+            }
+        }
         
         card.innerHTML = `
-            <div class="goal-circular">
-                <div class="circular-progress">
-                    <svg viewBox="0 0 60 60">
-                        <circle class="circular-bg" cx="30" cy="30" r="${radius}"></circle>
-                        <circle class="circular-bar" cx="30" cy="30" r="${radius}" 
-                            stroke-dasharray="${circumference}" 
-                            stroke-dashoffset="${strokeDashoffset}"></circle>
-                    </svg>
-                    <div class="circular-emoji">${emoji}</div>
+            ${progressBar}
+            <div style="display: flex; align-items: center; gap: 16px; margin-top: 4px;">
+                <div style="
+                    width: 60px; 
+                    height: 60px; 
+                    border-radius: 16px; 
+                    background: linear-gradient(135deg, ${progressColor}20 0%, ${progressColor}40 100%);
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    font-size: 28px;
+                    box-shadow: 0 4px 12px ${progressColor}30;
+                    border: 2px solid ${progressColor}40;
+                ">
+                    ${emoji}
                 </div>
-                <div class="goal-info">
-                    <div class="goal-name">${escapeHtml(goal.name) || 'Goal'}</div>
-                    <div class="goal-amounts">$${saved.toLocaleString()} / $${target.toLocaleString()}</div>
-                    <div class="goal-percent">${percent.toFixed(0)}% completed</div>
-                    ${goal.date ? `<div style="font-size:11px; color:var(--text-secondary); margin-top:4px;">Due: ${new Date(goal.date).toLocaleDateString()}</div>` : ''}
+                <div style="flex: 1;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 4px;">
+                        <h3 style="font-size: 18px; font-weight: 700; color: var(--text); margin: 0; letter-spacing: -0.3px;">${escapeHtml(goal.name) || 'Goal'}</h3>
+                        <span style="font-size: 16px; font-weight: 700; color: ${progressColor};">$${saved.toLocaleString()}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-size: 13px; color: var(--text-secondary);">of $${target.toLocaleString()} target</span>
+                        <span style="font-size: 13px; font-weight: 600; color: ${progressColor};">${percent.toFixed(0)}%</span>
+                    </div>
+                    <div style="
+                        height: 8px; 
+                        background: rgba(0,0,0,0.05); 
+                        border-radius: 4px; 
+                        overflow: hidden;
+                        position: relative;
+                    ">
+                        <div style="
+                            width: ${percent}%; 
+                            height: 100%; 
+                            background: linear-gradient(90deg, ${progressColor} 0%, ${progressColor}dd 100%);
+                            border-radius: 4px;
+                            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+                            box-shadow: 0 0 10px ${progressColor}50;
+                        "></div>
+                    </div>
+                    ${dateText ? `<div style="margin-top: 8px;">${dateText}</div>` : ''}
                 </div>
             </div>
         `;
+        
         goalsList.appendChild(card);
     });
 }
+
+// Tema oscuro para las cards
+const style = document.createElement('style');
+style.textContent = `
+    [data-theme="dark"] .goal-card-modern {
+        background: linear-gradient(135deg, rgba(44,44,46,0.9) 0%, rgba(30,30,30,0.8) 100%) !important;
+        border-color: rgba(255,255,255,0.1) !important;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.2) !important;
+    }
+`;
+document.head.appendChild(style);
 
         function escapeHtml(text) {
             if (!text) return '';
@@ -689,6 +801,26 @@ document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
         document.documentElement.setAttribute('data-theme', 'dark');
     }
 })();
+</script>
+
+<script>
+    // Asegurar que el menú siempre esté visible
+    document.addEventListener('DOMContentLoaded', function() {
+        const menu = document.querySelector('.floating-menu-container');
+        if (menu) {
+            menu.style.display = 'block';
+            menu.style.visibility = 'visible';
+            menu.style.opacity = '1';
+        }
+    });
+    
+    // Prevenir que el menú desaparezca al hacer scroll
+    window.addEventListener('scroll', function() {
+        const menu = document.querySelector('.floating-menu-container');
+        if (menu) {
+            menu.style.transform = 'translateX(-50%) translateZ(0)';
+        }
+    });
 </script>
 
 </body>

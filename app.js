@@ -145,12 +145,12 @@ async function loadData() {
         const savedEnvelopes = await getAllFromStore('envelopes');
         if (savedEnvelopes.length === 0) {
             envelopes = [
-                { id: '1', name: 'Viajes', icon: 'airplane', amount: 1200, goal: null },
-                { id: '2', name: 'Carro', icon: 'car', amount: 3500, goal: null },
-                { id: '3', name: 'Vacaciones', icon: 'sunny', amount: 800, goal: null },
-                { id: '4', name: 'Casa', icon: 'home', amount: 5000, goal: null },
-                { id: '5', name: 'Inversiones', icon: 'trending-up', amount: 2000, goal: null },
-                { id: '6', name: 'Emergencias', icon: 'medical', amount: 1500, goal: null }
+                { id: '1', name: 'Travels', icon: 'airplane', amount: 20, goal: null },
+                { id: '2', name: 'Car', icon: 'car', amount: 20, goal: null },
+                { id: '3', name: 'Vacation', icon: 'sunny', amount: 20, goal: null },
+                { id: '4', name: 'House', icon: 'home', amount: 20, goal: null },
+                { id: '5', name: 'Investments', icon: 'trending-up', amount: 20, goal: null },
+                { id: '6', name: 'Emergencies', icon: 'medical', amount: 20, goal: null }
             ];
             for (let e of envelopes) await saveToStore('envelopes', e);
         } else {
@@ -160,7 +160,7 @@ async function loadData() {
         const savedGoals = await getAllFromStore('goals');
         if (savedGoals.length === 0) {
             goals = [
-                { id: '1', name: 'Nuevo Auto', target: 15000, saved: 3500, emoji: '🚗', date: null },
+                { id: '1', name: 'New Car', target: 15000, saved: 3500, emoji: '🚗', date: null },
                 { id: '2', name: 'Viaje Europa', target: 5000, saved: 1200, emoji: '✈️', date: null },
                 { id: '3', name: 'Fondo Emergencia', target: 10000, saved: 1500, emoji: '🛡️', date: null }
             ];
@@ -381,10 +381,20 @@ function showTransferModal() {
     if (modal) modal.classList.remove('hidden');
 }
 
-function closeModal() {
-    document.querySelectorAll('.modal').forEach(m => {
-        if (m.id !== 'errorModal' && m.id !== 'goalWarningModal') m.classList.add('hidden');
-    });
+function closeModal(modalId) {
+    if (modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.add('hidden');
+            document.body.classList.remove('modal-open');
+        }
+    } else {
+        // Cerrar todos los modales si no se especifica ID
+        document.querySelectorAll('.modal').forEach(m => {
+            m.classList.add('hidden');
+        });
+        document.body.classList.remove('modal-open');
+    }
 }
 
 function toggleAddDestination() {
@@ -499,6 +509,7 @@ function updateMaxAvailable() {
 
 // ==================== TRANSACCIONES ====================
 
+// Arreglar confirmAdd - asegurar que cierra
 async function confirmAdd() {
     const amountInput = document.getElementById('addAmount');
     const isSavings = document.getElementById('addToSavings').checked;
@@ -513,7 +524,6 @@ async function confirmAdd() {
     }
     
     if (isSavings) {
-        // Agregar a Savings
         const envelopeSelect = document.getElementById('addSavingsSelect');
         const goalCheck = document.getElementById('savingGoalCheck');
         const goalAmountInput = document.getElementById('savingGoalAmount');
@@ -527,7 +537,6 @@ async function confirmAdd() {
         
         envelope.amount += amount;
         
-        // Si tiene meta de ahorro
         if (goalCheck && goalCheck.checked && goalAmountInput) {
             const goalAmount = parseFloat(goalAmountInput.value);
             if (goalAmount && goalAmount > 0) {
@@ -546,9 +555,13 @@ async function confirmAdd() {
             updateTotal();
             populateSelects();
             renderSavingsCards();
-            closeModal();
             showToast(`Agregado $${amount.toFixed(2)} a ${envelope.name}`);
             updateActivity();
+            
+            // CERRAR MODAL EXPLÍCITAMENTE
+            closeModal('addModal');
+            // Limpiar formulario
+            amountInput.value = '';
         } catch (error) {
             console.error('Error:', error);
             showToast('Error al guardar');
@@ -577,9 +590,13 @@ async function confirmAdd() {
                 amount
             );
             populateSelects();
-            closeModal();
             showToast(`Agregado $${amount.toFixed(2)} a meta ${goal.name}`);
             updateActivity();
+            
+            // CERRAR MODAL EXPLÍCITAMENTE
+            closeModal('addModal');
+            // Limpiar formulario
+            amountInput.value = '';
         } catch (error) {
             console.error('Error:', error);
             showToast('Error al guardar');
@@ -587,6 +604,7 @@ async function confirmAdd() {
     }
 }
 
+// Arreglar confirmWithdraw
 async function confirmWithdraw() {
     const amountInput = document.getElementById('withdrawAmount');
     const envelopeSelect = document.getElementById('withdrawEnvelope');
@@ -616,6 +634,9 @@ async function confirmWithdraw() {
     }
     
     await processWithdrawal(envelope, amount);
+    closeModal('withdrawModal');
+    // Limpiar input
+    amountInput.value = '';
 }
 
 function showGoalWarning(envelope) {
@@ -629,7 +650,10 @@ function showGoalWarning(envelope) {
 
 function closeGoalWarning() {
     const modal = document.getElementById('goalWarningModal');
-    if (modal) modal.classList.add('hidden');
+    if (modal) {
+        modal.classList.add('hidden');
+        document.body.classList.remove('modal-open');
+    }
     pendingWithdrawal = null;
 }
 
@@ -663,6 +687,7 @@ async function processWithdrawal(envelope, amount) {
     }
 }
 
+// Arreglar processTransfer (si existe) o confirmTransfer
 async function confirmTransfer() {
     const fromSelect = document.getElementById('transferFrom');
     const toSelect = document.getElementById('transferTo');
@@ -709,9 +734,12 @@ async function confirmTransfer() {
         updateTotal();
         populateSelects();
         renderSavingsCards();
-        closeModal();
         showToast(`Transferido $${amount.toFixed(2)}`);
         updateActivity();
+        
+        // CERRAR MODAL Y LIMPIAR
+        closeModal('transferModal');
+        amountInput.value = '';
     } catch (error) {
         console.error('Error:', error);
         showToast('Error al transferir');
@@ -764,7 +792,10 @@ function showErrorModal(envelopeName, available, attempted) {
 
 function closeErrorModal() {
     const errorModal = document.getElementById('errorModal');
-    if (errorModal) errorModal.classList.add('hidden');
+    if (errorModal) {
+        errorModal.classList.add('hidden');
+        document.body.classList.remove('modal-open');
+    }
 }
 
 // ==================== UTILIDADES ====================

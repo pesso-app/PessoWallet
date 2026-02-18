@@ -30,23 +30,45 @@
 }
 
 /* ==================== SAFE AREA Y NOTCH ==================== */
-html {
-    padding-top: env(safe-area-inset-top);
-    padding-top: constant(safe-area-inset-top);
+@supports (-webkit-touch-callout: none) {
+    html {
+        height: 100vh;
+        height: -webkit-fill-available;
+    }
+    
+    body {
+        min-height: 100vh;
+        min-height: -webkit-fill-available;
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: calc(20px + env(safe-area-inset-bottom));
+    }
+    
+    #appCapsule {
+        padding-top: calc(12px + env(safe-area-inset-top));
+        padding-bottom: calc(100px + env(safe-area-inset-bottom));
+    }
+    
+    .header-large-title {
+        padding-top: calc(12px + env(safe-area-inset-top));
+    }
+    
+    /* Login screen ajustada */
+    .fixed-login {
+        padding-top: env(safe-area-inset-top);
+    }
+    
+    .login-container {
+        padding-top: calc(40px + env(safe-area-inset-top));
+    }
 }
 
-body {
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    min-height: -webkit-fill-available;
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: calc(100px + env(safe-area-inset-bottom));
-    overflow-x: hidden;
-    position: relative;
-    transition: background-color 0.3s ease, color 0.3s ease;
+/* Header siempre con padding del notch */
+.header-large-title {
+    padding-top: calc(12px + env(safe-area-inset-top));
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-bottom: 16px;
 }
-
 /* Prevenir scroll bounce en iOS */
 html, body {
     overscroll-behavior-y: none;
@@ -1465,7 +1487,7 @@ input:checked + .toggle-slider:before {
 /* ==================== TOAST ==================== */
 .toast {
     position: fixed;
-    top: calc(100px + env(safe-area-inset-top));
+    top: calc(60px + env(safe-area-inset-top));
     left: 50%;
     transform: translateX(-50%);
     background: var(--success);
@@ -1473,13 +1495,17 @@ input:checked + .toggle-slider:before {
     padding: 14px 24px;
     border-radius: 12px;
     font-weight: 600;
-    z-index: 3000;
+    z-index: 20000 !important; /* Más alto que los modales (10000) */
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     font-size: 15px;
+    pointer-events: none; /* Para que no interfiera con clicks */
 }
 
 .toast.hidden {
-    display: none !important;
+    opacity: 0;
+    visibility: hidden;
+    display: block !important; /* Cambiar de none a block para permitir transiciones */
+    transition: opacity 0.3s, visibility 0.3s;
 }
 
 /* ==================== UTILITIES ==================== */

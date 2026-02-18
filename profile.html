@@ -502,7 +502,7 @@
                     </button>
                 </div>
             </div>
-        </div>        
+        </div> <br><br>       
 
         <!-- Sección Account -->
         <div class="settings-section-glass">
@@ -514,22 +514,13 @@
                     </div>
                     <div class="settings-content-glass">
                         <span class="settings-label-glass">Personal Info</span>
-                        <ion-icon name="chevron-forward-outline" class="settings-arrow-glass"></ion-icon>
-                    </div>
-                </div>
-                
-                <div class="settings-item-glass" onclick="editRole()">
-                    <div class="settings-icon-glass orange">
-                        <ion-icon name="briefcase-outline"></ion-icon>
-                    </div>
-                    <div class="settings-content-glass">
-                        <span class="settings-label-glass">Occupation</span>
                         <div style="display: flex; align-items: center;">
                             <span class="settings-value-glass" id="occupationDisplay">Designer</span>
                             <ion-icon name="chevron-forward-outline" class="settings-arrow-glass"></ion-icon>
                         </div>
                     </div>
                 </div>
+                
             </div>
         </div>
 
@@ -613,8 +604,9 @@
     </div>
 
     <!-- Modal Personal Info -->
-    <div id="personalInfoModal" class="modal modal-glass hidden">
-        <div class="modal-dialog dialogbox">
+    <!-- Modal Personal Info (Estilo Sheet desde abajo) -->
+    <div id="personalInfoModal" class="modal hidden">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Personal Info</h5>
@@ -622,27 +614,33 @@
                         <ion-icon name="close-outline"></ion-icon>
                     </button>
                 </div>
-                <div class="modal-body" style="padding: 20px;">
-                    <div class="form-field-glass">
-                        <label>Your Name</label>
-                        <input type="text" id="nameInput" placeholder="Enter your name">
+                <div class="modal-body">
+                    <div class="form-group boxed">
+                        <div class="input-wrapper">
+                            <label class="label">Your Name</label>
+                            <input type="text" class="form-control" id="nameInput" placeholder="Enter your name">
+                        </div>
                     </div>
-                    <div class="form-field-glass">
-                        <label>Your Occupation</label>
-                        <input type="text" id="roleInput" placeholder="What do you do?">
+                    
+                    <!-- Ocupación movida aquí -->
+                    <div class="form-group boxed">
+                        <div class="input-wrapper">
+                            <label class="label">Occupation</label>
+                            <input type="text" class="form-control" id="roleInput" placeholder="What do you do?">
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn-glass btn-glass-secondary" onclick="closeModal('personalInfoModal')">Cancel</button>
-                    <button class="btn-glass btn-glass-primary" onclick="savePersonalInfo()">Save</button>
+                    <button class="btn btn-text-secondary" onclick="closeModal('personalInfoModal')">Cancel</button>
+                    <button class="btn btn-text-primary" onclick="savePersonalInfo()">Save</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Appearance -->
-    <div id="appearanceModal" class="modal modal-glass hidden">
-        <div class="modal-dialog dialogbox">
+    <!-- Modal Appearance (Estilo Sheet) -->
+    <div id="appearanceModal" class="modal hidden">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Appearance</h5>
@@ -651,18 +649,18 @@
                     </button>
                 </div>
                 <div class="modal-body" style="padding: 0;">
-                    <div class="options-list-glass">
-                        <div class="option-item-glass selected" data-theme="system" onclick="selectTheme('system')">
+                    <div class="options-list-glass" style="padding: 8px 0;">
+                        <div class="option-item-glass selected" data-theme="system" onclick="selectTheme('system')" style="padding: 16px 20px; border-bottom: 0.5px solid rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;">
                             <span class="option-label-glass">System</span>
-                            <ion-icon name="checkmark-outline" class="option-check-glass"></ion-icon>
+                            <ion-icon name="checkmark-outline" class="option-check-glass" style="color: var(--primary);"></ion-icon>
                         </div>
-                        <div class="option-item-glass" data-theme="light" onclick="selectTheme('light')">
+                        <div class="option-item-glass" data-theme="light" onclick="selectTheme('light')" style="padding: 16px 20px; border-bottom: 0.5px solid rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;">
                             <span class="option-label-glass">Light</span>
-                            <ion-icon name="checkmark-outline" class="option-check-glass"></ion-icon>
+                            <ion-icon name="checkmark-outline" class="option-check-glass" style="color: var(--primary); opacity: 0;"></ion-icon>
                         </div>
-                        <div class="option-item-glass" data-theme="dark" onclick="selectTheme('dark')">
+                        <div class="option-item-glass" data-theme="dark" onclick="selectTheme('dark')" style="padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;">
                             <span class="option-label-glass">Dark</span>
-                            <ion-icon name="checkmark-outline" class="option-check-glass"></ion-icon>
+                            <ion-icon name="checkmark-outline" class="option-check-glass" style="color: var(--primary); opacity: 0;"></ion-icon>
                         </div>
                     </div>
                 </div>
@@ -670,20 +668,20 @@
         </div>
     </div>
 
-    <!-- Modal Logout -->
-    <div id="logoutModal" class="modal modal-glass hidden">
-        <div class="modal-dialog dialogbox">
-            <div class="modal-content">
-                <div class="modal-header">
+    <!-- Modal Logout (Estilo Sheet) -->
+    <div id="logoutModal" class="modal hidden">
+        <div class="modal-dialog" style="max-width: 340px;">
+            <div class="modal-content" style="border-radius: 20px;">
+                <div class="modal-header" style="justify-content: center; border-bottom: none; padding-top: 24px;">
                     <h5 class="modal-title">Log Out</h5>
                 </div>
-                <div class="modal-body text-center" style="padding: 24px;">
-                    Are you sure you want to log out?
+                <div class="modal-body text-center" style="padding: 0 24px 24px;">
+                    <p style="color: var(--text-secondary);">Are you sure you want to log out?</p>
                 </div>
-                <div class="modal-footer">
-                    <div class="btn-inline">
-                        <button class="btn-glass btn-glass-secondary" onclick="closeModal('logoutModal')">Cancel</button>
-                        <button class="btn-glass btn-glass-danger" onclick="confirmLogout()">Log Out</button>
+                <div class="modal-footer" style="border-top: 0.5px solid rgba(0,0,0,0.1); padding: 16px;">
+                    <div class="btn-inline" style="display: flex; gap: 8px; width: 100%;">
+                        <button class="btn btn-text-secondary" style="flex: 1;" onclick="closeModal('logoutModal')">Cancel</button>
+                        <button class="btn btn-text-danger" style="flex: 1;" onclick="confirmLogout()">Log Out</button>
                     </div>
                 </div>
             </div>
@@ -944,6 +942,26 @@ document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
         document.documentElement.setAttribute('data-theme', 'dark');
     }
 })();
+</script>
+
+<script>
+    // Asegurar que el menú siempre esté visible
+    document.addEventListener('DOMContentLoaded', function() {
+        const menu = document.querySelector('.floating-menu-container');
+        if (menu) {
+            menu.style.display = 'block';
+            menu.style.visibility = 'visible';
+            menu.style.opacity = '1';
+        }
+    });
+    
+    // Prevenir que el menú desaparezca al hacer scroll
+    window.addEventListener('scroll', function() {
+        const menu = document.querySelector('.floating-menu-container');
+        if (menu) {
+            menu.style.transform = 'translateX(-50%) translateZ(0)';
+        }
+    });
 </script>
 
 </body>

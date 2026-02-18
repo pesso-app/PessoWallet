@@ -515,5 +515,25 @@ document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
 })();
 </script>
     
+<script>
+    // Asegurar que el menú siempre esté visible
+    document.addEventListener('DOMContentLoaded', function() {
+        const menu = document.querySelector('.floating-menu-container');
+        if (menu) {
+            menu.style.display = 'block';
+            menu.style.visibility = 'visible';
+            menu.style.opacity = '1';
+        }
+    });
+    
+    // Prevenir que el menú desaparezca al hacer scroll
+    window.addEventListener('scroll', function() {
+        const menu = document.querySelector('.floating-menu-container');
+        if (menu) {
+            menu.style.transform = 'translateX(-50%) translateZ(0)';
+        }
+    });
+</script>
+    
 </body>
 </html>
