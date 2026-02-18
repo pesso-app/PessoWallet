@@ -40,11 +40,11 @@
         }
         
         #appCapsule {
-            padding-top: calc(16px + env(safe-area-inset-top)) !important;
+            padding-top: calc(8px + env(safe-area-inset-top)) !important;
         }
         
         .header-large-title {
-            padding-top: calc(2px + env(safe-area-inset-top));
+            padding-top: calc(4px + env(safe-area-inset-top));
         }
         
         .profile-container {
