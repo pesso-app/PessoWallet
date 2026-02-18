@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#1C5CCF">
-    <title>Pesso</title>
+    <meta name="theme-color" content="#1C5CCF" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">    <title>Pesso</title>
     <!-- Manifest PWA -->    
     <link rel="manifest" href="manifest.json">
     <!-- Style CSS / ICONS -->
@@ -14,6 +14,7 @@
     <link rel="apple-touch-icon" href="assets/icon/iconicon-192.png">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
     <!-- Login Screen - Fijo sin scroll -->
@@ -53,7 +54,7 @@
     <div id="mainApp" class="hidden fade-in">
 
         <!-- App Capsule -->
-        <div id="appCapsule" class="pfix">
+        <div id="appCapsule" class="pfix">       
 
             <!-- HOME SCREEN -->
             <div id="screen-home" class="screen-content active">
@@ -86,7 +87,7 @@
                 <!-- Savings Accounts - Estilo iOS 26 -->
                 <div class="section mt-4">
                     <div class="section-header">
-                        <h2 class="section-title">Savings Accounts</h2>
+                        <h2 class="section-title">Savings accounts</h2>
                         <button class="btn-text" onclick="showTransferModal()">Transfer</button>
                     </div>
                     <div id="savingsList" class="ios-cards-container">
@@ -95,7 +96,10 @@
                 </div>
 
                 <!-- Links Section -->
-                <div class="section mt-4 pb-5">
+                <div class="section mt-4 pb-5">  
+                    <div class="section-header">
+                       <h2 class="section-title">Discover more</h2>
+                    </div>                 
                     <div class="row">
                         <div class="col-12">
                             <ul class="listview image-listview flush transparent mb-1">
@@ -105,7 +109,7 @@
                                             <ion-icon name="swap-vertical-outline"></ion-icon>
                                         </div>
                                         <div class="in font-weight-bold">
-                                            Deposits & Transfers
+                                            Transfer Money
                                         </div>
                                     </a>
                                 </li>  
@@ -121,21 +125,11 @@
                                 </li>                                                          
                                 <li>
                                     <a href="#" class="item" onclick="showToast('Coming soon')">
-                                        <div class="icon-box bg-warning">
-                                            <ion-icon name="card-outline"></ion-icon>
-                                        </div>
-                                        <div class="in font-weight-bold">
-                                            Credit Cards Manager
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="item" onclick="showToast('Coming soon')">
-                                        <div class="icon-box bg-success">
+                                        <div class="icon-box bg-danger">
                                             <ion-icon name="flash-outline"></ion-icon>
                                         </div>
                                         <div class="in font-weight-bold">
-                                            Get Premium
+                                            Get Pesso+
                                         </div>
                                     </a>
                                 </li>
@@ -416,6 +410,10 @@
     <!-- Toast Notification -->
     <div id="toast" class="toast hidden"></div>
 
+    <!-- Ionicons -->
+    <script type="module" src="https://unpkg.com/ionicons@5.0.0/dist/ionicons/ionicons.js"></script>
+    <script src="app.js"></script>    
+
 
 <script>
 // Manejo de modales con clase body
@@ -453,10 +451,15 @@ document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
         }
     });
 });
+
+// Aplicar tema inmediatamente (prevenir flash)
+(function() {
+    const isDarkMode = localStorage.getItem('pesso_dark_mode') === 'true';
+    if (isDarkMode) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+    }
+})();
 </script>
 
-    <!-- Ionicons -->
-    <script type="module" src="https://unpkg.com/ionicons@5.0.0/dist/ionicons/ionicons.js"></script>
-    <script src="app.js"></script>
 </body>
 </html>

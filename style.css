@@ -29,28 +29,27 @@
     --card-shadow: 0 2px 12px rgba(0,0,0,0.3);
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
-    -webkit-tap-highlight-color: transparent;
-}
-
-html, body {
-    height: 100%;
-    overflow-x: hidden;
+/* ==================== SAFE AREA Y NOTCH ==================== */
+html {
+    padding-top: env(safe-area-inset-top);
+    padding-top: constant(safe-area-inset-top);
 }
 
 body {
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
-    padding-bottom: 100px;
+    min-height: -webkit-fill-available;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: calc(100px + env(safe-area-inset-bottom));
+    overflow-x: hidden;
+    position: relative;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Prevenir scroll bounce en iOS */
 html, body {
+    overscroll-behavior-y: none;
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
@@ -60,14 +59,37 @@ body::-webkit-scrollbar {
     display: none;
 }
 
-/* ==================== TRANSICIONES ==================== */
-.fade-in {
-    animation: fadeIn 0.4s ease;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    transition-property: background-color, color, border-color;
+    transition-duration: 0.3s;
+    transition-timing-function: ease;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+/* Excluir elementos que no deben tener transición */
+.modal, .floating-menu-container, .fab-wallet, .ripple, .pin-pad button {
+    transition: none;
+}
+
+/* ==================== TRANSICIONES SUAVES ==================== */
+.fade-in {
+    animation: fadeInSmooth 0.3s ease-out;
+    will-change: opacity;
+}
+
+@keyframes fadeInSmooth {
+    from { 
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ==================== LOGIN FIJO ==================== */
@@ -85,7 +107,7 @@ body::-webkit-scrollbar {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: calc(20px + env(safe-area-inset-top)) 20px 20px;
     background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
     overflow: hidden;
 }
@@ -164,7 +186,6 @@ body::-webkit-scrollbar {
     font-size: 26px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.15s ease;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -180,9 +201,10 @@ body::-webkit-scrollbar {
     font-size: 22px;
 }
 
-/* ==================== HEADER ==================== */
+/* ==================== HEADER CON SAFE AREA ==================== */
 .header-large-title {
-    padding: 8px 0 16px 0;
+    padding: calc(8px + env(safe-area-inset-top)) 0 20px 0;
+    margin-bottom: 8px; /* Nuevo margen */    
 }
 
 .title {
@@ -262,7 +284,6 @@ body::-webkit-scrollbar {
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
     white-space: nowrap;
     width: auto;
     min-width: 140px;
@@ -314,7 +335,6 @@ body::-webkit-scrollbar {
     font-weight: 600;
     padding: 14px 28px;
     border-radius: 25px;
-    border: 2px solid var(--danger);
     width: auto;
     min-width: 140px;
 }
@@ -332,6 +352,13 @@ body::-webkit-scrollbar {
     width: auto;
     min-width: 200px;
     display: inline-flex;
+}
+
+.btn-light {
+    background: #1C5CCF; 
+    color: white;
+    padding: 12px 20px;
+    font-weight: 600;
 }
 
 .btn-error {
@@ -356,7 +383,6 @@ body::-webkit-scrollbar {
     width: 100% !important;
     max-width: 300px !important;
     box-shadow: 0 4px 15px rgba(255, 59, 48, 0.3) !important;
-    transition: all 0.3s ease !important;
     font-size: 16px !important;
     cursor: pointer !important;
 }
@@ -379,11 +405,11 @@ body::-webkit-scrollbar {
 }
 
 [data-theme="dark"] .balance-actions {
-    border-bottom-color: rgba(255,255,255,0.05);
+    border-bottom-color: rgba(255,255,255,0.08);
 }
 
 .section.mt-4 {
-    margin-top: 32px !important;
+    margin-top: 38px !important;
 }
 
 /* ==================== LAYOUT ==================== */
@@ -436,8 +462,9 @@ body::-webkit-scrollbar {
     padding: 16px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.02);
     border: 0.5px solid rgba(255,255,255,0.5);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 .ios-card:active {
@@ -484,7 +511,6 @@ body::-webkit-scrollbar {
     font-size: 22px;
 }
 
-/* Savings cards específicas */
 .savings-card {
     padding: 14px 16px;
 }
@@ -512,7 +538,6 @@ body::-webkit-scrollbar {
     color: var(--text-secondary);
 }
 
-/* Iconos compactos */
 .icon-box.compact-icon {
     width: 36px;
     height: 36px;
@@ -569,87 +594,105 @@ body::-webkit-scrollbar {
     opacity: 0.9;
 }
 
-/* ==================== GOALS - CARDS OSCURAS Y COMPACTAS ==================== */
+/* ==================== GOALS - CARDS CON COLOR Y TAMAÑO PERSONALIZADO ==================== */
+
+/* Cards con color morado gradiente */
 #goalsList .ios-card {
-    background: var(--bg-card);
-    padding: 16px 20px;
-    border-radius: 16px;
-    margin-bottom: 12px;
-    border: 1px solid rgba(0,0,0,0.05);
+    background: linear-gradient(135deg, #1C5CCF 0%, #0A84FF 75%);
+    padding: 16px 20px; /* Más espacio interno */
+    border-radius: 16px; /* Más redondeado */
+    margin-bottom: 12px; /* Más espacio entre cards */
+    border: none;
+    transform: translateZ(0);
 }
 
 [data-theme="dark"] #goalsList .ios-card {
     background: rgba(44, 44, 46, 0.95);
-    border-color: rgba(255,255,255,0.05);
 }
 
+/* Texto blanco y más grande */
 #goalsList .goal-name {
-    color: var(--text);
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 6px;
+    color: white;
+    font-size: 18px; /* Más grande */
+    font-weight: 700; /* Más negrita */
+    margin-bottom: 8px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 #goalsList .goal-amounts {
-    color: var(--text-secondary);
-    font-size: 14px;
-    margin-bottom: 4px;
+    color: rgba(255,255,255,0.95);
+    font-size: 16px; /* Más grande */
+    margin-bottom: 6px;
+    font-weight: 500;
 }
 
 #goalsList .goal-percent {
-    color: var(--primary);
-    font-size: 13px;
-    font-weight: 600;
+    color: #ffd700; /* Dorado */
+    font-size: 15px; /* Más grande */
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
-/* ==================== CIRCULAR PROGRESS ==================== */
+/* Fecha debajo si existe */
+#goalsList div[style*="font-size:11px"] {
+    color: rgba(255,255,255,0.8) !important;
+    font-size: 13px !important;
+    margin-top: 6px !important;
+}
+
+/* Círculo más grande */
 .goal-circular {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 24px; /* Más espacio */
 }
 
 .circular-progress {
     position: relative;
-    width: 60px;
-    height: 60px;
+    width: 85px; /* Grande */
+    height: 85px;
     flex-shrink: 0;
 }
 
 .circular-progress svg {
-    width: 60px;
-    height: 60px;
+    width: 85px;
+    height: 85px;
     transform: rotate(-90deg);
     display: block;
     overflow: visible;
 }
 
+/* Track del círculo */
 .circular-bg {
     fill: none;
-    stroke: #e5e5ea;
-    stroke-width: 6;
+    stroke: rgba(255,255,255,0.25);
+    stroke-width: 10; /* Muy grueso */
 }
 
 [data-theme="dark"] .circular-bg {
-    stroke: #3a3a3c;
+    stroke: rgba(255,255,255,0.15);
 }
 
+/* Barra de progreso dorada */
 .circular-bar {
     fill: none;
-    stroke: var(--primary);
-    stroke-width: 6;
+    stroke: #00FF59;
+    stroke-width: 10;
     stroke-linecap: round;
     transition: stroke-dashoffset 0.5s ease;
     transform-origin: center;
+    filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.5));
 }
 
+/* Emoji más grande */
 .circular-emoji {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 20px;
+    font-size: 36px; /* Muy grande */
     line-height: 1;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
 
 /* ==================== LISTVIEW ==================== */
@@ -671,7 +714,7 @@ body::-webkit-scrollbar {
     border-radius: 14px;
     text-decoration: none;
     color: var(--text);
-    transition: all 0.2s;
+    transform: translateZ(0);
 }
 
 .item:active {
@@ -708,10 +751,10 @@ body::-webkit-scrollbar {
     font-size: 16px;
 }
 
-/* ==================== FAB - ARRIBA A LA DERECHA ==================== */
+/* ==================== FAB - ARRIBA CON SAFE AREA ==================== */
 .fab-wallet {
     position: fixed;
-    top: 60px;
+    top: calc(60px + env(safe-area-inset-top));
     right: 16px;
     width: 44px;
     height: 44px;
@@ -726,57 +769,47 @@ body::-webkit-scrollbar {
     box-shadow: 0 4px 12px rgba(28, 92, 207, 0.3);
     cursor: pointer;
     z-index: 100;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: transform;
+    transform: translateZ(0);
 }
 
 .fab-wallet:active {
     transform: scale(0.9) rotate(90deg);
-    box-shadow: 0 2px 8px rgba(28, 92, 207, 0.2);
 }
 
 [data-theme="dark"] .fab-wallet {
     box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
 }
 
-/* ==================== NUEVO MENÚ FLOTANTE iOS 26 ==================== */
+/* ==================== MENÚ FLOTANTE CON SAFE AREA ==================== */
 .floating-menu-container {
     position: fixed !important;
-    bottom: 20px !important;
+    bottom: calc(20px + env(safe-area-inset-bottom)) !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
     width: calc(100% - 40px);
     max-width: 400px;
     z-index: 9999 !important;
-    animation: slideUpMenu 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    pointer-events: auto;
-}
-
-@keyframes slideUpMenu {
-    from {
-        transform: translateX(-50%) translateY(100px);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(-50%) translateY(0);
-        opacity: 1;
-    }
+    will-change: transform;
+    backface-visibility: hidden;
 }
 
 .floating-menu {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(25px) saturate(180%);
-    -webkit-backdrop-filter: blur(25px) saturate(180%);
-    border-radius: 32px;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    padding: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    border-radius: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px;
     display: flex;
     justify-content: space-around;
     align-items: center;
     position: relative;
     overflow: hidden;
     box-shadow: 
-        inset 0 1px 0 rgba(255,255,255,0.9),
-        0 4px 20px rgba(0,0,0,0.08);
+        0 4px 20px rgba(0,0,0,0.1),
+        0 1px 3px rgba(0,0,0,0.05);
+    transform: translateZ(0);
 }
 
 .floating-menu::before {
@@ -794,7 +827,7 @@ body::-webkit-scrollbar {
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: 32px;
+    border-radius: 28px;
     box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
     pointer-events: none;
 }
@@ -808,12 +841,12 @@ body::-webkit-scrollbar {
     padding: 10px 8px;
     cursor: pointer;
     border-radius: 24px;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     gap: 6px;
     margin: 0 2px;
     text-decoration: none;
     color: var(--text-secondary);
+    transform: translateZ(0);
 }
 
 .menu-item:hover {
@@ -837,19 +870,19 @@ body::-webkit-scrollbar {
 .menu-item ion-icon {
     font-size: 24px;
     color: var(--text-secondary);
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     display: block;
     margin-bottom: 4px;
+    transition: all 0.3s ease;
 }
 
 .menu-item strong {
     font-size: 11px;
     color: var(--text-secondary);
-    transition: all 0.3s ease;
     font-weight: 500;
     letter-spacing: 0.2px;
     display: block;
     text-align: center;
+    transition: all 0.3s ease;
 }
 
 .active-indicator {
@@ -886,11 +919,11 @@ body::-webkit-scrollbar {
 }
 
 [data-theme="dark"] .floating-menu {
-    background: rgba(30, 30, 30, 0.85);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(30, 30, 30, 0.9);
+    border-color: rgba(255, 255, 255, 0.08);
     box-shadow: 
-        inset 0 1px 0 rgba(255,255,255,0.1),
-        0 4px 20px rgba(0,0,0,0.3);
+        0 4px 20px rgba(0,0,0,0.3),
+        0 1px 3px rgba(0,0,0,0.2);
 }
 
 [data-theme="dark"] .floating-menu::before {
@@ -906,28 +939,19 @@ body::-webkit-scrollbar {
     color: var(--primary);
 }
 
-/* Ocultar menú antiguo */
 .appBottomMenu {
     display: none !important;
 }
 
-/* Ajuste padding body para menú fijo */
-body {
-    padding-bottom: 100px !important;
-}
-
-/* Cuando hay modal abierto, atenuar menú */
 body.modal-open .floating-menu-container {
     pointer-events: none;
     opacity: 0.5;
-    transition: opacity 0.3s;
 }
 
-/* Responsive menú */
 @media (max-width: 380px) {
     .floating-menu-container {
         width: calc(100% - 24px);
-        bottom: 15px !important;
+        bottom: calc(15px + env(safe-area-inset-bottom)) !important;
     }
     
     .menu-item strong {
@@ -939,92 +963,71 @@ body.modal-open .floating-menu-container {
     }
 }
 
-/* Fix iOS Safari */
-@supports (-webkit-touch-callout: none) {
-    .floating-menu-container {
-        bottom: calc(20px + env(safe-area-inset-bottom, 0)) !important;
-    }
-    
-    body {
-        padding-bottom: calc(100px + env(safe-area-inset-bottom, 0)) !important;
-    }
-}
-
-/* ==================== MODALES - POR ENCIMA DE TODO ==================== */
+/* ==================== MODALES SUAVES ==================== */
 .modal {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0,0,0,0.5);
     display: flex;
     align-items: flex-end;
     justify-content: center;
     z-index: 10000 !important;
     opacity: 1;
-    transition: opacity 0.3s;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    will-change: opacity;
 }
 
 .modal.hidden {
-    display: none !important;
+    opacity: 0;
+    pointer-events: none;
+    display: flex !important;
+    z-index: -1 !important;
 }
 
 .modal-dialog {
     width: 100%;
     max-width: 500px;
-    animation: slideUpModal 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform: translateY(0);
     z-index: 10001 !important;
     position: relative;
+    will-change: transform;
 }
 
-@keyframes slideUpModal {
-    from { 
-        transform: translateY(100%) scale(0.95);
-        opacity: 0;
-    }
-    to { 
-        transform: translateY(0) scale(1);
-        opacity: 1;
-    }
+.modal.hidden .modal-dialog {
+    transform: translateY(100%);
 }
 
 .modal-content {
     background: var(--bg);
     border-radius: 24px 24px 0 0;
     overflow: hidden;
-    transition: background-color 0.3s ease;
     box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
     position: relative;
     z-index: 10002 !important;
 }
 
-/* Modal tipo dialog (alertas centradas) */
 .dialogbox {
     align-items: center !important;
     padding: 20px;
+    padding-top: calc(20px + env(safe-area-inset-top));
 }
 
 .dialogbox .modal-dialog {
     max-width: 340px;
     width: 100%;
-    animation: fadeInScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform: scale(1);
     border-radius: 20px;
+}
+
+.modal.hidden .dialogbox .modal-dialog {
+    transform: scale(0.9);
+    opacity: 0;
 }
 
 .dialogbox .modal-content {
     border-radius: 20px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-}
-
-@keyframes fadeInScale {
-    from {
-        transform: scale(0.8);
-        opacity: 0;
-    }
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
 }
 
 .modal-header {
@@ -1074,7 +1077,6 @@ body.modal-open .floating-menu-container {
     border-top-color: #2c2c2e;
 }
 
-/* Form */
 .form-group {
     margin-bottom: 16px;
 }
@@ -1096,7 +1098,6 @@ body.modal-open .floating-menu-container {
     background: var(--bg);
     color: var(--text);
     outline: none;
-    transition: border-color 0.2s, background-color 0.3s;
 }
 
 [data-theme="dark"] .form-control {
@@ -1192,7 +1193,6 @@ body.modal-open .floating-menu-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
     flex-shrink: 0;
 }
 
@@ -1245,7 +1245,6 @@ body.modal-open .floating-menu-container {
     text-align: center;
     cursor: pointer;
     border: 2px solid transparent;
-    transition: all 0.2s;
     font-weight: 500;
     font-size: 15px;
 }
@@ -1274,7 +1273,7 @@ body.modal-open .floating-menu-container {
     display: flex;
     align-items: flex-start;
     gap: 12px;
-    transition: transform 0.2s;
+    transform: translateZ(0);
 }
 
 .transaction-item:active {
@@ -1356,7 +1355,6 @@ body.modal-open .floating-menu-container {
     border: 2px solid transparent;
     font-size: 22px;
     cursor: pointer;
-    transition: all 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1391,7 +1389,6 @@ body.modal-open .floating-menu-container {
     right: 0;
     bottom: 0;
     background-color: #e5e5ea;
-    transition: .3s;
     border-radius: 31px;
 }
 
@@ -1407,9 +1404,9 @@ body.modal-open .floating-menu-container {
     left: 2px;
     bottom: 2px;
     background-color: white;
-    transition: .3s;
     border-radius: 50%;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: transform 0.3s;
 }
 
 input:checked + .toggle-slider {
@@ -1445,7 +1442,6 @@ input:checked + .toggle-slider:before {
     color: var(--text-secondary);
     font-weight: 500;
     border-radius: 8px;
-    transition: all 0.2s;
     font-size: 13px;
 }
 
@@ -1475,7 +1471,6 @@ input:checked + .toggle-slider:before {
     font-size: 16px;
     background: var(--bg);
     outline: none;
-    transition: background-color 0.3s, border-color 0.3s;
 }
 
 [data-theme="dark"] .searchbox input {
@@ -1496,7 +1491,7 @@ input:checked + .toggle-slider:before {
 /* ==================== TOAST ==================== */
 .toast {
     position: fixed;
-    top: 100px;
+    top: calc(100px + env(safe-area-inset-top));
     left: 50%;
     transform: translateX(-50%);
     background: var(--success);
@@ -1506,7 +1501,6 @@ input:checked + .toggle-slider:before {
     font-weight: 600;
     z-index: 3000;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    animation: fadeIn 0.3s;
     font-size: 15px;
 }
 
@@ -1536,17 +1530,6 @@ input:checked + .toggle-slider:before {
     font-size: 18px;
 }
 
-/* Dialog */
-.dialogbox .modal-dialog {
-    max-width: 340px;
-    margin: auto;
-    animation: fadeIn 0.2s;
-}
-
-.dialogbox .modal-content {
-    border-radius: 20px;
-}
-
 .btn-inline {
     display: flex;
     gap: 8px;
@@ -1558,7 +1541,6 @@ input:checked + .toggle-slider:before {
     text-align: center;
 }
 
-/* Form boxed */
 .form-group.boxed {
     background: var(--bg-dark);
     border-radius: 12px;
@@ -1582,6 +1564,7 @@ input:checked + .toggle-slider:before {
     background: var(--bg-dark);
     border-radius: 16px;
     margin-bottom: 20px;
+    margin-top: env(safe-area-inset-top);
 }
 
 .avatar {
@@ -1628,7 +1611,6 @@ input:checked + .toggle-slider:before {
     font-size: 14px;
 }
 
-/* Wide block */
 .wide-block {
     background: var(--bg-card);
     border-radius: 16px;
@@ -1636,7 +1618,6 @@ input:checked + .toggle-slider:before {
     margin: 16px 0;
 }
 
-/* Empty state */
 .empty-state {
     text-align: center;
     padding: 40px 20px;
@@ -1649,14 +1630,13 @@ input:checked + .toggle-slider:before {
     opacity: 0.5;
 }
 
-/* App capsule */
 #appCapsule {
-    padding-top: 16px;
+    padding-top: calc(16px + env(safe-area-inset-top));
     padding-left: 16px;
     padding-right: 16px;
-    padding-bottom: 120px;
+    padding-bottom: calc(120px + env(safe-area-inset-bottom));
 }
 
 .pfix {
-    padding-top: 16px;
+    padding-top: calc(16px + env(safe-area-inset-top));
 }
