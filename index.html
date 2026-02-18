@@ -474,6 +474,47 @@
             menu.style.transform = 'translateX(-50%) translateZ(0)';
         }
     });
+</script>
+
+<script>
+    // Registrar Service Worker
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then((registration) => {
+                    console.log('✅ SW registrado:', registration.scope);
+                    
+                    // Verificar actualizaciones cada vez que carga la página
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                console.log('🔄 Nueva versión disponible');
+                                // Opcional: Mostrar toast para actualizar
+                                if (confirm('Nueva versión disponible. ¿Actualizar ahora?')) {
+                                    newWorker.postMessage('SKIP_WAITING');
+                                    window.location.reload();
+                                }
+                            }
+                        });
+                    });
+                })
+                .catch((error) => {
+                    console.error('❌ Error registrando SW:', error);
+                });
+                
+            // Escuchar cuando el SW tome control
+            let refreshing = false;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (!refreshing) {
+                    refreshing = true;
+                    window.location.reload();
+                }
+            });
+        });
+    } else {
+        console.warn('Service Worker no soportado en este navegador');
+    }
 </script>    
 
 </body>
