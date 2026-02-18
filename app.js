@@ -588,7 +588,6 @@ async function confirmAdd() {
             showToast('Error al guardar');
         }
     }
-    closeModal();
 }
 
 async function confirmWithdraw() {
@@ -620,7 +619,6 @@ async function confirmWithdraw() {
     }
     
     await processWithdrawal(envelope, amount);
-    closeModal();
 }
 
 function showGoalWarning(envelope) {
@@ -724,7 +722,6 @@ async function confirmTransfer() {
         console.error('Error:', error);
         showToast('Error al transferir');
     }
-    closeModal();
 }
 
 // ==================== NOTIFICACIONES ====================
