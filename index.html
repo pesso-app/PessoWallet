@@ -13,6 +13,47 @@
     <link rel="icon" type="image/png" href="assets/img/favicon.png" sizes="32x32">    
     <link rel="apple-touch-icon" href="assets/icon/iconicon-192.png">
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Balance más grande - CORREGIDO */
+        .balance {
+            font-size: 64px !important;
+            font-weight: 800 !important;
+            letter-spacing: -2px !important;
+        }
+        
+        /* Modal styles específicos para index - FONDO SÓLIDO */
+        .modal {
+            background: rgba(0,0,0,0) !important;
+            transition: background 0.3s ease !important;
+        }
+        
+        .modal:not(.hidden) {
+            background: rgba(0,0,0,0.6) !important;
+            backdrop-filter: blur(5px) !important;
+            -webkit-backdrop-filter: blur(5px) !important;
+        }
+        
+        .modal-dialog {
+            background: var(--bg) !important;
+            border-radius: 24px 24px 0 0 !important;
+            transform: translateY(100%) !important;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        
+        .modal:not(.hidden) .modal-dialog {
+            transform: translateY(0) !important;
+        }
+        
+        .modal-content {
+            background: var(--bg) !important;
+            border-radius: 24px 24px 0 0 !important;
+        }
+        
+        [data-theme="dark"] .modal-dialog,
+        [data-theme="dark"] .modal-content {
+            background: var(--bg-dark) !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -75,10 +116,10 @@
                     
                     <!-- Balance Actions -->
                     <div class="balance-actions">
-                        <button type="button" class="btn btn-primary btn-lg rounded" onclick="showAddModal()">
+                        <button type="button" class="btn btn-primary btn-lg rounded" onclick="openModal('addModal')">
                             Add Cash
                         </button>
-                        <button type="button" class="btn btn-primary btn-lg rounded" onclick="showWithdrawModal()">
+                        <button type="button" class="btn btn-primary btn-lg rounded" onclick="openModal('withdrawModal')">
                             Cash Out
                         </button>
                     </div>
@@ -88,7 +129,7 @@
                 <div class="section mt-4">
                     <div class="section-header">
                         <h2 class="section-title">Savings accounts</h2>
-                        <button class="btn-text" onclick="showTransferModal()">Transfer</button>
+                        <button class="btn-text" onclick="openModal('transferModal')">Transfer</button>
                     </div>
                     <div id="savingsList" class="ios-cards-container">
                         <!-- Cards generadas por JS -->
@@ -104,7 +145,7 @@
                         <div class="col-12">
                             <ul class="listview image-listview flush transparent mb-1">
                                 <li>
-                                    <a href="#" class="item" onclick="showTransferModal()">
+                                    <a href="#" class="item" onclick="openModal('transferModal'); return false;">
                                         <div class="icon-box bg-success">
                                             <ion-icon name="swap-vertical-outline"></ion-icon>
                                         </div>
@@ -124,7 +165,7 @@
                                     </a>      
                                 </li>                                                          
                                 <li>
-                                    <a href="#" class="item" onclick="showToast('Coming soon')">
+                                    <a href="#" class="item" onclick="showToast('Coming soon'); return false;">
                                         <div class="icon-box bg-danger">
                                             <ion-icon name="flash-outline"></ion-icon>
                                         </div>
@@ -167,51 +208,19 @@
     </nav>
 </div>
 
-<script>
-(function() {
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    const pageMap = {
-        'index.html': 'home',
-        'goals.html': 'goals',
-        'alerts.html': 'activity',
-        'profile.html': 'me'
-    };
-    const currentKey = pageMap[currentPage] || 'home';
-    
-    document.querySelectorAll('.menu-item').forEach(item => {
-        if (item.getAttribute('data-page') === currentKey) {
-            item.classList.add('active');
-        }
-        item.addEventListener('click', function(e) {
-            const ripple = document.createElement('span');
-            ripple.classList.add('ripple');
-            const rect = this.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            ripple.style.width = ripple.style.height = size + 'px';
-            ripple.style.left = (rect.width/2 - size/2) + 'px';
-            ripple.style.top = (rect.height/2 - size/2) + 'px';
-            this.appendChild(ripple);
-            setTimeout(() => ripple.remove(), 600);
-            if (navigator.vibrate) navigator.vibrate(8);
-        });
-    });
-})();
-</script>
-
     </div>
 
-    <!-- Add Cash Modal - CON SELECTOR SAVINGS/GOALS -->
+    <!-- Add Cash Modal -->
     <div id="addModal" class="modal hidden">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Add Cash</h5>
-                    <button class="close-btn" onclick="closeModal()">
+                    <button class="close-btn" onclick="closeModal('addModal')">
                         <ion-icon name="close-outline"></ion-icon>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!-- Selector Savings vs Goals -->
                     <div class="form-group">
                         <label class="label">Destination</label>
                         <div class="ios-radio-group">
@@ -226,7 +235,6 @@
                         </div>
                     </div>
                     
-                    <!-- Select de Savings -->
                     <div class="form-group boxed" id="savingsSelectGroup">
                         <div class="input-wrapper">
                             <label class="label">Savings Account</label>
@@ -236,7 +244,6 @@
                         </div>
                     </div>
                     
-                    <!-- Select de Goals -->
                     <div class="form-group boxed hidden" id="goalsSelectGroup">
                         <div class="input-wrapper">
                             <label class="label">Goal</label>
@@ -246,7 +253,6 @@
                         </div>
                     </div>
                     
-                    <!-- Monto -->
                     <div class="form-group boxed">
                         <div class="input-wrapper">
                             <label class="label">Amount</label>
@@ -254,7 +260,6 @@
                         </div>
                     </div>
 
-                    <!-- Opción de meta de ahorro (solo para Savings) -->
                     <div class="form-group" id="goalCheckGroup">
                         <label class="ios-checkbox">
                             <input type="checkbox" id="savingGoalCheck" onchange="toggleSavingGoal()">
@@ -272,7 +277,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-text-secondary" onclick="closeModal()">Cancel</button>
+                    <button class="btn btn-text-secondary" onclick="closeModal('addModal')">Cancel</button>
                     <button class="btn btn-text-primary" onclick="confirmAdd()">Add Cash</button>
                 </div>
             </div>
@@ -285,7 +290,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Cash Out</h5>
-                    <button class="close-btn" onclick="closeModal()">
+                    <button class="close-btn" onclick="closeModal('withdrawModal')">
                         <ion-icon name="close-outline"></ion-icon>
                     </button>
                 </div>
@@ -308,7 +313,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-text-secondary" onclick="closeModal()">Cancel</button>
+                    <button class="btn btn-text-secondary" onclick="closeModal('withdrawModal')">Cancel</button>
                     <button class="btn btn-text-primary" onclick="confirmWithdraw()">Cash Out</button>
                 </div>
             </div>
@@ -321,7 +326,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Transfer Money</h5>
-                    <button class="close-btn" onclick="closeModal()">
+                    <button class="close-btn" onclick="closeModal('transferModal')">
                         <ion-icon name="close-outline"></ion-icon>
                     </button>
                 </div>
@@ -350,7 +355,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-text-secondary" onclick="closeModal()">Cancel</button>
+                    <button class="btn btn-text-secondary" onclick="closeModal('transferModal')">Cancel</button>
                     <button class="btn btn-text-primary" onclick="confirmTransfer()">Transfer</button>
                 </div>
             </div>
@@ -371,7 +376,7 @@
                 </div>
                 <div class="modal-footer">
                     <div class="btn-inline">
-                        <button class="btn btn-text-secondary" onclick="closeGoalWarning()">Cancelar</button>
+                        <button class="btn btn-text-secondary" onclick="closeModal('goalWarningModal')">Cancelar</button>
                         <button class="btn btn-text-danger" onclick="confirmWithdrawAnyway()">Retirar de todos modos</button>
                     </div>
                 </div>
@@ -401,7 +406,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-error" onclick="closeErrorModal()">Entendido</button>
+                    <button class="btn btn-error" onclick="closeModal('errorModal')">Entendido</button>
                 </div>
             </div>
         </div>
@@ -414,52 +419,42 @@
     <script type="module" src="https://unpkg.com/ionicons@5.0.0/dist/ionicons/ionicons.js"></script>
     <script src="app.js"></script>    
 
-
-<script>
-// Manejo de modales con clase body
-function openModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.remove('hidden');
-        document.body.classList.add('modal-open');
-    }
-}
-
-function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.add('hidden');
-        document.body.classList.remove('modal-open');
-    }
-}
-
-// Cerrar al hacer click fuera
-document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('modal')) {
-        e.target.classList.add('hidden');
-        document.body.classList.remove('modal-open');
-    }
-});
-
-// Cerrar con botón X o Cancel
-document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const modal = this.closest('.modal');
-        if (modal) {
-            modal.classList.add('hidden');
-            document.body.classList.remove('modal-open');
+    <script>
+        // FUNCIONES DE MODAL CORREGIDAS - Solo para index.html
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('hidden');
+                document.body.classList.add('modal-open');
+                // Forzar reflow para activar la animación
+                void modal.offsetWidth;
+            }
         }
-    });
-});
 
-// Aplicar tema inmediatamente (prevenir flash)
-(function() {
-    const isDarkMode = localStorage.getItem('pesso_dark_mode') === 'true';
-    if (isDarkMode) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-    }
-})();
-</script>
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('hidden');
+                document.body.classList.remove('modal-open');
+            }
+        }
+
+        // Cerrar al hacer click fuera
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                const modalId = e.target.id;
+                closeModal(modalId);
+            }
+        });
+
+        // Aplicar tema inmediatamente (prevenir flash)
+        (function() {
+            const isDarkMode = localStorage.getItem('pesso_dark_mode') === 'true';
+            if (isDarkMode) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
 
 </body>
 </html>

@@ -383,7 +383,10 @@ function showTransferModal() {
 
 function closeModal() {
     document.querySelectorAll('.modal').forEach(m => {
-        if (m.id !== 'errorModal' && m.id !== 'goalWarningModal') m.classList.add('hidden');
+        if (m.id !== 'errorModal' && m.id !== 'goalWarningModal') {
+            m.classList.add('hidden');
+            document.body.classList.remove('modal-open');
+        }
     });
 }
 
@@ -585,6 +588,7 @@ async function confirmAdd() {
             showToast('Error al guardar');
         }
     }
+    closeModal();
 }
 
 async function confirmWithdraw() {
@@ -616,6 +620,7 @@ async function confirmWithdraw() {
     }
     
     await processWithdrawal(envelope, amount);
+    closeModal();
 }
 
 function showGoalWarning(envelope) {
@@ -629,7 +634,10 @@ function showGoalWarning(envelope) {
 
 function closeGoalWarning() {
     const modal = document.getElementById('goalWarningModal');
-    if (modal) modal.classList.add('hidden');
+    if (modal) {
+        modal.classList.add('hidden');
+        document.body.classList.remove('modal-open');
+    }
     pendingWithdrawal = null;
 }
 
@@ -716,6 +724,7 @@ async function confirmTransfer() {
         console.error('Error:', error);
         showToast('Error al transferir');
     }
+    closeModal();
 }
 
 // ==================== NOTIFICACIONES ====================
@@ -764,7 +773,10 @@ function showErrorModal(envelopeName, available, attempted) {
 
 function closeErrorModal() {
     const errorModal = document.getElementById('errorModal');
-    if (errorModal) errorModal.classList.add('hidden');
+    if (errorModal) {
+        errorModal.classList.add('hidden');
+        document.body.classList.remove('modal-open');
+    }
 }
 
 // ==================== UTILIDADES ====================
