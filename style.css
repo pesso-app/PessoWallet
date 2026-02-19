@@ -15,46 +15,114 @@
 }
 
 [data-theme="dark"] {
-    --primary: #1C5CCF;
-    --primary-dark: #154aad;
+    /* Colores principales más suaves para dark mode */
+    --primary: #4A9EFF;           /* Azul más brillante pero no saturado */
+    --primary-dark: #0A84FF;      /* Azul iOS */
     
-    --bg: #030714;
-    --bg-dark: #0a1229;
-    --bg-card: #111b36;
+    /* Fondos - Jerarquía de superficies Material Design 3 */
+    --bg: #121212;                /* Fondo principal (no negro puro) */
+    --bg-dark: #1E1E1E;           /* Superficie elevada 1 */
+    --bg-card: #2C2C2E;           /* Superficie elevada 2 (tarjetas) */
     
-    --text: #E8ECF4;
-    --text-secondary: #8B92A8;
+    /* Texto con opacidades para jerarquía */
+    --text: #E0E0E0;              /* 87% blanco - texto principal */
+    --text-secondary: #A0A0A0;    /* 60% blanco - texto secundario */
     
-    --success: #34c759;
-    --danger: #ff453a;
-    --warning: #ff9500;
-    --info: #5e5ce6;
+    /* Colores de estado desaturados */
+    --success: #66BB6A;           /* Verde más suave */
+    --danger: #CF6679;            /* Rojo Material Design dark */
+    --warning: #FFB74D;           /* Naranja más suave */
+    --info: #64B5F6;              /* Azul claro */
     
-    --card-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    --card-shadow: 0 2px 12px rgba(0,0,0,0.3);
 }
 
-/* ==================== BASE ==================== */
+/* ==================== SAFE AREA Y NOTCH - MINIMO ==================== */
+
+/* iOS standalone - Solo el notch necesario */
+@supports (-webkit-touch-callout: none) {
+    @media (display-mode: standalone) {
+        html, body {
+            padding-top: 0;
+            height: 100vh;
+            height: 100dvh;
+        }
+
+       /* Cubrir área segura inferior con color sólido */
+        body::before {
+            content: '';
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: env(safe-area-inset-bottom, 20px);
+            background: var(--primary-dark);
+            z-index: 999999;
+            pointer-events: none;
+        }       
+        
+        /* En dark mode, cubrir con fondo oscuro */
+        [data-theme="dark"] body::before {
+            background: #030714;
+        }         
+        
+        #appCapsule {
+            padding-top: max(8px, env(safe-area-inset-top)) !important;
+        }
+        
+        .header-large-title {
+            padding-top: max(4px, env(safe-area-inset-top));
+        }
+        
+        .profile-container {
+            padding-top: max(8px, env(safe-area-inset-top));
+        }
+        
+        .fab-wallet {
+            top: max(44px, calc(36px + env(safe-area-inset-top)));
+        }
+        
+        .goals-header-container {
+            top: max(8px, env(safe-area-inset-top));
+        }
+        
+        .fab-goals-fixed {
+            top: max(8px, env(safe-area-inset-top));
+        }
+    }
+}
+
+/* Para web normal */
+@media (display-mode: browser) {
+    #appCapsule {
+        padding-top: 12px !important;
+    }
+    
+    .header-large-title {
+        padding-top: 8px;
+    }
+    
+    .profile-container {
+        padding-top: 12px;
+    }
+    
+    .fab-wallet {
+        top: 48px;
+    }
+}
+
+/* Prevenir scroll bounce en iOS */
 html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    min-height: 100vh;
-    min-height: 100dvh;
-    min-height: -webkit-fill-available;
+    background: var(--bg) !important;
     overscroll-behavior-y: none;
     scrollbar-width: none;
     -ms-overflow-style: none;
     -webkit-overflow-scrolling: touch;
-    background: var(--bg);
 }
 
-html {
-    background: var(--bg);
-}
-
-[data-theme="dark"] html {
-    background: #030714;
+[data-theme="dark"] html, 
+[data-theme="dark"] body {
+    background: #030714 !important;
 }
 
 html::-webkit-scrollbar, 
@@ -68,146 +136,77 @@ body::-webkit-scrollbar {
     box-sizing: border-box;
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
     -webkit-tap-highlight-color: transparent;
-}
-
-/* FIX: Solo transiciones suaves para colores, no para layout */
-* {
-    transition-property: background-color, color, border-color, opacity;
-    transition-duration: 0.2s;
+    transition-property: background-color, color, border-color;
+    transition-duration: 0.3s;
     transition-timing-function: ease;
 }
 
 /* Excluir elementos que no deben tener transición */
-.modal, .floating-menu-container, .fab-wallet, .ripple, .pin-pad button, 
-#loginScreen, .login-container, .menu-item, .floating-menu {
-    transition: none !important;
+.modal, .floating-menu-container, .fab-wallet, .ripple, .pin-pad button {
+    transition: none;
 }
 
-/* ==================== LOGIN - FIX RAYA BLANCA iOS ==================== */
-#loginScreen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    min-height: 100vh;
-    min-height: 100dvh;
-    min-height: -webkit-fill-available;
-    background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
-    z-index: 99999;
-    overflow: hidden;
-    padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom) 0;
+/* ==================== TRANSICIONES SUAVES ENTRE PAGINAS ==================== */
+.fade-in {
+    animation: fadeInSmooth 0.4s ease-out;
+    will-change: opacity;
 }
 
-/* FIX: Cubrir toda el área inferior con color sólido */
-#loginScreen::before {
-    content: '';
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 100vh;
-    background: var(--primary-dark);
-    z-index: -1;
+@keyframes fadeInSmooth {
+    from { 
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
+/* ==================== LOGIN - PANTALLA COMPLETA ==================== */
 .fixed-login {
     position: fixed;
     inset: 0;
-    width: 100%;
-    height: 100%;
     overflow: hidden;
     touch-action: none;
 }
 
+/* Login screen ajustada */
+.fixed-login {
+        padding-top: env(safe-area-inset-top);
+}
+
 .login-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    min-height: 100vh;
-    min-height: 100dvh;
-    min-height: -webkit-fill-available;
+    height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom);
+    padding: calc(20px + env(safe-area-inset-top)) 20px 20px;
     background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
     overflow: hidden;
-    overscroll-behavior: none;
 }
 
-/* FIX ESPECÍFICO PARA iOS STANDALONE */
-@supports (-webkit-touch-callout: none) {
-    #loginScreen {
-        /* Forzar altura completa incluyendo safe area */
-        height: 100vh !important;
-        height: 100dvh !important;
-        height: -webkit-fill-available !important;
-        /* FIX: Prevenir la barra inferior */
-        padding-bottom: 0 !important;
-        margin-bottom: 0 !important;
-    }
-    
-    .login-container {
-        height: 100vh !important;
-        height: 100dvh !important;
-        height: -webkit-fill-available !important;
-        padding-bottom: env(safe-area-inset-bottom) !important;
-        /* FIX: Extender el gradiente hasta el fondo */
-        background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 60%, var(--primary-dark) 100%) !important;
-    }
-    
-    /* FIX: Pseudo-elemento para cubrir el área de la home indicator */
-    .login-container::after {
-        content: '';
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: env(safe-area-inset-bottom);
-        background: var(--primary-dark);
-        z-index: 100000;
-        pointer-events: none;
-    }
+/* Forzar color de fondo en toda la pantalla */
+#loginScreen {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+    z-index: 99999;
 }
 
-/* FIX PARA STANDALONE */
-@media (display-mode: standalone) {
-    #loginScreen {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-    
-    .login-container {
-        position: fixed !important;
-        inset: 0 !important;
-        padding: env(safe-area-inset-top) 20px max(20px, env(safe-area-inset-bottom)) !important;
-    }
-    
-    /* Cubrir área inferior con color sólido */
-    body::after {
-        content: '';
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: env(safe-area-inset-bottom);
-        background: var(--primary-dark);
-        z-index: 999999;
-        pointer-events: none;
-    }
+/* FIX: Pseudo-elemento para cubrir línea inferior en login */
+#loginScreen::after {
+    content: '';
+    position: fixed;
+    bottom: -10px;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: var(--primary-dark);
+    z-index: 999999;
+    pointer-events: none;
 }
 
 .varela-round-regular {
@@ -306,70 +305,6 @@ body::-webkit-scrollbar {
     font-size: 24px;
 }
 
-/* ==================== TRANSICIONES SUAVES ==================== */
-.fade-in {
-    animation: fadeInSmooth 0.3s ease-out;
-    will-change: opacity;
-}
-
-@keyframes fadeInSmooth {
-    from { 
-        opacity: 0;
-    }
-    to { 
-        opacity: 1;
-    }
-}
-
-/* FIX: Sin transform en la animación para evitar movimiento del menú */
-
-/* ==================== SAFE AREA ==================== */
-@supports (-webkit-touch-callout: none) {
-    @media (display-mode: standalone) {
-        #appCapsule {
-            padding-top: max(8px, env(safe-area-inset-top)) !important;
-        }
-        
-        .header-large-title {
-            padding-top: max(4px, env(safe-area-inset-top));
-        }
-        
-        .profile-container {
-            padding-top: max(8px, env(safe-area-inset-top));
-        }
-        
-        .fab-wallet {
-            top: max(44px, calc(36px + env(safe-area-inset-top)));
-        }
-        
-        .goals-header-container {
-            top: max(8px, env(safe-area-inset-top));
-        }
-        
-        .fab-goals-fixed {
-            top: max(8px, env(safe-area-inset-top));
-        }
-    }
-}
-
-@media (display-mode: browser) {
-    #appCapsule {
-        padding-top: 12px !important;
-    }
-    
-    .header-large-title {
-        padding-top: 8px;
-    }
-    
-    .profile-container {
-        padding-top: 12px;
-    }
-    
-    .fab-wallet {
-        top: 48px;
-    }
-}
-
 /* ==================== HEADER ==================== */
 .header-large-title {
     padding: max(8px, env(safe-area-inset-top)) 0 16px 0;
@@ -395,16 +330,7 @@ body::-webkit-scrollbar {
     color: var(--text);
 }
 
-/* FIX: Saludo en home - color correcto en dark */
-#userName {
-    color: var(--text);
-}
-
-[data-theme="dark"] #userName {
-    color: #E8ECF4;
-}
-
-/* ==================== BALANCE ==================== */
+/* ==================== BALANCE GRANDE ==================== */
 .balance {
     background: linear-gradient(135deg, var(--text) 0%, var(--primary) 100%);
     -webkit-background-clip: text;
@@ -415,12 +341,6 @@ body::-webkit-scrollbar {
     font-weight: 800;
     letter-spacing: -2px;
     line-height: 1.1;
-}
-
-[data-theme="dark"] .balance {
-    background: linear-gradient(135deg, #E8ECF4 0%, #4A9EFF 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
 }
 
 .text-balance {
@@ -626,9 +546,8 @@ body::-webkit-scrollbar {
 }
 
 [data-theme="dark"] .ios-card {
-    background: #111b36;
-    border-color: rgba(74, 158, 255, 0.1);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    background: rgba(44, 44, 46, 0.8);
+    border-color: rgba(255,255,255,0.05);
 }
 
 .ios-card-header {
@@ -661,10 +580,6 @@ body::-webkit-scrollbar {
     letter-spacing: -0.5px;
 }
 
-[data-theme="dark"] .ios-card-amount {
-    color: #4A9EFF;
-}
-
 .ios-card-amount.compact-amount {
     font-size: 22px;
 }
@@ -683,7 +598,7 @@ body::-webkit-scrollbar {
 }
 
 [data-theme="dark"] .savings-goal-indicator {
-    border-top-color: rgba(74, 158, 255, 0.2);
+    border-top-color: rgba(255,255,255,0.1);
 }
 
 .savings-goal-indicator ion-icon {
@@ -703,7 +618,8 @@ body::-webkit-scrollbar {
     font-size: 18px;
 }
 
-/* ==================== GOALS ==================== */
+/* ==================== GOALS - ESTILO OSCURO CON BARRA DE PROGRESO ==================== */
+
 #goalsList .ios-card {
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
     padding: 20px;
@@ -716,35 +632,35 @@ body::-webkit-scrollbar {
 }
 
 [data-theme="dark"] #goalsList .ios-card {
-    background: linear-gradient(135deg, #0a1229 0%, #111b36 100%);
-    border: 1px solid rgba(74, 158, 255, 0.1);
+    background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
 }
 
 #goalsList .goal-name {
-    color: #E8ECF4;
+    color: #ffffff;
     font-size: 18px;
     font-weight: 700;
     margin-bottom: 8px;
 }
 
 #goalsList .goal-amounts {
-    color: #8B92A8;
+    color: rgba(255,255,255,0.8);
     font-size: 14px;
     margin-bottom: 12px;
     font-weight: 500;
 }
 
 #goalsList .goal-percent {
-    color: #34c759;
+    color: #4ade80;
     font-size: 14px;
     font-weight: 700;
     margin-bottom: 8px;
 }
 
+/* Barra de progreso horizontal */
 .goal-progress-bar {
     width: 100%;
     height: 8px;
-    background: rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.15);
     border-radius: 4px;
     overflow: hidden;
     margin-top: 8px;
@@ -752,12 +668,13 @@ body::-webkit-scrollbar {
 
 .goal-progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #34c759 0%, #5e5ce6 100%);
+    background: linear-gradient(90deg, #4ade80 0%, #22c55e 100%);
     border-radius: 4px;
     transition: width 0.6s ease;
-    box-shadow: 0 0 8px rgba(52, 199, 89, 0.4);
+    box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
 }
 
+/* Eliminar círculo de progreso */
 .goal-circular {
     display: block;
 }
@@ -766,12 +683,14 @@ body::-webkit-scrollbar {
     display: none;
 }
 
+/* Fecha */
 #goalsList div[style*="font-size:11px"] {
-    color: #8B92A8 !important;
+    color: rgba(255,255,255,0.6) !important;
     font-size: 12px !important;
     margin-top: 8px !important;
 }
 
+/* Total Goals Card */
 .total-goals-card {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -781,8 +700,7 @@ body::-webkit-scrollbar {
 }
 
 [data-theme="dark"] .total-goals-card {
-    background: linear-gradient(135deg, #1C5CCF 0%, #154aad 100%);
-    border: 1px solid rgba(74, 158, 255, 0.2);
+    background: linear-gradient(135deg, #4c51bf 0%, #553c9a 100%);
 }
 
 .total-goals-info {
@@ -855,13 +773,8 @@ body::-webkit-scrollbar {
     background: #e5e5ea;
 }
 
-[data-theme="dark"] .item {
-    background: #0a1229;
-    border: 1px solid rgba(74, 158, 255, 0.1);
-}
-
 [data-theme="dark"] .item:active {
-    background: #111b36;
+    background: #3a3a3c;
 }
 
 .icon-box {
@@ -916,10 +829,10 @@ body::-webkit-scrollbar {
 }
 
 [data-theme="dark"] .fab-wallet {
-    box-shadow: 0 4px 12px rgba(28, 92, 207, 0.4);
+    box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
 }
 
-/* ==================== GOALS HEADER ==================== */
+/* ==================== GOALS HEADER STICKY ==================== */
 .goals-header-container {
     position: sticky;
     top: max(8px, env(safe-area-inset-top));
@@ -930,7 +843,7 @@ body::-webkit-scrollbar {
 }
 
 [data-theme="dark"] .goals-header-container {
-    background: #030714;
+    background: var(--bg);
 }
 
 .fab-goals-fixed {
@@ -958,18 +871,21 @@ body::-webkit-scrollbar {
     transform: scale(0.9) rotate(90deg);
 }
 
-/* ==================== MENÚ FLOTANTE - FIX ESTABLE ==================== */
+/* ==================== MENÚ FLOTANTE - CORREGIDO ==================== */
 .floating-menu-container {
     position: fixed !important;
     bottom: calc(20px + env(safe-area-inset-bottom)) !important;
     left: 50% !important;
-    transform: translateX(-50%) !important;
+    transform: translateX(-50%) translateZ(0) !important;
     width: calc(100% - 40px);
     max-width: 400px;
     z-index: 9999 !important;
-    /* FIX: Sin transiciones que causen movimiento */
-    transition: none !important;
-    animation: none !important;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    will-change: auto;
 }
 
 .floating-menu {
@@ -984,9 +900,9 @@ body::-webkit-scrollbar {
     align-items: center;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.1);
-    /* FIX: Sin transiciones */
-    transition: none !important;
+    box-shadow: 
+        0 4px 20px rgba(0,0,0,0.15),
+        0 1px 3px rgba(0,0,0,0.1);
 }
 
 .floating-menu::before {
@@ -1023,9 +939,7 @@ body::-webkit-scrollbar {
     margin: 0 2px;
     text-decoration: none;
     color: var(--text-secondary);
-    /* FIX: Sin transform que cause movimiento */
-    transform: none !important;
-    transition: background-color 0.15s ease !important;
+    transform: translateZ(0);
 }
 
 .menu-item:hover {
@@ -1038,8 +952,7 @@ body::-webkit-scrollbar {
 
 .menu-item.active ion-icon {
     color: var(--primary);
-    /* FIX: Sin transform en el icono */
-    transform: none !important;
+    transform: translateY(-2px) scale(1.1);
 }
 
 .menu-item.active strong {
@@ -1052,8 +965,7 @@ body::-webkit-scrollbar {
     color: var(--text-secondary);
     display: block;
     margin-bottom: 4px;
-    /* FIX: Sin transiciones de transform */
-    transition: color 0.2s ease !important;
+    transition: all 0.3s ease;
 }
 
 .menu-item strong {
@@ -1063,7 +975,7 @@ body::-webkit-scrollbar {
     letter-spacing: 0.2px;
     display: block;
     text-align: center;
-    transition: color 0.2s ease !important;
+    transition: all 0.3s ease;
 }
 
 .active-indicator {
@@ -1074,14 +986,13 @@ body::-webkit-scrollbar {
     background: var(--primary);
     border-radius: 50%;
     opacity: 0;
-    transition: opacity 0.2s ease !important;
+    transition: all 0.3s ease;
     box-shadow: 0 0 8px rgba(28, 92, 207, 0.4);
 }
 
 .menu-item.active .active-indicator {
     opacity: 1;
-    /* FIX: Sin scale */
-    transform: none !important;
+    transform: scale(1.2);
 }
 
 .ripple {
@@ -1101,27 +1012,24 @@ body::-webkit-scrollbar {
 }
 
 [data-theme="dark"] .floating-menu {
-    background: rgba(17, 27, 54, 0.95);
-    border-color: rgba(74, 158, 255, 0.2);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 1px 3px rgba(0,0,0,0.2);
+    background: rgba(30, 30, 30, 0.95);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 
+        0 4px 20px rgba(0,0,0,0.3),
+        0 1px 3px rgba(0,0,0,0.2);
 }
 
 [data-theme="dark"] .floating-menu::before {
-    background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0.3) 50%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
 }
 
 [data-theme="dark"] .menu-item.active {
-    background: rgba(28, 92, 207, 0.2);
+    background: rgba(10, 132, 255, 0.15);
 }
 
 [data-theme="dark"] .menu-item.active ion-icon,
 [data-theme="dark"] .menu-item.active strong {
-    color: #4A9EFF;
-}
-
-[data-theme="dark"] .active-indicator {
-    background: #4A9EFF;
-    box-shadow: 0 0 8px rgba(74, 158, 255, 0.4);
+    color: var(--primary);
 }
 
 .appBottomMenu {
@@ -1148,7 +1056,7 @@ body.modal-open .floating-menu-container {
     }
 }
 
-/* ==================== MODALES - FIX TITULOS DARK ==================== */
+/* ==================== MODALES CON EFECTO ==================== */
 .modal {
     position: fixed;
     inset: 0;
@@ -1187,12 +1095,21 @@ body.modal-open .floating-menu-container {
 }
 
 [data-theme="dark"] .modal-dialog {
-    background: #0a1229 !important;
-    border-top: 1px solid rgba(74, 158, 255, 0.1);
+    background: var(--bg-dark) !important;
 }
 
 .modal:not(.hidden) .modal-dialog {
     transform: translateY(0);
+    animation: slideUpModal 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUpModal {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
 }
 
 .dialogbox {
@@ -1211,6 +1128,18 @@ body.modal-open .floating-menu-container {
 .modal:not(.hidden) .dialogbox .modal-dialog {
     transform: scale(1);
     opacity: 1;
+    animation: scaleInModal 0.3s ease;
+}
+
+@keyframes scaleInModal {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 .modal-header {
@@ -1222,20 +1151,14 @@ body.modal-open .floating-menu-container {
 }
 
 [data-theme="dark"] .modal-header {
-    border-bottom-color: rgba(74, 158, 255, 0.2);
+    border-bottom-color: #2c2c2e;
 }
 
-/* FIX: Título del modal siempre con color correcto */
 .modal-title {
     font-size: 17px;
     font-weight: 600;
     flex: 1;
     text-align: center;
-    color: var(--text) !important;
-}
-
-[data-theme="dark"] .modal-title {
-    color: #E8ECF4 !important;
 }
 
 .close-btn {
@@ -1263,7 +1186,7 @@ body.modal-open .floating-menu-container {
 }
 
 [data-theme="dark"] .modal-footer {
-    border-top-color: rgba(74, 158, 255, 0.2);
+    border-top-color: #2c2c2e;
 }
 
 .modal-content {
@@ -1273,14 +1196,14 @@ body.modal-open .floating-menu-container {
 }
 
 [data-theme="dark"] .modal-content {
-    background: #0a1229 !important;
+    background: var(--bg-dark) !important;
 }
 
 .dialogbox .modal-content {
     border-radius: 20px;
 }
 
-/* ==================== FORM ELEMENTS - FIX SELECT TRIANGULOS ==================== */
+/* ==================== FORM ELEMENTS ==================== */
 .form-group {
     margin-bottom: 16px;
 }
@@ -1302,58 +1225,31 @@ body.modal-open .floating-menu-container {
     background: var(--bg);
     color: var(--text);
     outline: none;
-    /* FIX: Apariencia nativa para evitar triángulos raros */
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
 }
 
 [data-theme="dark"] .form-control {
-    background: #111b36;
-    border-color: rgba(74, 158, 255, 0.2);
-    color: #E8ECF4;
+    background: var(--bg-card);
+    border-color: #3a3a3c;
 }
 
-[data-theme="dark"] .form-control:focus {
-    border-color: #4A9EFF;
-    box-shadow: 0 0 0 4px rgba(74, 158, 255, 0.1);
+.form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(28, 92, 207, 0.1);
 }
 
+/* Teclado numérico para inputs de monto */
 input[type="number"], 
 input[inputmode="numeric"],
 input[type="tel"] {
     font-variant-numeric: tabular-nums;
 }
 
-/* FIX: Select personalizado con flecha SVG correcta */
 .custom-select {
     appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238e8e93' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 16px center;
     padding-right: 40px;
-    /* FIX: Sin apariencia nativa */
-    background-color: var(--bg);
-}
-
-[data-theme="dark"] .custom-select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238B92A8' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-    background-color: #111b36;
-}
-
-/* FIX: Para selects nativos en iOS */
-select.form-control {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238e8e93' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 16px center;
-    background-size: 12px;
-    padding-right: 40px;
-}
-
-[data-theme="dark"] select.form-control {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238B92A8' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
 }
 
 .max-available {
@@ -1388,10 +1284,6 @@ select.form-control {
     border-radius: 12px;
     padding: 16px;
     margin: 20px 0;
-}
-
-[data-theme="dark"] .error-amounts {
-    background: #111b36;
 }
 
 .error-row {
@@ -1485,12 +1377,6 @@ select.form-control {
     border: 2px solid transparent;
     font-weight: 500;
     font-size: 15px;
-    color: var(--text);
-}
-
-[data-theme="dark"] .ios-radio label {
-    background: #111b36;
-    color: #E8ECF4;
 }
 
 .ios-radio input:checked + label {
@@ -1500,9 +1386,7 @@ select.form-control {
 }
 
 [data-theme="dark"] .ios-radio input:checked + label {
-    background: rgba(28, 92, 207, 0.2);
-    border-color: #4A9EFF;
-    color: #4A9EFF;
+    background: rgba(10, 132, 255, 0.2);
 }
 
 /* ==================== TRANSACTIONS ==================== */
@@ -1510,7 +1394,7 @@ select.form-control {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    min-height: 200px;
+    min-height: 200px; /* Prevenir movimiento del menú cuando está vacío */
 }
 
 .transaction-item {
@@ -1521,11 +1405,6 @@ select.form-control {
     align-items: flex-start;
     gap: 12px;
     transform: translateZ(0);
-}
-
-[data-theme="dark"] .transaction-item {
-    background: #111b36;
-    border: 1px solid rgba(74, 158, 255, 0.1);
 }
 
 .transaction-item:active {
@@ -1612,20 +1491,11 @@ select.form-control {
     justify-content: center;
 }
 
-[data-theme="dark"] .emoji-option {
-    background: #111b36;
-}
-
 .emoji-option:hover,
 .emoji-option.selected {
     border-color: var(--primary);
     background: rgba(28, 92, 207, 0.15);
     transform: scale(1.1);
-}
-
-[data-theme="dark"] .emoji-option.selected {
-    border-color: #4A9EFF;
-    background: rgba(74, 158, 255, 0.15);
 }
 
 /* ==================== TOAST ==================== */
@@ -1688,7 +1558,7 @@ select.form-control {
 }
 
 [data-theme="dark"] .form-group.boxed {
-    background: #111b36;
+    background: var(--bg-card);
 }
 
 .input-wrapper {
@@ -1703,138 +1573,14 @@ select.form-control {
     padding-bottom: calc(120px + env(safe-area-inset-bottom));
     min-height: 100vh;
     min-height: 100dvh;
-    background: var(--bg);
-}
-
-[data-theme="dark"] #appCapsule {
-    background: #030714;
 }
 
 .pfix {
     padding-top: max(12px, env(safe-area-inset-top));
 }
 
-/* ==================== ALERTS ==================== */
+/* ==================== ALERTS - PREVENIR MOVIMIENTO DEL MENÚ ==================== */
 #appCapsule .wide-block {
     min-height: calc(100vh - 300px);
     min-height: calc(100dvh - 300px);
-}
-
-/* ==================== PROFILE - AJUSTES DARK ==================== */
-[data-theme="dark"] .profile-header-glass {
-    background: rgba(17, 27, 54, 0.7);
-    border-color: rgba(74, 158, 255, 0.2);
-}
-
-[data-theme="dark"] .settings-group-glass {
-    background: #111b36;
-    border: 1px solid rgba(74, 158, 255, 0.1);
-}
-
-[data-theme="dark"] .settings-item-glass {
-    border-bottom-color: rgba(74, 158, 255, 0.1);
-}
-
-[data-theme="dark"] .settings-icon-glass {
-    color: #4A9EFF;
-}
-
-[data-theme="dark"] .settings-label-glass {
-    color: #E8ECF4;
-}
-
-[data-theme="dark"] .settings-value-glass {
-    color: #8B92A8;
-}
-
-[data-theme="dark"] .toggle-switch-glass {
-    background: rgba(139, 146, 168, 0.3);
-}
-
-[data-theme="dark"] .toggle-switch-glass.active {
-    background: #34c759;
-}
-
-/* ==================== APPEARANCE MODAL ==================== */
-.appearance-options {
-    padding: 8px 0;
-}
-
-.appearance-option {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 20px;
-    cursor: pointer;
-    border-bottom: 0.5px solid rgba(0,0,0,0.05);
-}
-
-.appearance-option:last-child {
-    border-bottom: none;
-}
-
-.appearance-option:active {
-    background: rgba(0,0,0,0.02);
-}
-
-.appearance-option-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.appearance-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-}
-
-.appearance-label {
-    font-size: 17px;
-    color: var(--text);
-}
-
-.appearance-check {
-    color: var(--primary);
-    font-size: 22px;
-    opacity: 0;
-    transition: opacity 0.2s;
-}
-
-.appearance-option.selected .appearance-check {
-    opacity: 1;
-}
-
-.appearance-option.selected .appearance-label {
-    color: var(--primary);
-    font-weight: 600;
-}
-
-/* FIX: Color específico para opción Dark */
-.appearance-option[data-theme="dark"] .appearance-label {
-    color: #000000;
-}
-
-.appearance-option[data-theme="dark"].selected .appearance-label {
-    color: var(--primary);
-}
-
-[data-theme="dark"] .appearance-option {
-    border-bottom-color: rgba(74, 158, 255, 0.1);
-}
-
-[data-theme="dark"] .appearance-option .appearance-label {
-    color: #E8ECF4;
-}
-
-[data-theme="dark"] .appearance-option.selected .appearance-label {
-    color: #4A9EFF;
-}
-
-[data-theme="dark"] .appearance-option.selected {
-    background: rgba(74, 158, 255, 0.1);
 }
