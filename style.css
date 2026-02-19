@@ -95,6 +95,7 @@
 
 /* Prevenir scroll bounce en iOS */
 html, body {
+    background: var(--bg) !important;
     overscroll-behavior-y: none;
     scrollbar-width: none;
     -ms-overflow-style: none;
