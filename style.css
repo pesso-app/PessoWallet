@@ -15,90 +15,51 @@
 }
 
 [data-theme="dark"] {
-    /* Colores principales más suaves para dark mode */
-    --primary: #4A9EFF;           /* Azul más brillante pero no saturado */
-    --primary-dark: #0A84FF;      /* Azul iOS */
+    /* Azul muy oscuro como fondo principal */
+    --primary: #4A9EFF;
+    --primary-dark: #0A84FF;
     
-    /* Fondos - Jerarquía de superficies Material Design 3 */
-    --bg: #121212;                /* Fondo principal (no negro puro) */
-    --bg-dark: #1E1E1E;           /* Superficie elevada 1 */
-    --bg-card: #2C2C2E;           /* Superficie elevada 2 (tarjetas) */
+    /* Fondo azul oscuro #030714 con jerarquía de superficies */
+    --bg: #030714;                /* Fondo principal - azul muy oscuro */
+    --bg-dark: #0a1229;           /* Superficie elevada 1 */
+    --bg-card: #111b36;           /* Superficie elevada 2 (tarjetas) */
     
-    /* Texto con opacidades para jerarquía */
-    --text: #E0E0E0;              /* 87% blanco - texto principal */
-    --text-secondary: #A0A0A0;    /* 60% blanco - texto secundario */
+    /* Texto con buen contraste sobre fondo oscuro */
+    --text: #E8ECF4;              /* Blanco azulado - texto principal */
+    --text-secondary: #8B92A8;    /* Gris azulado - texto secundario */
     
-    /* Colores de estado desaturados */
-    --success: #66BB6A;           /* Verde más suave */
-    --danger: #CF6679;            /* Rojo Material Design dark */
-    --warning: #FFB74D;           /* Naranja más suave */
-    --info: #64B5F6;              /* Azul claro */
+    /* Colores de estado */
+    --success: #30D158;
+    --danger: #FF453A;
+    --warning: #FF9F0A;
+    --info: #64B5F6;
     
-    --card-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    --card-shadow: 0 4px 20px rgba(0,0,0,0.4);
 }
 
-/* ==================== SAFE AREA Y NOTCH - MINIMO ==================== */
-
-/* iOS standalone - Solo el notch necesario */
-@supports (-webkit-touch-callout: none) {
-    @media (display-mode: standalone) {
-        html, body {
-            padding-top: 0;
-            height: 100vh;
-            height: 100dvh;
-        }
-        
-        #appCapsule {
-            padding-top: max(8px, env(safe-area-inset-top)) !important;
-        }
-        
-        .header-large-title {
-            padding-top: max(4px, env(safe-area-inset-top));
-        }
-        
-        .profile-container {
-            padding-top: max(8px, env(safe-area-inset-top));
-        }
-        
-        .fab-wallet {
-            top: max(44px, calc(36px + env(safe-area-inset-top)));
-        }
-        
-        .goals-header-container {
-            top: max(8px, env(safe-area-inset-top));
-        }
-        
-        .fab-goals-fixed {
-            top: max(8px, env(safe-area-inset-top));
-        }
-    }
-}
-
-/* Para web normal */
-@media (display-mode: browser) {
-    #appCapsule {
-        padding-top: 12px !important;
-    }
-    
-    .header-large-title {
-        padding-top: 8px;
-    }
-    
-    .profile-container {
-        padding-top: 12px;
-    }
-    
-    .fab-wallet {
-        top: 48px;
-    }
-}
-
-/* Prevenir scroll bounce en iOS */
+/* ==================== BASE - FIX PARA LOGIN FULL SCREEN ==================== */
 html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    min-height: -webkit-fill-available;
     overscroll-behavior-y: none;
     scrollbar-width: none;
     -ms-overflow-style: none;
     -webkit-overflow-scrolling: touch;
+    background: var(--bg);
+}
+
+/* FIX: Forzar fondo en html para evitar barra blanca inferior */
+html {
+    background: var(--primary);
+}
+
+[data-theme="dark"] html {
+    background: #030714;
 }
 
 html::-webkit-scrollbar, 
@@ -118,58 +79,116 @@ body::-webkit-scrollbar {
 }
 
 /* Excluir elementos que no deben tener transición */
-.modal, .floating-menu-container, .fab-wallet, .ripple, .pin-pad button {
+.modal, .floating-menu-container, .fab-wallet, .ripple, .pin-pad button, #loginScreen, .login-container {
     transition: none;
 }
 
-/* ==================== TRANSICIONES SUAVES ENTRE PAGINAS ==================== */
-.fade-in {
-    animation: fadeInSmooth 0.4s ease-out;
-    will-change: opacity;
+/* ==================== LOGIN - PANTALLA COMPLETA FIX ==================== */
+#loginScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    height: -webkit-fill-available;
+    min-height: 100vh;
+    min-height: 100dvh;
+    min-height: -webkit-fill-available;
+    background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+    z-index: 99999;
+    overflow: hidden;
+    /* FIX: Cubrir toda el área incluyendo safe areas */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    /* FIX: Prevenir scroll y bounce */
+    overscroll-behavior: none;
+    touch-action: none;
 }
 
-@keyframes fadeInSmooth {
-    from { 
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to { 
-        opacity: 1;
-        transform: translateY(0);
-    }
+/* FIX: Pseudo-elemento para cubrir el área inferior en iOS */
+#loginScreen::after {
+    content: '';
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: env(safe-area-inset-bottom);
+    background: var(--primary-dark);
+    z-index: 100000;
 }
 
-/* ==================== LOGIN - PANTALLA COMPLETA ==================== */
 .fixed-login {
     position: fixed;
     inset: 0;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
     touch-action: none;
 }
 
-/* Login screen ajustada */
-.fixed-login {
-        padding-top: env(safe-area-inset-top);
-}
-
 .login-container {
-    height: 100vh;
-    height: 100dvh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    min-height: -webkit-fill-available;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: calc(20px + env(safe-area-inset-top)) 20px 20px;
+    padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom);
     background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
     overflow: hidden;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: auto;
 }
 
-/* Forzar color de fondo en toda la pantalla */
-#loginScreen {
-    position: fixed;
-    inset: 0;
-    background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
-    z-index: 99999;
+/* FIX: Para iOS standalone (app instalada) */
+@supports (-webkit-touch-callout: none) {
+    #loginScreen,
+    .login-container {
+        /* Forzar altura completa */
+        height: 100vh !important;
+        height: 100dvh !important;
+        height: -webkit-fill-available !important;
+        min-height: 100vh !important;
+        min-height: 100dvh !important;
+        min-height: -webkit-fill-available !important;
+    }
+    
+    /* FIX: Cubrir el área segura inferior con color del gradiente */
+    #loginScreen {
+        background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 70%, var(--primary-dark) 100%);
+    }
+}
+
+/* FIX: Para modo standalone específicamente */
+@media (display-mode: standalone) {
+    #loginScreen,
+    .login-container {
+        height: 100vh !important;
+        height: 100dvh !important;
+        height: -webkit-fill-available !important;
+    }
+    
+    /* FIX: Pseudo-elemento adicional para cubrir bottom bar */
+    #loginScreen::before {
+        content: '';
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 50px;
+        background: var(--primary-dark);
+        z-index: 99998;
+    }
 }
 
 .varela-round-regular {
@@ -195,7 +214,7 @@ body::-webkit-scrollbar {
 
 .login-title {
     color: white;
-    font-size: 42px;
+    font-size: 56px;
     font-weight: 700;
     margin-bottom: 8px;
 }
@@ -268,6 +287,70 @@ body::-webkit-scrollbar {
     font-size: 24px;
 }
 
+/* ==================== TRANSICIONES SUAVES ==================== */
+.fade-in {
+    animation: fadeInSmooth 0.4s ease-out;
+    will-change: opacity;
+}
+
+@keyframes fadeInSmooth {
+    from { 
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==================== SAFE AREA Y NOTCH ==================== */
+@supports (-webkit-touch-callout: none) {
+    @media (display-mode: standalone) {
+        #appCapsule {
+            padding-top: max(8px, env(safe-area-inset-top)) !important;
+        }
+        
+        .header-large-title {
+            padding-top: max(4px, env(safe-area-inset-top));
+        }
+        
+        .profile-container {
+            padding-top: max(8px, env(safe-area-inset-top));
+        }
+        
+        .fab-wallet {
+            top: max(44px, calc(36px + env(safe-area-inset-top)));
+        }
+        
+        .goals-header-container {
+            top: max(8px, env(safe-area-inset-top));
+        }
+        
+        .fab-goals-fixed {
+            top: max(8px, env(safe-area-inset-top));
+        }
+    }
+}
+
+@media (display-mode: browser) {
+    #appCapsule {
+        padding-top: 12px !important;
+    }
+    
+    .header-large-title {
+        padding-top: 8px;
+    }
+    
+    .profile-container {
+        padding-top: 12px;
+    }
+    
+    .fab-wallet {
+        top: 48px;
+    }
+}
+
 /* ==================== HEADER ==================== */
 .header-large-title {
     padding: max(8px, env(safe-area-inset-top)) 0 16px 0;
@@ -293,7 +376,7 @@ body::-webkit-scrollbar {
     color: var(--text);
 }
 
-/* ==================== BALANCE GRANDE ==================== */
+/* ==================== BALANCE ==================== */
 .balance {
     background: linear-gradient(135deg, var(--text) 0%, var(--primary) 100%);
     -webkit-background-clip: text;
@@ -304,6 +387,12 @@ body::-webkit-scrollbar {
     font-weight: 800;
     letter-spacing: -2px;
     line-height: 1.1;
+}
+
+[data-theme="dark"] .balance {
+    background: linear-gradient(135deg, #E8ECF4 0%, #4A9EFF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .text-balance {
@@ -509,8 +598,9 @@ body::-webkit-scrollbar {
 }
 
 [data-theme="dark"] .ios-card {
-    background: rgba(44, 44, 46, 0.8);
-    border-color: rgba(255,255,255,0.05);
+    background: #111b36;
+    border-color: rgba(74, 158, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
 }
 
 .ios-card-header {
@@ -543,6 +633,10 @@ body::-webkit-scrollbar {
     letter-spacing: -0.5px;
 }
 
+[data-theme="dark"] .ios-card-amount {
+    color: #4A9EFF;
+}
+
 .ios-card-amount.compact-amount {
     font-size: 22px;
 }
@@ -561,7 +655,7 @@ body::-webkit-scrollbar {
 }
 
 [data-theme="dark"] .savings-goal-indicator {
-    border-top-color: rgba(255,255,255,0.1);
+    border-top-color: rgba(74, 158, 255, 0.2);
 }
 
 .savings-goal-indicator ion-icon {
@@ -581,8 +675,7 @@ body::-webkit-scrollbar {
     font-size: 18px;
 }
 
-/* ==================== GOALS - ESTILO OSCURO CON BARRA DE PROGRESO ==================== */
-
+/* ==================== GOALS ==================== */
 #goalsList .ios-card {
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
     padding: 20px;
@@ -595,35 +688,35 @@ body::-webkit-scrollbar {
 }
 
 [data-theme="dark"] #goalsList .ios-card {
-    background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+    background: linear-gradient(135deg, #0a1229 0%, #111b36 100%);
+    border: 1px solid rgba(74, 158, 255, 0.1);
 }
 
 #goalsList .goal-name {
-    color: #ffffff;
+    color: #E8ECF4;
     font-size: 18px;
     font-weight: 700;
     margin-bottom: 8px;
 }
 
 #goalsList .goal-amounts {
-    color: rgba(255,255,255,0.8);
+    color: #8B92A8;
     font-size: 14px;
     margin-bottom: 12px;
     font-weight: 500;
 }
 
 #goalsList .goal-percent {
-    color: #4ade80;
+    color: #30D158;
     font-size: 14px;
     font-weight: 700;
     margin-bottom: 8px;
 }
 
-/* Barra de progreso horizontal */
 .goal-progress-bar {
     width: 100%;
     height: 8px;
-    background: rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.1);
     border-radius: 4px;
     overflow: hidden;
     margin-top: 8px;
@@ -631,13 +724,12 @@ body::-webkit-scrollbar {
 
 .goal-progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #4ade80 0%, #22c55e 100%);
+    background: linear-gradient(90deg, #30D158 0%, #64B5F6 100%);
     border-radius: 4px;
     transition: width 0.6s ease;
-    box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
+    box-shadow: 0 0 8px rgba(48, 209, 88, 0.4);
 }
 
-/* Eliminar círculo de progreso */
 .goal-circular {
     display: block;
 }
@@ -646,14 +738,12 @@ body::-webkit-scrollbar {
     display: none;
 }
 
-/* Fecha */
 #goalsList div[style*="font-size:11px"] {
-    color: rgba(255,255,255,0.6) !important;
+    color: #8B92A8 !important;
     font-size: 12px !important;
     margin-top: 8px !important;
 }
 
-/* Total Goals Card */
 .total-goals-card {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -663,7 +753,8 @@ body::-webkit-scrollbar {
 }
 
 [data-theme="dark"] .total-goals-card {
-    background: linear-gradient(135deg, #4c51bf 0%, #553c9a 100%);
+    background: linear-gradient(135deg, #1C5CCF 0%, #4A9EFF 100%);
+    border: 1px solid rgba(74, 158, 255, 0.2);
 }
 
 .total-goals-info {
@@ -736,8 +827,13 @@ body::-webkit-scrollbar {
     background: #e5e5ea;
 }
 
+[data-theme="dark"] .item {
+    background: #0a1229;
+    border: 1px solid rgba(74, 158, 255, 0.1);
+}
+
 [data-theme="dark"] .item:active {
-    background: #3a3a3c;
+    background: #111b36;
 }
 
 .icon-box {
@@ -792,10 +888,11 @@ body::-webkit-scrollbar {
 }
 
 [data-theme="dark"] .fab-wallet {
-    box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
+    background: #4A9EFF;
+    box-shadow: 0 4px 12px rgba(74, 158, 255, 0.3);
 }
 
-/* ==================== GOALS HEADER STICKY ==================== */
+/* ==================== GOALS HEADER ==================== */
 .goals-header-container {
     position: sticky;
     top: max(8px, env(safe-area-inset-top));
@@ -806,7 +903,7 @@ body::-webkit-scrollbar {
 }
 
 [data-theme="dark"] .goals-header-container {
-    background: var(--bg);
+    background: #030714;
 }
 
 .fab-goals-fixed {
@@ -834,7 +931,7 @@ body::-webkit-scrollbar {
     transform: scale(0.9) rotate(90deg);
 }
 
-/* ==================== MENÚ FLOTANTE - CORREGIDO ==================== */
+/* ==================== MENÚ FLOTANTE ==================== */
 .floating-menu-container {
     position: fixed !important;
     bottom: calc(20px + env(safe-area-inset-bottom)) !important;
@@ -848,7 +945,6 @@ body::-webkit-scrollbar {
     opacity: 1 !important;
     visibility: visible !important;
     pointer-events: auto !important;
-    will-change: auto;
 }
 
 .floating-menu {
@@ -863,9 +959,7 @@ body::-webkit-scrollbar {
     align-items: center;
     position: relative;
     overflow: hidden;
-    box-shadow: 
-        0 4px 20px rgba(0,0,0,0.15),
-        0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .floating-menu::before {
@@ -975,24 +1069,27 @@ body::-webkit-scrollbar {
 }
 
 [data-theme="dark"] .floating-menu {
-    background: rgba(30, 30, 30, 0.95);
-    border-color: rgba(255, 255, 255, 0.08);
-    box-shadow: 
-        0 4px 20px rgba(0,0,0,0.3),
-        0 1px 3px rgba(0,0,0,0.2);
+    background: rgba(17, 27, 54, 0.95);
+    border-color: rgba(74, 158, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 1px 3px rgba(0,0,0,0.2);
 }
 
 [data-theme="dark"] .floating-menu::before {
-    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0.3) 50%, transparent 100%);
 }
 
 [data-theme="dark"] .menu-item.active {
-    background: rgba(10, 132, 255, 0.15);
+    background: rgba(74, 158, 255, 0.15);
 }
 
 [data-theme="dark"] .menu-item.active ion-icon,
 [data-theme="dark"] .menu-item.active strong {
-    color: var(--primary);
+    color: #4A9EFF;
+}
+
+[data-theme="dark"] .active-indicator {
+    background: #4A9EFF;
+    box-shadow: 0 0 8px rgba(74, 158, 255, 0.4);
 }
 
 .appBottomMenu {
@@ -1019,7 +1116,7 @@ body.modal-open .floating-menu-container {
     }
 }
 
-/* ==================== MODALES CON EFECTO ==================== */
+/* ==================== MODALES ==================== */
 .modal {
     position: fixed;
     inset: 0;
@@ -1058,7 +1155,8 @@ body.modal-open .floating-menu-container {
 }
 
 [data-theme="dark"] .modal-dialog {
-    background: var(--bg-dark) !important;
+    background: #0a1229 !important;
+    border-top: 1px solid rgba(74, 158, 255, 0.1);
 }
 
 .modal:not(.hidden) .modal-dialog {
@@ -1067,12 +1165,8 @@ body.modal-open .floating-menu-container {
 }
 
 @keyframes slideUpModal {
-    from {
-        transform: translateY(100%);
-    }
-    to {
-        transform: translateY(0);
-    }
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
 }
 
 .dialogbox {
@@ -1095,14 +1189,8 @@ body.modal-open .floating-menu-container {
 }
 
 @keyframes scaleInModal {
-    from {
-        transform: scale(0.9);
-        opacity: 0;
-    }
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }
 
 .modal-header {
@@ -1114,7 +1202,7 @@ body.modal-open .floating-menu-container {
 }
 
 [data-theme="dark"] .modal-header {
-    border-bottom-color: #2c2c2e;
+    border-bottom-color: rgba(74, 158, 255, 0.2);
 }
 
 .modal-title {
@@ -1122,6 +1210,7 @@ body.modal-open .floating-menu-container {
     font-weight: 600;
     flex: 1;
     text-align: center;
+    color: var(--text);
 }
 
 .close-btn {
@@ -1149,7 +1238,7 @@ body.modal-open .floating-menu-container {
 }
 
 [data-theme="dark"] .modal-footer {
-    border-top-color: #2c2c2e;
+    border-top-color: rgba(74, 158, 255, 0.2);
 }
 
 .modal-content {
@@ -1159,7 +1248,7 @@ body.modal-open .floating-menu-container {
 }
 
 [data-theme="dark"] .modal-content {
-    background: var(--bg-dark) !important;
+    background: #0a1229 !important;
 }
 
 .dialogbox .modal-content {
@@ -1191,16 +1280,16 @@ body.modal-open .floating-menu-container {
 }
 
 [data-theme="dark"] .form-control {
-    background: var(--bg-card);
-    border-color: #3a3a3c;
+    background: #111b36;
+    border-color: rgba(74, 158, 255, 0.2);
+    color: #E8ECF4;
 }
 
-.form-control:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(28, 92, 207, 0.1);
+[data-theme="dark"] .form-control:focus {
+    border-color: #4A9EFF;
+    box-shadow: 0 0 0 4px rgba(74, 158, 255, 0.1);
 }
 
-/* Teclado numérico para inputs de monto */
 input[type="number"], 
 input[inputmode="numeric"],
 input[type="tel"] {
@@ -1213,6 +1302,10 @@ input[type="tel"] {
     background-repeat: no-repeat;
     background-position: right 16px center;
     padding-right: 40px;
+}
+
+[data-theme="dark"] .custom-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238B92A8' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
 }
 
 .max-available {
@@ -1247,6 +1340,10 @@ input[type="tel"] {
     border-radius: 12px;
     padding: 16px;
     margin: 20px 0;
+}
+
+[data-theme="dark"] .error-amounts {
+    background: #111b36;
 }
 
 .error-row {
@@ -1340,6 +1437,11 @@ input[type="tel"] {
     border: 2px solid transparent;
     font-weight: 500;
     font-size: 15px;
+    color: var(--text);
+}
+
+[data-theme="dark"] .ios-radio label {
+    background: #111b36;
 }
 
 .ios-radio input:checked + label {
@@ -1349,7 +1451,9 @@ input[type="tel"] {
 }
 
 [data-theme="dark"] .ios-radio input:checked + label {
-    background: rgba(10, 132, 255, 0.2);
+    background: rgba(74, 158, 255, 0.15);
+    border-color: #4A9EFF;
+    color: #4A9EFF;
 }
 
 /* ==================== TRANSACTIONS ==================== */
@@ -1357,7 +1461,7 @@ input[type="tel"] {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    min-height: 200px; /* Prevenir movimiento del menú cuando está vacío */
+    min-height: 200px;
 }
 
 .transaction-item {
@@ -1368,6 +1472,11 @@ input[type="tel"] {
     align-items: flex-start;
     gap: 12px;
     transform: translateZ(0);
+}
+
+[data-theme="dark"] .transaction-item {
+    background: #111b36;
+    border: 1px solid rgba(74, 158, 255, 0.1);
 }
 
 .transaction-item:active {
@@ -1454,11 +1563,20 @@ input[type="tel"] {
     justify-content: center;
 }
 
+[data-theme="dark"] .emoji-option {
+    background: #111b36;
+}
+
 .emoji-option:hover,
 .emoji-option.selected {
     border-color: var(--primary);
     background: rgba(28, 92, 207, 0.15);
     transform: scale(1.1);
+}
+
+[data-theme="dark"] .emoji-option.selected {
+    border-color: #4A9EFF;
+    background: rgba(74, 158, 255, 0.15);
 }
 
 /* ==================== TOAST ==================== */
@@ -1521,7 +1639,7 @@ input[type="tel"] {
 }
 
 [data-theme="dark"] .form-group.boxed {
-    background: var(--bg-card);
+    background: #111b36;
 }
 
 .input-wrapper {
@@ -1536,14 +1654,140 @@ input[type="tel"] {
     padding-bottom: calc(120px + env(safe-area-inset-bottom));
     min-height: 100vh;
     min-height: 100dvh;
+    background: var(--bg);
+}
+
+[data-theme="dark"] #appCapsule {
+    background: #030714;
 }
 
 .pfix {
     padding-top: max(12px, env(safe-area-inset-top));
 }
 
-/* ==================== ALERTS - PREVENIR MOVIMIENTO DEL MENÚ ==================== */
+/* ==================== ALERTS ==================== */
 #appCapsule .wide-block {
     min-height: calc(100vh - 300px);
     min-height: calc(100dvh - 300px);
+}
+
+/* ==================== PROFILE - AJUSTES DARK ==================== */
+[data-theme="dark"] .profile-header-glass {
+    background: rgba(17, 27, 54, 0.7);
+    border-color: rgba(74, 158, 255, 0.2);
+}
+
+[data-theme="dark"] .settings-group-glass {
+    background: #111b36;
+    border: 1px solid rgba(74, 158, 255, 0.1);
+}
+
+[data-theme="dark"] .settings-item-glass {
+    border-bottom-color: rgba(74, 158, 255, 0.1);
+}
+
+[data-theme="dark"] .settings-icon-glass {
+    color: #4A9EFF;
+}
+
+[data-theme="dark"] .settings-label-glass {
+    color: #E8ECF4;
+}
+
+[data-theme="dark"] .settings-value-glass {
+    color: #8B92A8;
+}
+
+[data-theme="dark"] .toggle-switch-glass {
+    background: rgba(139, 146, 168, 0.3);
+}
+
+[data-theme="dark"] .toggle-switch-glass.active {
+    background: #30D158;
+}
+
+/* ==================== APPEARANCE MODAL FIX ==================== */
+.appearance-options {
+    padding: 8px 0;
+}
+
+.appearance-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    cursor: pointer;
+    border-bottom: 0.5px solid rgba(0,0,0,0.05);
+}
+
+.appearance-option:last-child {
+    border-bottom: none;
+}
+
+.appearance-option:active {
+    background: rgba(0,0,0,0.02);
+}
+
+.appearance-option-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.appearance-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.appearance-label {
+    font-size: 17px;
+    color: var(--text);
+}
+
+.appearance-check {
+    color: var(--primary);
+    font-size: 22px;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.2s;
+}
+
+.appearance-option.selected .appearance-check {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.appearance-option.selected .appearance-label {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* FIX: Color específico para opción Dark */
+.appearance-option[data-theme="dark"] .appearance-label {
+    color: #000000;
+}
+
+.appearance-option[data-theme="dark"].selected .appearance-label {
+    color: #4A9EFF;
+}
+
+[data-theme="dark"] .appearance-option {
+    border-bottom-color: rgba(74, 158, 255, 0.1);
+}
+
+[data-theme="dark"] .appearance-option[data-theme="dark"] .appearance-label {
+    color: #E8ECF4;
+}
+
+[data-theme="dark"] .appearance-option[data-theme="dark"].selected .appearance-label {
+    color: #4A9EFF;
+}
+
+[data-theme="dark"] .appearance-option.selected {
+    background: rgba(74, 158, 255, 0.1);
 }
