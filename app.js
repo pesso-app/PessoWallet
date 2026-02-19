@@ -66,7 +66,7 @@ function updateUserName() {
     const savedName = localStorage.getItem('pesso_user') || 'Sixto';
     const userNameEl = document.getElementById('userName');
     if (userNameEl) {
-        userNameEl.textContent = `Welcome back, ${savedName}`;
+        userNameEl.textContent = `Hi 👋🏼, ${savedName}`;
     }
 }
 
@@ -141,12 +141,12 @@ async function loadData() {
         const savedEnvelopes = await getAllFromStore('envelopes');
         if (savedEnvelopes.length === 0) {
             envelopes = [
-                { id: '1', name: 'Travels', icon: 'airplane', amount: 20, goal: null },
-                { id: '2', name: 'Car', icon: 'car', amount: 20, goal: null },
-                { id: '3', name: 'Vacation', icon: 'sunny', amount: 20, goal: null },
-                { id: '4', name: 'House', icon: 'home', amount: 20, goal: null },
-                { id: '5', name: 'Investments', icon: 'trending-up', amount: 20, goal: null },
-                { id: '6', name: 'Emergencies', icon: 'medical', amount: 20, goal: null }
+                { id: '1', name: 'Travels', icon: 'airplane', amount: 0, goal: null },
+                { id: '2', name: 'Car', icon: 'car', amount: 0, goal: null },
+                { id: '3', name: 'Vacation', icon: 'sunny', amount: 0, goal: null },
+                { id: '4', name: 'House', icon: 'home', amount: 0, goal: null },
+                { id: '5', name: 'Investments', icon: 'trending-up', amount: 0, goal: null },
+                { id: '6', name: 'Emergencies', icon: 'medical', amount: 0, goal: null }
             ];
             for (let e of envelopes) await saveToStore('envelopes', e);
         } else {
@@ -156,9 +156,7 @@ async function loadData() {
         const savedGoals = await getAllFromStore('goals');
         if (savedGoals.length === 0) {
             goals = [
-                { id: '1', name: 'New Car', target: 15000, saved: 3500, emoji: '🚗', date: null },
-                { id: '2', name: 'Viaje Europa', target: 5000, saved: 1200, emoji: '✈️', date: null },
-                { id: '3', name: 'Fondo Emergencia', target: 10000, saved: 1500, emoji: '🛡️', date: null }
+                { id: '1', name: 'New Car', target: 3000, saved: 0, emoji: '🚗', date: null },
             ];
             for (let g of goals) await saveToStore('goals', g);
         } else {
@@ -187,7 +185,7 @@ function setupLogin() {
     
     const userNameEl = document.getElementById('userName');
     if (userNameEl) {
-        userNameEl.textContent = `Welcome back, ${userName}`;
+        userNameEl.textContent = `Hi 👋🏼 ${userName}`;
     }
 }
 
