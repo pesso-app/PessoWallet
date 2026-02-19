@@ -15,29 +15,25 @@
 }
 
 [data-theme="dark"] {
-    /* Azul muy oscuro como fondo principal */
-    --primary: #4A9EFF;
-    --primary-dark: #0A84FF;
+    --primary: #1C5CCF;
+    --primary-dark: #154aad;
     
-    /* Fondo azul oscuro #030714 con jerarquía de superficies */
-    --bg: #030714;                /* Fondo principal - azul muy oscuro */
-    --bg-dark: #0a1229;           /* Superficie elevada 1 */
-    --bg-card: #111b36;           /* Superficie elevada 2 (tarjetas) */
+    --bg: #030714;
+    --bg-dark: #0a1229;
+    --bg-card: #111b36;
     
-    /* Texto con buen contraste sobre fondo oscuro */
-    --text: #E8ECF4;              /* Blanco azulado - texto principal */
-    --text-secondary: #8B92A8;    /* Gris azulado - texto secundario */
+    --text: #E8ECF4;
+    --text-secondary: #8B92A8;
     
-    /* Colores de estado */
-    --success: #30D158;
-    --danger: #FF453A;
-    --warning: #FF9F0A;
-    --info: #64B5F6;
+    --success: #34c759;
+    --danger: #ff453a;
+    --warning: #ff9500;
+    --info: #5e5ce6;
     
     --card-shadow: 0 4px 20px rgba(0,0,0,0.4);
 }
 
-/* ==================== BASE - FIX PARA LOGIN FULL SCREEN ==================== */
+/* ==================== BASE ==================== */
 html, body {
     margin: 0;
     padding: 0;
@@ -53,9 +49,8 @@ html, body {
     background: var(--bg);
 }
 
-/* FIX: Forzar fondo en html para evitar barra blanca inferior */
 html {
-    background: var(--primary);
+    background: var(--bg);
 }
 
 [data-theme="dark"] html {
@@ -73,50 +68,49 @@ body::-webkit-scrollbar {
     box-sizing: border-box;
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
     -webkit-tap-highlight-color: transparent;
-    transition-property: background-color, color, border-color;
-    transition-duration: 0.3s;
+}
+
+/* FIX: Solo transiciones suaves para colores, no para layout */
+* {
+    transition-property: background-color, color, border-color, opacity;
+    transition-duration: 0.2s;
     transition-timing-function: ease;
 }
 
 /* Excluir elementos que no deben tener transición */
-.modal, .floating-menu-container, .fab-wallet, .ripple, .pin-pad button, #loginScreen, .login-container {
-    transition: none;
+.modal, .floating-menu-container, .fab-wallet, .ripple, .pin-pad button, 
+#loginScreen, .login-container, .menu-item, .floating-menu {
+    transition: none !important;
 }
 
-/* ==================== LOGIN - PANTALLA COMPLETA FIX ==================== */
+/* ==================== LOGIN - FIX RAYA BLANCA iOS ==================== */
 #loginScreen {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    width: 100vw;
-    height: 100vh;
-    height: 100dvh;
-    height: -webkit-fill-available;
+    width: 100%;
+    height: 100%;
     min-height: 100vh;
     min-height: 100dvh;
     min-height: -webkit-fill-available;
     background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
     z-index: 99999;
     overflow: hidden;
-    /* FIX: Cubrir toda el área incluyendo safe areas */
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-    /* FIX: Prevenir scroll y bounce */
-    overscroll-behavior: none;
-    touch-action: none;
+    padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom) 0;
 }
 
-/* FIX: Pseudo-elemento para cubrir el área inferior en iOS */
-#loginScreen::after {
+/* FIX: Cubrir toda el área inferior con color sólido */
+#loginScreen::before {
     content: '';
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    height: env(safe-area-inset-bottom);
+    height: 100vh;
     background: var(--primary-dark);
-    z-index: 100000;
+    z-index: -1;
 }
 
 .fixed-login {
@@ -147,47 +141,72 @@ body::-webkit-scrollbar {
     background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
     overflow: hidden;
     overscroll-behavior: none;
-    -webkit-overflow-scrolling: auto;
 }
 
-/* FIX: Para iOS standalone (app instalada) */
+/* FIX ESPECÍFICO PARA iOS STANDALONE */
 @supports (-webkit-touch-callout: none) {
-    #loginScreen,
-    .login-container {
-        /* Forzar altura completa */
-        height: 100vh !important;
-        height: 100dvh !important;
-        height: -webkit-fill-available !important;
-        min-height: 100vh !important;
-        min-height: 100dvh !important;
-        min-height: -webkit-fill-available !important;
-    }
-    
-    /* FIX: Cubrir el área segura inferior con color del gradiente */
     #loginScreen {
-        background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 70%, var(--primary-dark) 100%);
+        /* Forzar altura completa incluyendo safe area */
+        height: 100vh !important;
+        height: 100dvh !important;
+        height: -webkit-fill-available !important;
+        /* FIX: Prevenir la barra inferior */
+        padding-bottom: 0 !important;
+        margin-bottom: 0 !important;
     }
-}
-
-/* FIX: Para modo standalone específicamente */
-@media (display-mode: standalone) {
-    #loginScreen,
+    
     .login-container {
         height: 100vh !important;
         height: 100dvh !important;
         height: -webkit-fill-available !important;
+        padding-bottom: env(safe-area-inset-bottom) !important;
+        /* FIX: Extender el gradiente hasta el fondo */
+        background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 60%, var(--primary-dark) 100%) !important;
     }
     
-    /* FIX: Pseudo-elemento adicional para cubrir bottom bar */
-    #loginScreen::before {
+    /* FIX: Pseudo-elemento para cubrir el área de la home indicator */
+    .login-container::after {
         content: '';
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
-        height: 50px;
+        height: env(safe-area-inset-bottom);
         background: var(--primary-dark);
-        z-index: 99998;
+        z-index: 100000;
+        pointer-events: none;
+    }
+}
+
+/* FIX PARA STANDALONE */
+@media (display-mode: standalone) {
+    #loginScreen {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    .login-container {
+        position: fixed !important;
+        inset: 0 !important;
+        padding: env(safe-area-inset-top) 20px max(20px, env(safe-area-inset-bottom)) !important;
+    }
+    
+    /* Cubrir área inferior con color sólido */
+    body::after {
+        content: '';
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: env(safe-area-inset-bottom);
+        background: var(--primary-dark);
+        z-index: 999999;
+        pointer-events: none;
     }
 }
 
@@ -289,22 +308,22 @@ body::-webkit-scrollbar {
 
 /* ==================== TRANSICIONES SUAVES ==================== */
 .fade-in {
-    animation: fadeInSmooth 0.4s ease-out;
+    animation: fadeInSmooth 0.3s ease-out;
     will-change: opacity;
 }
 
 @keyframes fadeInSmooth {
     from { 
         opacity: 0;
-        transform: translateY(10px);
     }
     to { 
         opacity: 1;
-        transform: translateY(0);
     }
 }
 
-/* ==================== SAFE AREA Y NOTCH ==================== */
+/* FIX: Sin transform en la animación para evitar movimiento del menú */
+
+/* ==================== SAFE AREA ==================== */
 @supports (-webkit-touch-callout: none) {
     @media (display-mode: standalone) {
         #appCapsule {
@@ -374,6 +393,15 @@ body::-webkit-scrollbar {
 .font-weight-bold {
     font-weight: 700;
     color: var(--text);
+}
+
+/* FIX: Saludo en home - color correcto en dark */
+#userName {
+    color: var(--text);
+}
+
+[data-theme="dark"] #userName {
+    color: #E8ECF4;
 }
 
 /* ==================== BALANCE ==================== */
@@ -707,7 +735,7 @@ body::-webkit-scrollbar {
 }
 
 #goalsList .goal-percent {
-    color: #30D158;
+    color: #34c759;
     font-size: 14px;
     font-weight: 700;
     margin-bottom: 8px;
@@ -724,10 +752,10 @@ body::-webkit-scrollbar {
 
 .goal-progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #30D158 0%, #64B5F6 100%);
+    background: linear-gradient(90deg, #34c759 0%, #5e5ce6 100%);
     border-radius: 4px;
     transition: width 0.6s ease;
-    box-shadow: 0 0 8px rgba(48, 209, 88, 0.4);
+    box-shadow: 0 0 8px rgba(52, 199, 89, 0.4);
 }
 
 .goal-circular {
@@ -753,7 +781,7 @@ body::-webkit-scrollbar {
 }
 
 [data-theme="dark"] .total-goals-card {
-    background: linear-gradient(135deg, #1C5CCF 0%, #4A9EFF 100%);
+    background: linear-gradient(135deg, #1C5CCF 0%, #154aad 100%);
     border: 1px solid rgba(74, 158, 255, 0.2);
 }
 
@@ -888,8 +916,7 @@ body::-webkit-scrollbar {
 }
 
 [data-theme="dark"] .fab-wallet {
-    background: #4A9EFF;
-    box-shadow: 0 4px 12px rgba(74, 158, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(28, 92, 207, 0.4);
 }
 
 /* ==================== GOALS HEADER ==================== */
@@ -931,20 +958,18 @@ body::-webkit-scrollbar {
     transform: scale(0.9) rotate(90deg);
 }
 
-/* ==================== MENÚ FLOTANTE ==================== */
+/* ==================== MENÚ FLOTANTE - FIX ESTABLE ==================== */
 .floating-menu-container {
     position: fixed !important;
     bottom: calc(20px + env(safe-area-inset-bottom)) !important;
     left: 50% !important;
-    transform: translateX(-50%) translateZ(0) !important;
+    transform: translateX(-50%) !important;
     width: calc(100% - 40px);
     max-width: 400px;
     z-index: 9999 !important;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
+    /* FIX: Sin transiciones que causen movimiento */
+    transition: none !important;
+    animation: none !important;
 }
 
 .floating-menu {
@@ -960,6 +985,8 @@ body::-webkit-scrollbar {
     position: relative;
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.1);
+    /* FIX: Sin transiciones */
+    transition: none !important;
 }
 
 .floating-menu::before {
@@ -996,7 +1023,9 @@ body::-webkit-scrollbar {
     margin: 0 2px;
     text-decoration: none;
     color: var(--text-secondary);
-    transform: translateZ(0);
+    /* FIX: Sin transform que cause movimiento */
+    transform: none !important;
+    transition: background-color 0.15s ease !important;
 }
 
 .menu-item:hover {
@@ -1009,7 +1038,8 @@ body::-webkit-scrollbar {
 
 .menu-item.active ion-icon {
     color: var(--primary);
-    transform: translateY(-2px) scale(1.1);
+    /* FIX: Sin transform en el icono */
+    transform: none !important;
 }
 
 .menu-item.active strong {
@@ -1022,7 +1052,8 @@ body::-webkit-scrollbar {
     color: var(--text-secondary);
     display: block;
     margin-bottom: 4px;
-    transition: all 0.3s ease;
+    /* FIX: Sin transiciones de transform */
+    transition: color 0.2s ease !important;
 }
 
 .menu-item strong {
@@ -1032,7 +1063,7 @@ body::-webkit-scrollbar {
     letter-spacing: 0.2px;
     display: block;
     text-align: center;
-    transition: all 0.3s ease;
+    transition: color 0.2s ease !important;
 }
 
 .active-indicator {
@@ -1043,13 +1074,14 @@ body::-webkit-scrollbar {
     background: var(--primary);
     border-radius: 50%;
     opacity: 0;
-    transition: all 0.3s ease;
+    transition: opacity 0.2s ease !important;
     box-shadow: 0 0 8px rgba(28, 92, 207, 0.4);
 }
 
 .menu-item.active .active-indicator {
     opacity: 1;
-    transform: scale(1.2);
+    /* FIX: Sin scale */
+    transform: none !important;
 }
 
 .ripple {
@@ -1079,7 +1111,7 @@ body::-webkit-scrollbar {
 }
 
 [data-theme="dark"] .menu-item.active {
-    background: rgba(74, 158, 255, 0.15);
+    background: rgba(28, 92, 207, 0.2);
 }
 
 [data-theme="dark"] .menu-item.active ion-icon,
@@ -1116,7 +1148,7 @@ body.modal-open .floating-menu-container {
     }
 }
 
-/* ==================== MODALES ==================== */
+/* ==================== MODALES - FIX TITULOS DARK ==================== */
 .modal {
     position: fixed;
     inset: 0;
@@ -1161,12 +1193,6 @@ body.modal-open .floating-menu-container {
 
 .modal:not(.hidden) .modal-dialog {
     transform: translateY(0);
-    animation: slideUpModal 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@keyframes slideUpModal {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
 }
 
 .dialogbox {
@@ -1185,12 +1211,6 @@ body.modal-open .floating-menu-container {
 .modal:not(.hidden) .dialogbox .modal-dialog {
     transform: scale(1);
     opacity: 1;
-    animation: scaleInModal 0.3s ease;
-}
-
-@keyframes scaleInModal {
-    from { transform: scale(0.9); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
 }
 
 .modal-header {
@@ -1205,12 +1225,17 @@ body.modal-open .floating-menu-container {
     border-bottom-color: rgba(74, 158, 255, 0.2);
 }
 
+/* FIX: Título del modal siempre con color correcto */
 .modal-title {
     font-size: 17px;
     font-weight: 600;
     flex: 1;
     text-align: center;
-    color: var(--text);
+    color: var(--text) !important;
+}
+
+[data-theme="dark"] .modal-title {
+    color: #E8ECF4 !important;
 }
 
 .close-btn {
@@ -1255,7 +1280,7 @@ body.modal-open .floating-menu-container {
     border-radius: 20px;
 }
 
-/* ==================== FORM ELEMENTS ==================== */
+/* ==================== FORM ELEMENTS - FIX SELECT TRIANGULOS ==================== */
 .form-group {
     margin-bottom: 16px;
 }
@@ -1277,6 +1302,10 @@ body.modal-open .floating-menu-container {
     background: var(--bg);
     color: var(--text);
     outline: none;
+    /* FIX: Apariencia nativa para evitar triángulos raros */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
 [data-theme="dark"] .form-control {
@@ -1296,15 +1325,34 @@ input[type="tel"] {
     font-variant-numeric: tabular-nums;
 }
 
+/* FIX: Select personalizado con flecha SVG correcta */
 .custom-select {
     appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238e8e93' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 16px center;
     padding-right: 40px;
+    /* FIX: Sin apariencia nativa */
+    background-color: var(--bg);
 }
 
 [data-theme="dark"] .custom-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238B92A8' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-color: #111b36;
+}
+
+/* FIX: Para selects nativos en iOS */
+select.form-control {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238e8e93' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 12px;
+    padding-right: 40px;
+}
+
+[data-theme="dark"] select.form-control {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238B92A8' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
 }
 
@@ -1442,6 +1490,7 @@ input[type="tel"] {
 
 [data-theme="dark"] .ios-radio label {
     background: #111b36;
+    color: #E8ECF4;
 }
 
 .ios-radio input:checked + label {
@@ -1451,7 +1500,7 @@ input[type="tel"] {
 }
 
 [data-theme="dark"] .ios-radio input:checked + label {
-    background: rgba(74, 158, 255, 0.15);
+    background: rgba(28, 92, 207, 0.2);
     border-color: #4A9EFF;
     color: #4A9EFF;
 }
@@ -1703,10 +1752,10 @@ input[type="tel"] {
 }
 
 [data-theme="dark"] .toggle-switch-glass.active {
-    background: #30D158;
+    background: #34c759;
 }
 
-/* ==================== APPEARANCE MODAL FIX ==================== */
+/* ==================== APPEARANCE MODAL ==================== */
 .appearance-options {
     padding: 8px 0;
 }
@@ -1753,13 +1802,11 @@ input[type="tel"] {
     color: var(--primary);
     font-size: 22px;
     opacity: 0;
-    transform: scale(0.8);
-    transition: all 0.2s;
+    transition: opacity 0.2s;
 }
 
 .appearance-option.selected .appearance-check {
     opacity: 1;
-    transform: scale(1);
 }
 
 .appearance-option.selected .appearance-label {
@@ -1773,18 +1820,18 @@ input[type="tel"] {
 }
 
 .appearance-option[data-theme="dark"].selected .appearance-label {
-    color: #4A9EFF;
+    color: var(--primary);
 }
 
 [data-theme="dark"] .appearance-option {
     border-bottom-color: rgba(74, 158, 255, 0.1);
 }
 
-[data-theme="dark"] .appearance-option[data-theme="dark"] .appearance-label {
+[data-theme="dark"] .appearance-option .appearance-label {
     color: #E8ECF4;
 }
 
-[data-theme="dark"] .appearance-option[data-theme="dark"].selected .appearance-label {
+[data-theme="dark"] .appearance-option.selected .appearance-label {
     color: #4A9EFF;
 }
 
