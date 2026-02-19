@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#1C5CCF" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
     <title>Goals - Pesso</title>
-    <!-- Manifest PWA -->    
+    <!-- Manifest PWA -->  
     <link rel="manifest" href="manifest.json">
     <!-- Style CSS / ICONS -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png" sizes="32x32">    
@@ -47,106 +47,223 @@
             transform: scale(0.9) !important;
         }
         
-        /* Goal Card con UNA SOLA barra de progreso */
-        .goal-card-modern {
-            background: var(--bg-card);
+        /* ==================== TOTAL GOALS CARD (Referencia) ==================== */
+        .total-goals-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 24px;
             border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            border: 1px solid rgba(0,0,0,0.05);
-            position: relative;
-            overflow: hidden;
+            margin: 0 4px;
         }
         
-        [data-theme="dark"] .goal-card-modern {
-            background: rgba(44, 44, 46, 0.95);
-            border-color: rgba(255,255,255,0.05);
-        }
-        
-        .goal-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-        
-        .goal-emoji-box {
-            width: 60px;
-            height: 60px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        
-        .goal-info {
-            flex: 1;
-        }
-        
-        .goal-name {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text);
-            margin-bottom: 4px;
-        }
-        
-        .goal-amount {
-            font-size: 15px;
-            color: var(--text-secondary);
-        }
-        
-        .goal-amount strong {
-            color: var(--primary);
-            font-size: 18px;
-        }
-        
-        /* UNA SOLA barra de progreso */
-        .goal-progress-container {
-            margin-top: 4px;
-        }
-        
-        .goal-progress-header {
+        .total-goals-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .total-goals-label {
+            font-size: 16px;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+        
+        .total-goals-amount {
+            font-size: 32px;
+            font-weight: 700;
+        }
+        
+        .total-goals-progress {
+            margin-top: 8px;
+        }
+        
+        .progress-bar-bg {
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            overflow: hidden;
             margin-bottom: 8px;
         }
         
-        .goal-percent {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--primary);
-        }
-        
-        .goal-progress-bg {
-            height: 10px;
-            background: rgba(0,0,0,0.05);
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        
-        [data-theme="dark"] .goal-progress-bg {
-            background: rgba(255,255,255,0.1);
-        }
-        
-        .goal-progress-fill {
+        .progress-bar-fill {
             height: 100%;
-            border-radius: 5px;
-            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background: white;
+            border-radius: 4px;
+            transition: width 0.5s ease;
         }
         
-        .goal-date {
-            margin-top: 12px;
-            font-size: 13px;
-            color: var(--text-secondary);
+        .progress-text {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        /* ==================== GOAL CARDS - NUEVO FLOW ==================== */
+        .goals-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 0 4px;
+        }
+        
+        .goal-card-new {
+            background: linear-gradient(135deg, #7DD3D3 0%, #B8E6E6 50%, #E0F4F4 100%);
+            border-radius: 20px;
+            padding: 16px 20px; 
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(125, 211, 211, 0.3);
+            transform: translateZ(0);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .goal-card-new:active {
+            transform: scale(0.98) translateY(2px);
+            box-shadow: 0 4px 12px rgba(125, 211, 211, 0.2);
+        }
+        
+        [data-theme="dark"] .goal-card-new {
+            background: linear-gradient(135deg, #5AA8A8 0%, #7DD3D3 50%, #A8E0E0 100%);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Patrón decorativo sutil */
+        .goal-card-new::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        /* Header de la card con icono grande */
+        .goal-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .goal-icon-large {
+            width: 70px;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .goal-percent-badge {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #5AA8A8;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        [data-theme="dark"] .goal-percent-badge {
+            color: #3D8A8A;
+        }
+        
+        /* Info del goal */
+        .goal-info-new {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .goal-name-new {
+            font-size: 22px;
+            font-weight: 700;
+            color: #2C5F5F;
+            margin-bottom: 6px;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+        }
+        
+        [data-theme="dark"] .goal-name-new {
+            color: #1A4040;
+            text-shadow: none;
+        }
+        
+        .goal-amount-new {
+            font-size: 16px;
+            color: #4A8080;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+        
+        [data-theme="dark"] .goal-amount-new {
+            color: #2C5F5F;
+        }
+        
+        .goal-amount-new strong {
+            color: #2C5F5F;
+            font-size: 20px;
+        }
+        
+        /* Barra de progreso única */
+        .goal-progress-new {
+            background: rgba(255, 255, 255, 0.5);
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .goal-progress-fill-new {
+            height: 100%;
+            background: linear-gradient(90deg, #2C5F5F 0%, #4A8080 100%);
+            border-radius: 6px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(44, 95, 95, 0.3);
+        }
+        
+        /* Meta info (días restantes) */
+        .goal-meta {
             display: flex;
             align-items: center;
             gap: 6px;
+            margin-top: 12px;
+            font-size: 14px;
+            color: #4A8080;
+            font-weight: 500;
+        }
+        
+        [data-theme="dark"] .goal-meta {
+            color: #2C5F5F;
+        }
+        
+        .goal-meta.overdue {
+            color: #D9534F;
+            font-weight: 600;
+        }
+        
+        .goal-meta.due-today {
+            color: #F0AD4E;
+            font-weight: 600;
+        }
+        
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+        
+        .empty-state ion-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.3;
         }
         
         /* MODAL ESTILO HOME - Slide up from bottom */
@@ -190,6 +307,7 @@
             z-index: 10001;
             max-height: 90vh;
             overflow-y: auto;
+            padding-bottom: calc(20px + env(safe-area-inset-bottom));
         }
         
         [data-theme="dark"] .modal-goal-content {
@@ -266,7 +384,42 @@
             color: white;
         }
         
-        /* Emoji picker en modal */
+        /* Form fields */
+        .sheet-form-group {
+            margin-bottom: 20px;
+        }
+        
+        .sheet-form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        
+        .sheet-form-group input {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 12px;
+            font-size: 17px;
+            background: var(--bg-card);
+            color: var(--text);
+            outline: none;
+        }
+        
+        [data-theme="dark"] .sheet-form-group input {
+            background: rgba(60, 60, 60, 0.5);
+            border-color: rgba(255,255,255,0.1);
+        }
+        
+        .sheet-form-group input:focus {
+            border-color: var(--primary);
+        }
+        
+        /* Emoji picker */
         .emoji-picker-goal {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -279,7 +432,7 @@
             border-radius: 12px;
             background: var(--bg-card);
             border: 2px solid transparent;
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -331,7 +484,7 @@
             <div class="section-header">
                 <h2 class="section-title">My Goals</h2>
             </div>
-            <div id="goalsList">
+            <div id="goalsList" class="goals-container">
                 <!-- Goals generadas por JS -->
             </div>
         </div>
@@ -547,7 +700,7 @@
             if (goals.length === 0) {
                 goalsList.innerHTML = `
                     <div class="empty-state">
-                        <ion-icon name="flag-outline" style="font-size: 48px; color: var(--text-secondary);"></ion-icon>
+                        <ion-icon name="flag-outline" style="font-size: 64px; color: var(--text-secondary);"></ion-icon>
                         <p>No goals yet</p>
                         <p style="font-size:13px; margin-top:8px;">Tap + to create your first goal</p>
                     </div>
@@ -562,54 +715,68 @@
                 const emoji = goal.emoji || '🎯';
                 const remaining = target - saved;
                 
-                // Color según progreso
-                let progressColor = 'var(--primary)';
-                if (percent >= 100) progressColor = 'var(--success)';
-                else if (percent >= 75) progressColor = '#30D158';
-                else if (percent >= 50) progressColor = '#FF9500';
-                
-                const card = document.createElement('div');
-                card.className = 'goal-card-modern';
-                
-                // Fecha formateada
-                let dateText = '';
+                // Calcular días restantes
+                let daysLeft = null;
+                let metaHTML = '';
                 if (goal.date) {
-                    const date = new Date(goal.date);
-                    const daysLeft = Math.ceil((date - new Date()) / (1000 * 60 * 60 * 24));
-                    if (daysLeft > 0) {
-                        dateText = `<div class="goal-date"><ion-icon name="time-outline"></ion-icon> ${daysLeft} days left</div>`;
+                    daysLeft = Math.ceil((new Date(goal.date) - new Date()) / (1000 * 60 * 60 * 24));
+                    
+                    if (daysLeft < 0) {
+                        metaHTML = `
+                            <div class="goal-meta overdue">
+                                <ion-icon name="alert-circle-outline"></ion-icon>
+                                <span>Overdue by ${Math.abs(daysLeft)} days</span>
+                            </div>
+                        `;
                     } else if (daysLeft === 0) {
-                        dateText = `<div class="goal-date" style="color: var(--danger);"><ion-icon name="today-outline"></ion-icon> Due today</div>`;
+                        metaHTML = `
+                            <div class="goal-meta due-today">
+                                <ion-icon name="today-outline"></ion-icon>
+                                <span>Due today!</span>
+                            </div>
+                        `;
                     } else {
-                        dateText = `<div class="goal-date" style="color: var(--danger);"><ion-icon name="alert-circle-outline"></ion-icon> Overdue</div>`;
+                        metaHTML = `
+                            <div class="goal-meta">
+                                <ion-icon name="time-outline"></ion-icon>
+                                <span>${daysLeft} days left • $${remaining.toLocaleString()} to go</span>
+                            </div>
+                        `;
                     }
+                } else {
+                    metaHTML = `
+                        <div class="goal-meta">
+                            <ion-icon name="trending-up-outline"></ion-icon>
+                            <span>$${remaining.toLocaleString()} to reach goal</span>
+                        </div>
+                    `;
                 }
                 
+                const card = document.createElement('div');
+                card.className = 'goal-card-new';
+                
                 card.innerHTML = `
-                    <div class="goal-header">
-                        <div class="goal-emoji-box" style="background: ${progressColor}20; box-shadow: 0 4px 12px ${progressColor}30;">
+                    <div class="goal-card-header">
+                        <div class="goal-icon-large">
                             ${emoji}
                         </div>
-                        <div class="goal-info">
-                            <div class="goal-name">${escapeHtml(goal.name) || 'Goal'}</div>
-                            <div class="goal-amount">
-                                <strong style="color: ${progressColor};">$${saved.toLocaleString()}</strong> of $${target.toLocaleString()}
-                            </div>
+                        <div class="goal-percent-badge">
+                            ${percent.toFixed(0)}%
                         </div>
                     </div>
                     
-                    <!-- UNA SOLA barra de progreso -->
-                    <div class="goal-progress-container">
-                        <div class="goal-progress-header">
-                            <span style="font-size: 13px; color: var(--text-secondary);">${percent >= 100 ? 'Completed!' : `$${remaining.toLocaleString()} to go`}</span>
-                            <span class="goal-percent" style="color: ${progressColor};">${percent.toFixed(0)}%</span>
+                    <div class="goal-info-new">
+                        <div class="goal-name-new">${escapeHtml(goal.name) || 'Goal'}</div>
+                        <div class="goal-amount-new">
+                            <strong>$${saved.toLocaleString()}</strong> of $${target.toLocaleString()}
                         </div>
-                        <div class="goal-progress-bg">
-                            <div class="goal-progress-fill" style="width: ${percent}%; background: ${progressColor};"></div>
+                        
+                        <div class="goal-progress-new">
+                            <div class="goal-progress-fill-new" style="width: ${percent}%;"></div>
                         </div>
+                        
+                        ${metaHTML}
                     </div>
-                    
-                    ${dateText}
                 `;
                 
                 goalsList.appendChild(card);
