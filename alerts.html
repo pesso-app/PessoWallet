@@ -19,7 +19,116 @@
             padding-bottom: 8px;
         }
         
-        /* Reminders section */
+        /* ==================== SEARCH BOX ESTILO iOS ==================== */
+        .search-form {
+            margin: 16px 0;
+        }
+        
+        .searchbox {
+            position: relative;
+            background: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .searchbox input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            border: none;
+            background: transparent;
+            font-size: 17px;
+            color: var(--text);
+            outline: none;
+        }
+        
+        .searchbox input::placeholder {
+            color: var(--text-secondary);
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* ==================== TABS ESTILO iOS ==================== */
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            margin: 16px 0;
+            padding: 4px;
+            background: var(--bg-card);
+            border-radius: 10px;
+            list-style: none;
+        }
+        
+        .nav-item {
+            flex: 1;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: 10px 8px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 14px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+        }
+        
+        .nav-link.active {
+            color: var(--text);
+            background: var(--bg);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        [data-theme="dark"] .nav-link.active {
+            background: var(--bg-dark);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        
+        /* ==================== SECTION HEADER ==================== */
+        .section-header-activity {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 24px 0 16px 0;
+            padding: 0 4px;
+        }
+        
+        .section-title-activity {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        
+        .clear-all-btn {
+            font-size: 15px;
+            color: var(--primary);
+            background: none;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+        
+        .clear-all-btn:active {
+            background: rgba(28, 92, 207, 0.1);
+        }
+        
+        /* ==================== REMINDERS ==================== */
         .reminders-section {
             margin-top: 16px;
             margin-bottom: 24px;
@@ -81,30 +190,81 @@
             background: rgba(255,255,255,0.35);
         }
         
-        /* Section headers */
-        .section-header-activity {
+        /* ==================== TRANSACTIONS ==================== */
+        .transactions-container {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            padding: 0 4px;
+            flex-direction: column;
+            gap: 10px;
         }
         
-        .section-title-activity {
+        .transaction-item {
+            background: var(--bg-card);
+            border-radius: 14px;
+            padding: 14px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 20px;
-            font-weight: 700;
+            flex-shrink: 0;
+            color: white;
+        }
+        
+        .transaction-content {
+            flex: 1;
+        }
+        
+        .transaction-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        
+        .transaction-title {
+            font-weight: 600;
+            font-size: 15px;
             color: var(--text);
         }
         
-        .clear-all-btn {
-            font-size: 14px;
-            color: var(--primary);
-            background: none;
-            border: none;
-            font-weight: 500;
+        .transaction-amount {
+            font-weight: 700;
+            font-size: 15px;
         }
         
-        /* Empty state improvements */
+        .transaction-amount.add {
+            color: var(--success);
+        }
+        
+        .transaction-amount.withdraw {
+            color: var(--danger);
+        }
+        
+        .transaction-amount.transfer {
+            color: var(--info);
+        }
+        
+        .transaction-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+        
+        .transaction-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        
+        /* ==================== EMPTY STATE ==================== */
         .empty-state-activity {
             text-align: center;
             padding: 60px 20px;
@@ -122,6 +282,20 @@
             font-weight: 600;
             color: var(--text);
             margin-bottom: 8px;
+        }
+        
+        /* ==================== WIDE BLOCK ==================== */
+        .wide-block {
+            background: transparent;
+            padding: 0;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-3 {
+            margin-top: 12px;
         }
     </style>
 </head>
@@ -144,9 +318,9 @@
         <!-- Search -->
         <form class="search-form" onsubmit="return false;">
             <div class="searchbox">
-                <i class="input-icon">
+                <span class="input-icon">
                     <ion-icon name="search-outline"></ion-icon>
-                </i>
+                </span>
                 <input type="text" class="form-control" placeholder="Search transactions" id="searchAlerts">
             </div>
         </form>
@@ -296,7 +470,7 @@
             
             let remindersHTML = '';
             
-            // Check for low balance envelopes (less than 20% of goal or less than $50)
+            // Check for low balance envelopes
             envelopes.forEach(env => {
                 if (env.goal && env.goal > 0) {
                     const percent = (env.amount / env.goal) * 100;
@@ -331,7 +505,7 @@
                 }
             });
             
-            // Check for goals with approaching deadlines (within 7 days)
+            // Check for goals with approaching deadlines
             goals.forEach(goal => {
                 if (goal.date) {
                     const daysLeft = Math.ceil((new Date(goal.date) - new Date()) / (1000 * 60 * 60 * 24));
@@ -356,7 +530,7 @@
                 }
             });
             
-            // Weekly summary reminder (show on Sundays or if no activity in 7 days)
+            // Weekly summary
             const lastActivity = localStorage.getItem('pesso_last_activity');
             const daysSinceActivity = lastActivity ? 
                 Math.floor((Date.now() - parseInt(lastActivity)) / (1000 * 60 * 60 * 24)) : 0;
