@@ -15,91 +15,30 @@
 }
 
 [data-theme="dark"] {
-    /* Colores principales más suaves para dark mode */
-    --primary: #4A9EFF;           /* Azul más brillante pero no saturado */
-    --primary-dark: #0A84FF;      /* Azul iOS */
-    
-    /* Fondos - Jerarquía de superficies Material Design 3 */
-    --bg: #121212;                /* Fondo principal (no negro puro) */
-    --bg-dark: #1E1E1E;           /* Superficie elevada 1 */
-    --bg-card: #2C2C2E;           /* Superficie elevada 2 (tarjetas) */
-    
-    /* Texto con opacidades para jerarquía */
-    --text: #E0E0E0;              /* 87% blanco - texto principal */
-    --text-secondary: #A0A0A0;    /* 60% blanco - texto secundario */
-    
-    /* Colores de estado desaturados */
-    --success: #66BB6A;           /* Verde más suave */
-    --danger: #CF6679;            /* Rojo Material Design dark */
-    --warning: #FFB74D;           /* Naranja más suave */
-    --info: #64B5F6;              /* Azul claro */
-    
+    --primary: #4A9EFF;
+    --primary-dark: #0A84FF;
+    --bg: #121212;
+    --bg-dark: #1E1E1E;
+    --bg-card: #2C2C2E;
+    --text: #E8ECF4;
+    --text-secondary: #8B92A8;
+    --success: #66BB6A;
+    --danger: #CF6679;
+    --warning: #FFB74D;
+    --info: #64B5F6;
     --card-shadow: 0 2px 12px rgba(0,0,0,0.3);
 }
 
-/* ==================== SAFE AREA Y NOTCH - MINIMO ==================== */
-
-/* iOS standalone - Solo el notch necesario */
-@supports (-webkit-touch-callout: none) {
-    @media (display-mode: standalone) {
-        html, body {
-            padding-top: 0;
-            height: 100vh;
-            height: 100dvh;
-        }
-        
-        #appCapsule {
-            padding-top: max(8px, env(safe-area-inset-top)) !important;
-        }
-        
-        .header-large-title {
-            padding-top: max(4px, env(safe-area-inset-top));
-        }
-        
-        .profile-container {
-            padding-top: max(8px, env(safe-area-inset-top));
-        }
-        
-        .fab-wallet {
-            top: max(44px, calc(36px + env(safe-area-inset-top)));
-        }
-        
-        .goals-header-container {
-            top: max(8px, env(safe-area-inset-top));
-        }
-        
-        .fab-goals-fixed {
-            top: max(8px, env(safe-area-inset-top));
-        }
-    }
-}
-
-/* Para web normal */
-@media (display-mode: browser) {
-    #appCapsule {
-        padding-top: 12px !important;
-    }
-    
-    .header-large-title {
-        padding-top: 8px;
-    }
-    
-    .profile-container {
-        padding-top: 12px;
-    }
-    
-    .fab-wallet {
-        top: 48px;
-    }
-}
-
-/* Prevenir scroll bounce en iOS */
+/* ==================== FIX LOGIN PANTALLA COMPLETA iOS ==================== */
 html, body {
+    margin: 0;
+    padding: 0;
     background: var(--bg) !important;
     overscroll-behavior-y: none;
     scrollbar-width: none;
     -ms-overflow-style: none;
     -webkit-overflow-scrolling: touch;
+    height: 100%;
 }
 
 html::-webkit-scrollbar, 
@@ -107,23 +46,418 @@ body::-webkit-scrollbar {
     display: none;
 }
 
+/* FIX: Login pantalla completa sin espacios blancos */
+#loginScreen {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+    z-index: 99999;
+    height: 100vh;
+    height: 100dvh;
+    height: -webkit-fill-available;
+    width: 100vw;
+    overflow: hidden;
+}
+
+#loginScreen .login-container {
+    height: 100%;
+    height: 100vh;
+    height: 100dvh;
+    height: -webkit-fill-available;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px;
+    background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+    box-sizing: border-box;
+}
+
+/* Safe area fixes */
+@supports (-webkit-touch-callout: none) {
+    #loginScreen {
+        min-height: -webkit-fill-available;
+    }
+
+    #loginScreen .login-container {
+        min-height: -webkit-fill-available;
+    }
+}
+
+/* ==================== FIX MENÚ FLASH ==================== */
+.floating-menu-container {
+    position: fixed !important;
+    bottom: calc(20px + env(safe-area-inset-bottom)) !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: calc(100% - 40px);
+    max-width: 400px;
+    z-index: 9999 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    /* Remover transiciones que causan flash */
+    transition: none !important;
+    animation: none !important;
+    will-change: auto;
+}
+
+.floating-menu {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    border-radius: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.1);
+    /* Remover transiciones */
+    transition: none !important;
+    animation: none !important;
+}
+
+.menu-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 8px;
+    cursor: pointer;
+    border-radius: 24px;
+    position: relative;
+    gap: 6px;
+    margin: 0 2px;
+    text-decoration: none;
+    color: var(--text-secondary);
+    /* Solo transición suave para color de fondo */
+    transition: background-color 0.15s ease;
+}
+
+.menu-item:hover {
+    background: rgba(28, 92, 207, 0.05);
+}
+
+.menu-item.active {
+    background: rgba(28, 92, 207, 0.12);
+}
+
+.menu-item.active ion-icon {
+    color: var(--primary);
+}
+
+.menu-item.active strong {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.menu-item ion-icon {
+    font-size: 24px;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 4px;
+    /* Remover transiciones problemáticas */
+    transition: color 0.2s ease;
+}
+
+.menu-item strong {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    display: block;
+    text-align: center;
+    transition: color 0.2s ease;
+}
+
+.active-indicator {
+    position: absolute;
+    bottom: 6px;
+    width: 4px;
+    height: 4px;
+    background: var(--primary);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.menu-item.active .active-indicator {
+    opacity: 1;
+}
+
+[data-theme="dark"] .floating-menu {
+    background: rgba(30, 30, 30, 0.95);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.2);
+}
+
+[data-theme="dark"] .menu-item.active {
+    background: rgba(10, 132, 255, 0.15);
+}
+
+[data-theme="dark"] .menu-item.active ion-icon,
+[data-theme="dark"] .menu-item.active strong {
+    color: var(--primary);
+}
+
+/* ==================== FIX SELECTS EN MODO DARK - SIN TRIÁNGULOS ==================== */
+
+/* Light mode selects */
+select.form-control,
+.custom-select,
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: var(--bg-card) !important;
+    color: var(--text) !important;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 10px;
+    padding: 12px 40px 12px 16px;
+    font-size: 16px;
+    width: 100%;
+    cursor: pointer;
+    /* Flecha SVG simple */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238e8e93' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 16px center !important;
+}
+
+/* Dark mode selects - FONDO SÓLIDO sin patrones */
+[data-theme="dark"] select.form-control,
+[data-theme="dark"] .custom-select,
+[data-theme="dark"] select,
+[data-theme="dark"] #addSavingsSelect,
+[data-theme="dark"] #addGoalSelect,
+[data-theme="dark"] #withdrawEnvelope,
+[data-theme="dark"] #transferFrom,
+[data-theme="dark"] #transferTo {
+    background-color: #1C1C1E !important;
+    color: #E8ECF4 !important;
+    border-color: rgba(255,255,255,0.1) !important;
+    /* Flecha clara */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238B92A8' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 16px center !important;
+    /* SIN background-size que cause problemas */
+    background-size: 12px 12px !important;
+}
+
+/* Hover states */
+select.form-control:hover,
+.custom-select:hover {
+    border-color: var(--primary);
+}
+
+[data-theme="dark"] select.form-control:hover,
+[data-theme="dark"] .custom-select:hover {
+    border-color: var(--primary);
+}
+
+/* Focus states */
+select.form-control:focus,
+.custom-select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(28, 92, 207, 0.15);
+}
+
+[data-theme="dark"] select.form-control:focus,
+[data-theme="dark"] .custom-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(74, 158, 255, 0.2);
+}
+
+/* Options en dark mode */
+[data-theme="dark"] select option,
+[data-theme="dark"] select.form-control option {
+    background-color: #1C1C1E !important;
+    color: #E8ECF4 !important;
+}
+
+/* ==================== FIX RADIO BUTTONS EN MODO DARK ==================== */
+
+/* Labels de radio buttons */
+.ios-radio label {
+    display: block;
+    padding: 14px;
+    background: var(--bg-dark);
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    border: 2px solid transparent;
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--text);
+    transition: all 0.2s ease;
+}
+
+[data-theme="dark"] .ios-radio label {
+    background: #1C1C1E;
+    color: #E8ECF4;
+}
+
+.ios-radio input:checked + label {
+    border-color: var(--primary);
+    background: rgba(28, 92, 207, 0.1);
+    color: var(--primary);
+}
+
+[data-theme="dark"] .ios-radio input:checked + label {
+    border-color: var(--primary);
+    background: rgba(74, 158, 255, 0.15);
+    color: var(--primary);
+}
+
+/* ==================== FIX MODALES EN MODO DARK ==================== */
+
+/* Modal backdrop y contenido */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0);
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 0.3s ease, background 0.3s ease;
+}
+
+.modal:not(.hidden) {
+    display: flex;
+    opacity: 1;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.modal-dialog {
+    width: 100%;
+    max-width: 500px;
+    background: var(--bg);
+    border-radius: 24px 24px 0 0;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10001;
+    position: relative;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+}
+
+[data-theme="dark"] .modal-dialog {
+    background: #1C1C1E;
+}
+
+.modal:not(.hidden) .modal-dialog {
+    transform: translateY(0);
+}
+
+.modal-content {
+    background: var(--bg);
+    border-radius: 24px 24px 0 0;
+    overflow: hidden;
+}
+
+[data-theme="dark"] .modal-content {
+    background: #1C1C1E;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+[data-theme="dark"] .modal-header {
+    border-bottom-color: rgba(255,255,255,0.1);
+}
+
+.modal-title {
+    font-size: 17px;
+    font-weight: 600;
+    flex: 1;
+    text-align: center;
+    color: var(--text);
+}
+
+[data-theme="dark"] .modal-title {
+    color: #E8ECF4;
+}
+
+.modal-body {
+    padding: 20px;
+    background: transparent;
+}
+
+[data-theme="dark"] .modal-body {
+    background: transparent;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 16px 20px;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    background: transparent;
+}
+
+[data-theme="dark"] .modal-footer {
+    border-top-color: rgba(255,255,255,0.1);
+    background: transparent;
+}
+
+/* Labels en modales */
+.modal-body .label {
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    display: block;
+}
+
+[data-theme="dark"] .modal-body .label {
+    color: #8B92A8;
+}
+
+/* Input groups en modales */
+.modal-body .form-group.boxed {
+    background: var(--bg-dark);
+    border-radius: 12px;
+    padding: 4px;
+}
+
+[data-theme="dark"] .modal-body .form-group.boxed {
+    background: #2C2C2E;
+}
+
+/* ==================== FIX CHECKBOX EN MODO DARK ==================== */
+.label-text {
+    font-size: 15px;
+    color: var(--text);
+}
+
+[data-theme="dark"] .label-text {
+    color: #E8ECF4;
+}
+
+/* ==================== RESTO DEL CSS (sin cambios) ==================== */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
     -webkit-tap-highlight-color: transparent;
-    transition-property: background-color, color, border-color;
-    transition-duration: 0.3s;
-    transition-timing-function: ease;
 }
 
-/* Excluir elementos que no deben tener transición */
-.modal, .floating-menu-container, .fab-wallet, .ripple, .pin-pad button {
-    transition: none;
-}
-
-/* ==================== TRANSICIONES SUAVES ENTRE PAGINAS ==================== */
+/* Transiciones suaves entre páginas */
 .fade-in {
     animation: fadeInSmooth 0.4s ease-out;
     will-change: opacity;
@@ -140,39 +474,7 @@ body::-webkit-scrollbar {
     }
 }
 
-/* ==================== LOGIN - PANTALLA COMPLETA ==================== */
-.fixed-login {
-    position: fixed;
-    inset: 0;
-    overflow: hidden;
-    touch-action: none;
-}
-
-/* Login screen ajustada */
-.fixed-login {
-        padding-top: env(safe-area-inset-top);
-}
-
-.login-container {
-    height: 100vh;
-    height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: calc(20px + env(safe-area-inset-top)) 20px 20px;
-    background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
-    overflow: hidden;
-}
-
-/* Forzar color de fondo en toda la pantalla */
-#loginScreen {
-    position: fixed;
-    inset: 0;
-    background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
-    z-index: 99999;
-}
-
+/* Login styles */
 .varela-round-regular {
   font-family: "Varela Round", sans-serif;
   font-weight: 400;
@@ -269,7 +571,7 @@ body::-webkit-scrollbar {
     font-size: 24px;
 }
 
-/* ==================== HEADER ==================== */
+/* Header */
 .header-large-title {
     padding: max(8px, env(safe-area-inset-top)) 0 16px 0;
     margin-bottom: 4px;
@@ -294,7 +596,7 @@ body::-webkit-scrollbar {
     color: var(--text);
 }
 
-/* ==================== BALANCE GRANDE ==================== */
+/* Balance */
 .balance {
     background: linear-gradient(135deg, var(--text) 0%, var(--primary) 100%);
     -webkit-background-clip: text;
@@ -313,7 +615,7 @@ body::-webkit-scrollbar {
     margin-top: 8px;
 }
 
-/* ==================== SECTIONS ==================== */
+/* Sections */
 .section {
     margin-top: 20px;
 }
@@ -342,7 +644,7 @@ body::-webkit-scrollbar {
     padding: 4px 8px;
 }
 
-/* ==================== BUTTONS ==================== */
+/* Buttons */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -434,7 +736,7 @@ body::-webkit-scrollbar {
     font-weight: 600;
 }
 
-/* ==================== BALANCE ACTIONS ==================== */
+/* Balance Actions */
 .balance-actions {
     display: flex;
     gap: 16px;
@@ -449,7 +751,7 @@ body::-webkit-scrollbar {
     border-bottom-color: rgba(255,255,255,0.08);
 }
 
-/* ==================== LAYOUT ==================== */
+/* Layout */
 .row {
     display: flex;
     flex-wrap: wrap;
@@ -485,7 +787,7 @@ body::-webkit-scrollbar {
 .pt-4 { padding-top: 16px; }
 .pr-5 { padding-right: 20px; }
 
-/* ==================== iOS CARDS ==================== */
+/* iOS Cards */
 .ios-cards-container {
     display: flex;
     flex-direction: column;
@@ -582,108 +884,31 @@ body::-webkit-scrollbar {
     font-size: 18px;
 }
 
-/* ==================== GOALS - ESTILO OSCURO CON BARRA DE PROGRESO ==================== */
-
-#goalsList .ios-card {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-    padding: 20px;
-    border-radius: 16px;
-    margin-bottom: 12px;
-    border: none;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-    position: relative;
-    overflow: hidden;
-}
-
-[data-theme="dark"] #goalsList .ios-card {
-    background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
-}
-
-#goalsList .goal-name {
-    color: #ffffff;
-    font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 8px;
-}
-
-#goalsList .goal-amounts {
-    color: rgba(255,255,255,0.8);
-    font-size: 14px;
-    margin-bottom: 12px;
-    font-weight: 500;
-}
-
-#goalsList .goal-percent {
-    color: #4ade80;
-    font-size: 14px;
-    font-weight: 700;
-    margin-bottom: 8px;
-}
-
-/* Barra de progreso horizontal */
-.goal-progress-bar {
-    width: 100%;
-    height: 8px;
-    background: rgba(255,255,255,0.15);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-top: 8px;
-}
-
-.goal-progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #4ade80 0%, #22c55e 100%);
-    border-radius: 4px;
-    transition: width 0.6s ease;
-    box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
-}
-
-/* Eliminar círculo de progreso */
-.goal-circular {
-    display: block;
-}
-
-.circular-progress, .circular-bg, .circular-bar, .circular-emoji {
-    display: none;
-}
-
-/* Fecha */
-#goalsList div[style*="font-size:11px"] {
-    color: rgba(255,255,255,0.6) !important;
-    font-size: 12px !important;
-    margin-top: 8px !important;
-}
-
-/* Total Goals Card */
+/* Goals */
 .total-goals-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     color: white;
     padding: 24px;
-    border-radius: 16px;
-    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-}
-
-[data-theme="dark"] .total-goals-card {
-    background: linear-gradient(135deg, #4c51bf 0%, #553c9a 100%);
+    border-radius: 20px;
+    margin: 0 4px;
 }
 
 .total-goals-info {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
 }
 
 .total-goals-label {
-    font-size: 14px;
+    font-size: 16px;
     opacity: 0.9;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-weight: 500;
 }
 
 .total-goals-amount {
-    font-size: 28px;
-    font-weight: 800;
+    font-size: 32px;
+    font-weight: 700;
 }
 
 .total-goals-progress {
@@ -691,26 +916,26 @@ body::-webkit-scrollbar {
 }
 
 .progress-bar-bg {
-    height: 6px;
+    height: 8px;
     background: rgba(255,255,255,0.2);
-    border-radius: 3px;
+    border-radius: 4px;
     overflow: hidden;
+    margin-bottom: 8px;
 }
 
 .progress-bar-fill {
     height: 100%;
-    background: #ffffff;
-    border-radius: 3px;
-    transition: width 0.6s ease;
+    background: white;
+    border-radius: 4px;
+    transition: width 0.5s ease;
 }
 
 .progress-text {
-    font-size: 13px;
+    font-size: 14px;
     opacity: 0.9;
-    margin-top: 6px;
 }
 
-/* ==================== LISTVIEW ==================== */
+/* Listview */
 .listview {
     list-style: none;
     padding: 0;
@@ -766,7 +991,7 @@ body::-webkit-scrollbar {
     font-size: 16px;
 }
 
-/* ==================== FAB ==================== */
+/* FAB */
 .fab-wallet {
     position: fixed;
     top: max(48px, calc(40px + env(safe-area-inset-top)));
@@ -796,169 +1021,7 @@ body::-webkit-scrollbar {
     box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
 }
 
-/* ==================== GOALS HEADER STICKY ==================== */
-.goals-header-container {
-    position: sticky;
-    top: max(8px, env(safe-area-inset-top));
-    z-index: 50;
-    background: var(--bg);
-    padding-bottom: 16px;
-    margin-bottom: 16px;
-}
-
-[data-theme="dark"] .goals-header-container {
-    background: var(--bg);
-}
-
-.fab-goals-fixed {
-    position: absolute;
-    top: max(8px, env(safe-area-inset-top));
-    right: 0;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: var(--primary);
-    color: white;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    box-shadow: 0 4px 12px rgba(28, 92, 207, 0.3);
-    cursor: pointer;
-    z-index: 51;
-    will-change: transform;
-    transform: translateZ(0);
-}
-
-.fab-goals-fixed:active {
-    transform: scale(0.9) rotate(90deg);
-}
-
-/* ==================== MENÚ FLOTANTE - CORREGIDO ==================== */
-.floating-menu-container {
-    position: fixed !important;
-    bottom: calc(20px + env(safe-area-inset-bottom)) !important;
-    left: 50% !important;
-    transform: translateX(-50%) translateZ(0) !important;
-    width: calc(100% - 40px);
-    max-width: 400px;
-    z-index: 9999 !important;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-    will-change: auto;
-}
-
-.floating-menu {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px) saturate(150%);
-    -webkit-backdrop-filter: blur(20px) saturate(150%);
-    border-radius: 28px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 8px;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 
-        0 4px 20px rgba(0,0,0,0.15),
-        0 1px 3px rgba(0,0,0,0.1);
-}
-
-.floating-menu::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 10%;
-    right: 10%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,1) 50%, transparent 100%);
-    opacity: 0.8;
-}
-
-.floating-menu::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 28px;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
-    pointer-events: none;
-}
-
-.menu-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 8px;
-    cursor: pointer;
-    border-radius: 24px;
-    position: relative;
-    gap: 6px;
-    margin: 0 2px;
-    text-decoration: none;
-    color: var(--text-secondary);
-    transform: translateZ(0);
-}
-
-.menu-item:hover {
-    background: rgba(28, 92, 207, 0.05);
-}
-
-.menu-item.active {
-    background: rgba(28, 92, 207, 0.12);
-}
-
-.menu-item.active ion-icon {
-    color: var(--primary);
-    transform: translateY(-2px) scale(1.1);
-}
-
-.menu-item.active strong {
-    color: var(--primary);
-    font-weight: 600;
-}
-
-.menu-item ion-icon {
-    font-size: 24px;
-    color: var(--text-secondary);
-    display: block;
-    margin-bottom: 4px;
-    transition: all 0.3s ease;
-}
-
-.menu-item strong {
-    font-size: 11px;
-    color: var(--text-secondary);
-    font-weight: 500;
-    letter-spacing: 0.2px;
-    display: block;
-    text-align: center;
-    transition: all 0.3s ease;
-}
-
-.active-indicator {
-    position: absolute;
-    bottom: 6px;
-    width: 4px;
-    height: 4px;
-    background: var(--primary);
-    border-radius: 50%;
-    opacity: 0;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 8px rgba(28, 92, 207, 0.4);
-}
-
-.menu-item.active .active-indicator {
-    opacity: 1;
-    transform: scale(1.2);
-}
-
+/* Ripple effect */
 .ripple {
     position: absolute;
     border-radius: 50%;
@@ -975,107 +1038,7 @@ body::-webkit-scrollbar {
     }
 }
 
-[data-theme="dark"] .floating-menu {
-    background: rgba(30, 30, 30, 0.95);
-    border-color: rgba(255, 255, 255, 0.08);
-    box-shadow: 
-        0 4px 20px rgba(0,0,0,0.3),
-        0 1px 3px rgba(0,0,0,0.2);
-}
-
-[data-theme="dark"] .floating-menu::before {
-    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
-}
-
-[data-theme="dark"] .menu-item.active {
-    background: rgba(10, 132, 255, 0.15);
-}
-
-[data-theme="dark"] .menu-item.active ion-icon,
-[data-theme="dark"] .menu-item.active strong {
-    color: var(--primary);
-}
-
-.appBottomMenu {
-    display: none !important;
-}
-
-body.modal-open .floating-menu-container {
-    pointer-events: none;
-    opacity: 0.5;
-}
-
-@media (max-width: 380px) {
-    .floating-menu-container {
-        width: calc(100% - 24px);
-        bottom: calc(15px + env(safe-area-inset-bottom)) !important;
-    }
-    
-    .menu-item strong {
-        font-size: 10px;
-    }
-    
-    .menu-item ion-icon {
-        font-size: 22px;
-    }
-}
-
-/* ==================== MODALES CON EFECTO ==================== */
-.modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0);
-    display: none;
-    align-items: flex-end;
-    justify-content: center;
-    z-index: 10000 !important;
-    opacity: 0;
-    transition: opacity 0.3s ease, background 0.3s ease;
-}
-
-.modal:not(.hidden) {
-    display: flex !important;
-    opacity: 1;
-    background: rgba(0,0,0,0.6) !important;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-}
-
-.modal.hidden {
-    display: none !important;
-    opacity: 0;
-}
-
-.modal-dialog {
-    width: 100%;
-    max-width: 500px;
-    background: var(--bg) !important;
-    border-radius: 24px 24px 0 0;
-    transform: translateY(100%);
-    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 10001 !important;
-    position: relative;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
-}
-
-[data-theme="dark"] .modal-dialog {
-    background: var(--bg-dark) !important;
-}
-
-.modal:not(.hidden) .modal-dialog {
-    transform: translateY(0);
-    animation: slideUpModal 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@keyframes slideUpModal {
-    from {
-        transform: translateY(100%);
-    }
-    to {
-        transform: translateY(0);
-    }
-}
-
+/* Dialogbox */
 .dialogbox {
     align-items: center !important;
     padding: 20px;
@@ -1092,92 +1055,15 @@ body.modal-open .floating-menu-container {
 .modal:not(.hidden) .dialogbox .modal-dialog {
     transform: scale(1);
     opacity: 1;
-    animation: scaleInModal 0.3s ease;
 }
 
-@keyframes scaleInModal {
-    from {
-        transform: scale(0.9);
-        opacity: 0;
-    }
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-.modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 20px;
-    border-bottom: 1px solid #e5e5ea;
-}
-
-[data-theme="dark"] .modal-header {
-    border-bottom-color: #2c2c2e;
-}
-
-.modal-title {
-    font-size: 17px;
-    font-weight: 600;
-    flex: 1;
-    text-align: center;
-}
-
-.close-btn {
-    background: none;
-    border: none;
-    font-size: 24px;
-    color: var(--text-secondary);
-    cursor: pointer;
-    padding: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.modal-body {
-    padding: 20px;
-}
-
-.modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    padding: 16px 20px;
-    border-top: 1px solid #e5e5ea;
-}
-
-[data-theme="dark"] .modal-footer {
-    border-top-color: #2c2c2e;
-}
-
-.modal-content {
-    background: var(--bg) !important;
-    border-radius: 24px 24px 0 0;
-    overflow: hidden;
-}
-
-[data-theme="dark"] .modal-content {
-    background: var(--bg-dark) !important;
-}
-
-.dialogbox .modal-content {
-    border-radius: 20px;
-}
-
-/* ==================== FORM ELEMENTS ==================== */
+/* Form elements */
 .form-group {
     margin-bottom: 16px;
 }
 
-.label {
-    display: block;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-secondary);
-    margin-bottom: 8px;
+.input-wrapper {
+    position: relative;
 }
 
 .form-control {
@@ -1191,9 +1077,10 @@ body.modal-open .floating-menu-container {
     outline: none;
 }
 
-[data-theme="dark"] .form-control {
-    background: var(--bg-card);
-    border-color: #3a3a3c;
+[data-theme="dark"] .form-control:not(select) {
+    background: #1C1C1E;
+    border-color: rgba(255,255,255,0.1);
+    color: #E8ECF4;
 }
 
 .form-control:focus {
@@ -1201,19 +1088,15 @@ body.modal-open .floating-menu-container {
     box-shadow: 0 0 0 4px rgba(28, 92, 207, 0.1);
 }
 
-/* Teclado numérico para inputs de monto */
+[data-theme="dark"] .form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(74, 158, 255, 0.15);
+}
+
 input[type="number"], 
 input[inputmode="numeric"],
 input[type="tel"] {
     font-variant-numeric: tabular-nums;
-}
-
-.custom-select {
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238e8e93' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 16px center;
-    padding-right: 40px;
 }
 
 .max-available {
@@ -1267,7 +1150,7 @@ input[type="tel"] {
     font-weight: 600;
 }
 
-/* ==================== CHECKBOX iOS ==================== */
+/* Checkbox iOS */
 .ios-checkbox {
     display: flex;
     align-items: center;
@@ -1309,12 +1192,7 @@ input[type="tel"] {
     transform: rotate(45deg) scale(1);
 }
 
-.label-text {
-    font-size: 15px;
-    color: var(--text);
-}
-
-/* ==================== RADIO GROUPS ==================== */
+/* Radio groups */
 .ios-radio-group {
     display: flex;
     gap: 12px;
@@ -1331,34 +1209,12 @@ input[type="tel"] {
     opacity: 0;
 }
 
-.ios-radio label {
-    display: block;
-    padding: 14px;
-    background: var(--bg-dark);
-    border-radius: 12px;
-    text-align: center;
-    cursor: pointer;
-    border: 2px solid transparent;
-    font-weight: 500;
-    font-size: 15px;
-}
-
-.ios-radio input:checked + label {
-    border-color: var(--primary);
-    background: rgba(28, 92, 207, 0.1);
-    color: var(--primary);
-}
-
-[data-theme="dark"] .ios-radio input:checked + label {
-    background: rgba(10, 132, 255, 0.2);
-}
-
-/* ==================== TRANSACTIONS ==================== */
+/* Transactions */
 .transactions-container {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    min-height: 200px; /* Prevenir movimiento del menú cuando está vacío */
+    min-height: 200px;
 }
 
 .transaction-item {
@@ -1433,7 +1289,7 @@ input[type="tel"] {
     margin-top: 4px;
 }
 
-/* ==================== EMOJI PICKER ==================== */
+/* Emoji picker */
 .emoji-picker {
     display: flex;
     gap: 8px;
@@ -1462,7 +1318,7 @@ input[type="tel"] {
     transform: scale(1.1);
 }
 
-/* ==================== TOAST ==================== */
+/* Toast */
 .toast {
     position: fixed;
     top: calc(80px + env(safe-area-inset-top));
@@ -1482,7 +1338,7 @@ input[type="tel"] {
     display: none !important;
 }
 
-/* ==================== UTILITIES ==================== */
+/* Utilities */
 .hidden {
     display: none !important;
 }
@@ -1515,21 +1371,7 @@ input[type="tel"] {
     text-align: center;
 }
 
-.form-group.boxed {
-    background: var(--bg-dark);
-    border-radius: 12px;
-    padding: 4px;
-}
-
-[data-theme="dark"] .form-group.boxed {
-    background: var(--bg-card);
-}
-
-.input-wrapper {
-    position: relative;
-}
-
-/* ==================== APP CAPSULE ==================== */
+/* App Capsule */
 #appCapsule {
     padding-top: max(12px, env(safe-area-inset-top));
     padding-left: 16px;
@@ -1543,8 +1385,72 @@ input[type="tel"] {
     padding-top: max(12px, env(safe-area-inset-top));
 }
 
-/* ==================== ALERTS - PREVENIR MOVIMIENTO DEL MENÚ ==================== */
-#appCapsule .wide-block {
+/* Wide block */
+.wide-block {
     min-height: calc(100vh - 300px);
     min-height: calc(100dvh - 300px);
+}
+
+/* Close button */
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* App Bottom Menu hidden */
+.appBottomMenu {
+    display: none !important;
+}
+
+body.modal-open .floating-menu-container {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+/* Responsive */
+@media (max-width: 380px) {
+    .floating-menu-container {
+        width: calc(100% - 24px);
+        bottom: calc(15px + env(safe-area-inset-bottom)) !important;
+    }
+
+    .menu-item strong {
+        font-size: 10px;
+    }
+
+    .menu-item ion-icon {
+        font-size: 22px;
+    }
+
+    .balance {
+        font-size: 48px;
+    }
+}
+
+/* iOS Safe Area general */
+@supports (-webkit-touch-callout: none) {
+    #appCapsule {
+        padding-top: max(8px, env(safe-area-inset-top));
+    }
+
+    .header-large-title {
+        padding-top: max(4px, env(safe-area-inset-top));
+    }
+}
+
+@media (display-mode: browser) {
+    #appCapsule {
+        padding-top: 12px;
+    }
+
+    .header-large-title {
+        padding-top: 8px;
+    }
 }

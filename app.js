@@ -20,14 +20,16 @@ document.addEventListener('DOMContentLoaded', () => {
 async function initApp() {
     try {
         applyTheme();
-        
+
         // Inicializar DB primero
         await initDB();
-        
+
+        // Cargar datos ANTES de cualquier otra cosa
+        await loadData();
+
         if (checkSession()) {
             console.log('Sesión activa, entrando directo...');
             showMainApp();
-            await loadData();
             updateDate();
             populateSelects();
             renderSavingsCards();
@@ -35,15 +37,14 @@ async function initApp() {
             updateActivity();
             return;
         }
-        
-        await loadData();
+
         setupLogin();
         updateDate();
-        
+
         setTimeout(() => {
             document.getElementById('loginScreen').classList.add('fade-in');
         }, 100);
-        
+
     } catch (error) {
         console.error('Error inicializando app:', error);
     }
@@ -76,7 +77,7 @@ function checkSession() {
     const session = localStorage.getItem('pesso_session');
     const lastActivity = parseInt(localStorage.getItem('pesso_last_activity') || '0');
     const fiveMinutes = 5 * 60 * 1000;
-    
+
     if (!session) return false;
     if (Date.now() - lastActivity > fiveMinutes) {
         localStorage.removeItem('pesso_session');
@@ -101,30 +102,30 @@ function login() {
 async function initDB() {
     return new Promise((resolve, reject) => {
         const request = indexedDB.open(DB_NAME, DB_VERSION);
-        
+
         request.onerror = () => {
             console.error('Error abriendo DB:', request.error);
             reject(request.error);
         };
-        
+
         request.onsuccess = () => {
             db = request.result;
             console.log('DB abierta correctamente, version:', DB_VERSION);
             resolve(db);
         };
-        
+
         request.onupgradeneeded = (event) => {
             console.log('Actualizando DB a versión:', event.newVersion);
             const db = event.target.result;
-            
+
             if (!db.objectStoreNames.contains('envelopes')) {
                 db.createObjectStore('envelopes', { keyPath: 'id' });
             }
-            
+
             if (!db.objectStoreNames.contains('goals')) {
                 db.createObjectStore('goals', { keyPath: 'id' });
             }
-            
+
             if (!db.objectStoreNames.contains('notifications')) {
                 const notifStore = db.createObjectStore('notifications', { 
                     keyPath: 'id', 
@@ -152,7 +153,7 @@ async function loadData() {
         } else {
             envelopes = savedEnvelopes;
         }
-        
+
         const savedGoals = await getAllFromStore('goals');
         if (savedGoals.length === 0) {
             goals = [
@@ -162,9 +163,9 @@ async function loadData() {
         } else {
             goals = savedGoals;
         }
-        
+
         updateTotal();
-        
+
     } catch (error) {
         console.error('Error cargando datos:', error);
     }
@@ -175,14 +176,14 @@ async function loadData() {
 function setupLogin() {
     const savedPin = localStorage.getItem('pesso_pin');
     const savedName = localStorage.getItem('pesso_user');
-    
+
     if (!savedPin) {
         localStorage.setItem('pesso_pin', '1234');
         localStorage.setItem('pesso_user', userName);
     } else {
         userName = savedName || 'Usuario';
     }
-    
+
     const userNameEl = document.getElementById('userName');
     if (userNameEl) {
         userNameEl.textContent = `Hi 👋🏼 ${userName}`;
@@ -193,7 +194,7 @@ function enterPin(num) {
     if (currentPin.length < 4) {
         currentPin += num;
         updatePinDots();
-        
+
         if (currentPin.length === 4) {
             setTimeout(verifyPin, 100);
         }
@@ -215,10 +216,10 @@ function updatePinDots() {
 
 function verifyPin() {
     const savedPin = localStorage.getItem('pesso_pin');
-    
+
     if (currentPin === savedPin) {
         login();
-        
+
         document.getElementById('loginScreen').style.opacity = '0';
         setTimeout(() => {
             document.getElementById('loginScreen').classList.add('hidden');
@@ -227,7 +228,7 @@ function verifyPin() {
                 document.getElementById('mainApp').style.opacity = '1';
             }, 50);
         }, 300);
-        
+
         currentPin = '';
         updatePinDots();
         populateSelects();
@@ -262,12 +263,12 @@ function updateTotal() {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     });
-    
+
     const balanceEl = document.getElementById('totalBalance');
     if (balanceEl) {
         balanceEl.textContent = `$${formatted}`;
     }
-    
+
     localStorage.setItem('pesso_balance', formatted);
 }
 
@@ -276,9 +277,9 @@ function updateTotal() {
 function renderSavingsCards() {
     const container = document.getElementById('savingsList');
     if (!container) return;
-    
+
     container.innerHTML = '';
-    
+
     if (envelopes.length === 0) {
         container.innerHTML = `
             <div class="empty-state">
@@ -287,12 +288,12 @@ function renderSavingsCards() {
         `;
         return;
     }
-    
+
     envelopes.forEach(env => {
         const card = document.createElement('div');
         card.className = 'ios-card savings-card';
         card.onclick = () => showQuickActions(env.id);
-        
+
         let goalHtml = '';
         if (env.goal && env.goal > 0) {
             const progress = Math.min(100, (env.amount / env.goal) * 100);
@@ -303,7 +304,7 @@ function renderSavingsCards() {
                 </div>
             `;
         }
-        
+
         card.innerHTML = `
             <div class="ios-card-header compact">
                 <div>
@@ -317,7 +318,7 @@ function renderSavingsCards() {
             <div class="ios-card-amount compact-amount">$${env.amount.toLocaleString('en-US', {minimumFractionDigits: 2})}</div>
             ${goalHtml}
         `;
-        
+
         container.appendChild(card);
     });
 }
@@ -333,17 +334,17 @@ function showAddModal() {
         showToast('Debes iniciar sesión');
         return;
     }
-    
+
     document.getElementById('addAmount').value = '';
     document.getElementById('savingGoalCheck').checked = false;
     document.getElementById('savingGoalGroup').classList.add('hidden');
     document.getElementById('savingGoalAmount').value = '';
-    
+
     document.getElementById('addToSavings').checked = true;
     toggleAddDestination();
-    
+
     populateSelects();
-    
+
     const modal = document.getElementById('addModal');
     if (modal) {
         modal.classList.remove('hidden');
@@ -356,10 +357,10 @@ function showWithdrawModal() {
         showToast('Debes iniciar sesión');
         return;
     }
-    
+
     document.getElementById('withdrawAmount').value = '';
     populateSelects();
-    
+
     const modal = document.getElementById('withdrawModal');
     if (modal) {
         modal.classList.remove('hidden');
@@ -367,29 +368,24 @@ function showWithdrawModal() {
     }
 }
 
+// ==================== FIX: TRANSFER MODAL ====================
 function showTransferModal() {
     if (!isLoggedIn) {
         showToast('Debes iniciar sesión');
         return;
     }
-    
-    // Asegurar que los datos estén cargados antes de mostrar el modal
-    if (!envelopes || envelopes.length === 0) {
-        loadData().then(() => {
-            populateTransferSelects();
-            const modal = document.getElementById('transferModal');
-            if (modal) {
-                modal.classList.remove('hidden');
-                document.body.classList.add('modal-open');
-            }
-        });
-    } else {
-        populateTransferSelects();
-        const modal = document.getElementById('transferModal');
-        if (modal) {
-            modal.classList.remove('hidden');
-            document.body.classList.add('modal-open');
-        }
+
+    // Limpiar input
+    const amountInput = document.getElementById('transferAmount');
+    if (amountInput) amountInput.value = '';
+
+    // Poblar selects con datos actuales
+    populateTransferSelects();
+
+    const modal = document.getElementById('transferModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.body.classList.add('modal-open');
     }
 }
 
@@ -413,7 +409,7 @@ function toggleAddDestination() {
     const savingsGroup = document.getElementById('savingsSelectGroup');
     const goalsGroup = document.getElementById('goalsSelectGroup');
     const goalCheckGroup = document.getElementById('goalCheckGroup');
-    
+
     if (savingsGroup) savingsGroup.classList.toggle('hidden', !isSavings);
     if (goalsGroup) goalsGroup.classList.toggle('hidden', isSavings);
     if (goalCheckGroup) goalCheckGroup.classList.toggle('hidden', !isSavings);
@@ -431,7 +427,7 @@ function populateSelects() {
     const addSavingsSelect = document.getElementById('addSavingsSelect');
     const addGoalSelect = document.getElementById('addGoalSelect');
     const withdrawSelect = document.getElementById('withdrawEnvelope');
-    
+
     // Add to Savings select
     if (addSavingsSelect) {
         addSavingsSelect.innerHTML = '';
@@ -448,7 +444,7 @@ function populateSelects() {
             });
         }
     }
-    
+
     // Add to Goals select
     if (addGoalSelect) {
         addGoalSelect.innerHTML = '';
@@ -465,7 +461,7 @@ function populateSelects() {
             });
         }
     }
-    
+
     // Withdraw select
     if (withdrawSelect) {
         withdrawSelect.innerHTML = '';
@@ -486,70 +482,73 @@ function populateSelects() {
     }
 }
 
+// ==================== FIX: POPULATE TRANSFER SELECTS ====================
 function populateTransferSelects() {
+    console.log('populateTransferSelects called, envelopes:', envelopes);
+
     const fromSelect = document.getElementById('transferFrom');
     const toSelect = document.getElementById('transferTo');
-    
+
     if (!fromSelect || !toSelect) {
         console.error('Select elements not found');
         return;
     }
-    
+
     // Limpiar opciones existentes
     fromSelect.innerHTML = '';
     toSelect.innerHTML = '';
-    
-    // Verificar si hay datos cargados
+
+    // Verificar si hay datos
     if (!envelopes || envelopes.length === 0) {
-        console.log('No envelopes data, loading...');
-        // Intentar recargar datos
-        loadData().then(() => {
-            populateTransferSelects();
-        });
-        return;
-    }
-    
-    // Si solo hay una cuenta, mostrar mensaje
-    if (envelopes.length < 2) {
+        console.log('No envelopes data');
         const option = document.createElement('option');
-        option.textContent = 'Need 2+ accounts to transfer';
+        option.textContent = 'No accounts';
         fromSelect.appendChild(option.cloneNode(true));
         toSelect.appendChild(option.cloneNode(true));
         return;
     }
-    
-    // Poblar ambos selects con las cuentas
-    envelopes.forEach((env, index) => {
+
+    // Si solo hay una cuenta
+    if (envelopes.length < 2) {
+        const option = document.createElement('option');
+        option.textContent = 'Need 2+ accounts';
+        fromSelect.appendChild(option.cloneNode(true));
+        toSelect.appendChild(option.cloneNode(true));
+        return;
+    }
+
+    // Poblar ambos selects
+    envelopes.forEach((env) => {
         const optionFrom = document.createElement('option');
         optionFrom.value = env.id;
         optionFrom.textContent = `${env.name} ($${env.amount.toFixed(2)})`;
         fromSelect.appendChild(optionFrom);
-        
+
         const optionTo = document.createElement('option');
         optionTo.value = env.id;
         optionTo.textContent = `${env.name} ($${env.amount.toFixed(2)})`;
         toSelect.appendChild(optionTo);
     });
-    
+
     // Seleccionar diferentes cuentas por defecto
     if (envelopes.length >= 2) {
         toSelect.selectedIndex = 1;
     }
-    
-    console.log('Transfer selects populated with', envelopes.length, 'accounts');
+
+    console.log('Transfer selects populated:', fromSelect.options.length, 'options');
 }
 
 function updateMaxAvailable() {
     const select = document.getElementById('withdrawEnvelope');
     const maxDiv = document.getElementById('maxAvailable');
     const goalInfo = document.getElementById('goalInfo');
-    
+
     if (!select) return;
-    
+
     const envelope = envelopes.find(e => e.id === select.value);
     if (envelope) {
         if (maxDiv) maxDiv.textContent = `Máximo disponible: $${envelope.amount.toFixed(2)}`;
-        
+
         if (goalInfo) {
             if (envelope.goal && envelope.goal > 0) {
                 goalInfo.textContent = `⚠️ Meta activa: $${envelope.goal.toFixed(2)}`;
@@ -566,37 +565,37 @@ function updateMaxAvailable() {
 async function confirmAdd() {
     const amountInput = document.getElementById('addAmount');
     const isSavings = document.getElementById('addToSavings').checked;
-    
+
     if (!amountInput) return;
-    
+
     const amount = parseFloat(amountInput.value);
-    
+
     if (!amount || amount <= 0) {
         showToast('Ingresa un monto válido');
         return;
     }
-    
+
     if (isSavings) {
         const envelopeSelect = document.getElementById('addSavingsSelect');
         const goalCheck = document.getElementById('savingGoalCheck');
         const goalAmountInput = document.getElementById('savingGoalAmount');
-        
+
         if (!envelopeSelect) return;
-        
+
         const envelopeId = envelopeSelect.value;
         const envelope = envelopes.find(e => e.id === envelopeId);
-        
+
         if (!envelope) return;
-        
+
         envelope.amount += amount;
-        
+
         if (goalCheck && goalCheck.checked && goalAmountInput) {
             const goalAmount = parseFloat(goalAmountInput.value);
             if (goalAmount && goalAmount > 0) {
                 envelope.goal = goalAmount;
             }
         }
-        
+
         try {
             await saveToStore('envelopes', envelope);
             await addNotification(
@@ -610,7 +609,7 @@ async function confirmAdd() {
             renderSavingsCards();
             showToast(`Agregado $${amount.toFixed(2)} a ${envelope.name}`);
             updateActivity();
-            
+
             closeModal('addModal');
             amountInput.value = '';
         } catch (error) {
@@ -623,14 +622,14 @@ async function confirmAdd() {
             showToast('No goals available');
             return;
         }
-        
+
         const goalId = goalSelect.value;
         const goal = goals.find(g => g.id === goalId);
-        
+
         if (!goal) return;
-        
+
         goal.saved += amount;
-        
+
         try {
             await saveToStore('goals', goal);
             await addNotification(
@@ -642,7 +641,7 @@ async function confirmAdd() {
             populateSelects();
             showToast(`Agregado $${amount.toFixed(2)} a meta ${goal.name}`);
             updateActivity();
-            
+
             closeModal('addModal');
             amountInput.value = '';
         } catch (error) {
@@ -655,31 +654,31 @@ async function confirmAdd() {
 async function confirmWithdraw() {
     const amountInput = document.getElementById('withdrawAmount');
     const envelopeSelect = document.getElementById('withdrawEnvelope');
-    
+
     if (!amountInput || !envelopeSelect) return;
-    
+
     const amount = parseFloat(amountInput.value);
     const envelopeId = envelopeSelect.value;
-    
+
     if (!amount || amount <= 0) {
         showToast('Ingresa un monto válido');
         return;
     }
-    
+
     const envelope = envelopes.find(e => e.id === envelopeId);
     if (!envelope) return;
-    
+
     if (amount > envelope.amount) {
         showErrorModal(envelope.name, envelope.amount, amount);
         return;
     }
-    
+
     if (envelope.goal && envelope.goal > 0 && envelope.amount < envelope.goal) {
         pendingWithdrawal = { envelope, amount };
         showGoalWarning(envelope);
         return;
     }
-    
+
     await processWithdrawal(envelope, amount);
     closeModal('withdrawModal');
     amountInput.value = '';
@@ -715,7 +714,7 @@ async function confirmWithdrawAnyway() {
 
 async function processWithdrawal(envelope, amount) {
     envelope.amount -= amount;
-    
+
     try {
         await saveToStore('envelopes', envelope);
         await addNotification(
@@ -735,48 +734,60 @@ async function processWithdrawal(envelope, amount) {
     }
 }
 
+// ==================== FIX: CONFIRM TRANSFER ====================
 async function confirmTransfer() {
+    console.log('confirmTransfer called');
+
     const fromSelect = document.getElementById('transferFrom');
     const toSelect = document.getElementById('transferTo');
     const amountInput = document.getElementById('transferAmount');
-    
+
     if (!fromSelect || !toSelect || !amountInput) {
         console.error('Transfer form elements not found');
+        showToast('Error: Form not found');
         return;
     }
-    
+
+    console.log('From value:', fromSelect.value);
+    console.log('To value:', toSelect.value);
+    console.log('Envelopes:', envelopes);
+
     const fromId = fromSelect.value;
     const toId = toSelect.value;
     const amount = parseFloat(amountInput.value);
-    
+
     // Validaciones
     if (fromId === toId) {
         showToast('Select different accounts');
         return;
     }
-    
+
     if (!amount || amount <= 0 || isNaN(amount)) {
         showToast('Enter a valid amount');
         return;
     }
-    
+
+    // Buscar envelopes
     const fromEnvelope = envelopes.find(e => e.id === fromId);
     const toEnvelope = envelopes.find(e => e.id === toId);
-    
+
+    console.log('From envelope:', fromEnvelope);
+    console.log('To envelope:', toEnvelope);
+
     if (!fromEnvelope || !toEnvelope) {
         showToast('Accounts not found');
         return;
     }
-    
+
     if (amount > fromEnvelope.amount) {
         showToast('Insufficient funds');
         return;
     }
-    
+
     // Procesar transferencia
     fromEnvelope.amount -= amount;
     toEnvelope.amount += amount;
-    
+
     try {
         await saveToStore('envelopes', fromEnvelope);
         await saveToStore('envelopes', toEnvelope);
@@ -791,7 +802,7 @@ async function confirmTransfer() {
         renderSavingsCards();
         showToast(`Transferred $${amount.toFixed(2)}`);
         updateActivity();
-        
+
         closeModal('transferModal');
         amountInput.value = '';
     } catch (error) {
@@ -807,12 +818,12 @@ async function addNotification(type, title, description, amount = null) {
         console.error('DB no inicializada');
         return;
     }
-    
+
     if (!db.objectStoreNames.contains('notifications')) {
         console.error('Object store notifications no existe');
         return;
     }
-    
+
     const notification = {
         type: type,
         title: title,
@@ -821,7 +832,7 @@ async function addNotification(type, title, description, amount = null) {
         date: new Date().toISOString(),
         read: false
     };
-    
+
     try {
         await saveToStore('notifications', notification);
         console.log('Notificación guardada:', title);
@@ -836,7 +847,7 @@ function showErrorModal(envelopeName, available, attempted) {
     const errorAvailable = document.getElementById('errorAvailable');
     const errorAttempted = document.getElementById('errorAttempted');
     const errorModal = document.getElementById('errorModal');
-    
+
     if (errorAvailable) errorAvailable.textContent = `$${available.toFixed(2)}`;
     if (errorAttempted) errorAttempted.textContent = `$${attempted.toFixed(2)}`;
     if (errorModal) {
@@ -861,12 +872,12 @@ async function saveToStore(storeName, data) {
             reject(new Error('DB no inicializada'));
             return;
         }
-        
+
         if (!db.objectStoreNames.contains(storeName)) {
             reject(new Error(`Object store ${storeName} no existe`));
             return;
         }
-        
+
         try {
             const tx = db.transaction(storeName, 'readwrite');
             const store = tx.objectStore(storeName);
@@ -885,12 +896,12 @@ async function getAllFromStore(storeName) {
             resolve([]);
             return;
         }
-        
+
         if (!db.objectStoreNames.contains(storeName)) {
             resolve([]);
             return;
         }
-        
+
         try {
             const tx = db.transaction(storeName, 'readonly');
             const store = tx.objectStore(storeName);
@@ -909,10 +920,10 @@ function showToast(message) {
         alert(message);
         return;
     }
-    
+
     toast.textContent = message;
     toast.classList.remove('hidden');
-    
+
     setTimeout(() => {
         toast.classList.add('hidden');
     }, 3000);

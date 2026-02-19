@@ -18,79 +18,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">     
-    <style>
-        /* FIX: Header al borde del notch */
-        .header-large-title {
-            padding-top: env(safe-area-inset-top) !important;
-            padding-bottom: 8px;
-        }
-        
-        /* Balance más grande */
-        .balance {
-            font-size: 60px !important;
-            font-weight: 800 !important;
-            letter-spacing: -2px !important;
-        }
-        
-        /* Modal styles específicos para index */
-        .modal {
-            background: rgba(0,0,0,0) !important;
-            transition: background 0.3s ease !important;
-        }
-        
-        .modal:not(.hidden) {
-            background: rgba(0,0,0,0.6) !important;
-            backdrop-filter: blur(5px) !important;
-            -webkit-backdrop-filter: blur(5px) !important;
-        }
-        
-        .modal-dialog {
-            background: var(--bg) !important;
-            border-radius: 24px 24px 0 0 !important;
-            transform: translateY(100%) !important;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        }
-        
-        .modal:not(.hidden) .modal-dialog {
-            transform: translateY(0) !important;
-        }
-        
-        .modal-content {
-            background: var(--bg) !important;
-            border-radius: 24px 24px 0 0 !important;
-        }
-        
-        [data-theme="dark"] .modal-dialog,
-        [data-theme="dark"] .modal-content {
-            background: var(--bg-dark) !important;
-        }
-
-/* ==================== FIX SELECTS HOME ==================== */
-
-/* Dark mode */
-[data-theme="dark"] select,
-[data-theme="dark"] select.form-control,
-[data-theme="dark"] .custom-select,
-[data-theme="dark"] #addSavingsSelect,
-[data-theme="dark"] #addGoalSelect,
-[data-theme="dark"] #withdrawEnvelope,
-[data-theme="dark"] #transferFrom,
-[data-theme="dark"] #transferTo {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238B92A8' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
-    background-color: #111b36 !important;
-    color: #E8ECF4 !important;
-    border-color: rgba(74, 158, 255, 0.2) !important;
-}      
-
-/* FIX: Saludo en home */
-#userName {
-    color: var(--text) !important;
-}
-
-[data-theme="dark"] #userName {
-    color: #E8ECF4 !important;
-}  
-    </style>
+<base target="_blank">
 </head>
 
 <body>
@@ -100,12 +28,12 @@
         <div class="login-container">
             <h1 class="login-title varela-round-regular">pesso</h1>
             <p class="login-subtitle" id="loginSubtitle">Enter your PIN to continue</p>
-            
+
             <div class="pin-dots" id="pinDots">
                 <span></span><span></span><span></span><span></span>
             </div>
             <div class="pin-error" id="pinError"></div>
-            
+
             <div class="pin-pad">
                 <button onclick="enterPin(1)">1</button>
                 <button onclick="enterPin(2)">2</button>
@@ -148,13 +76,13 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Balance Actions -->
                     <div class="balance-actions">
-                        <button type="button" class="btn btn-primary btn-lg rounded" onclick="openModal('addModal')">
+                        <button type="button" class="btn btn-primary btn-lg rounded" onclick="showAddModal()">
                             Add Cash
                         </button>
-                        <button type="button" class="btn btn-primary btn-lg rounded" onclick="openModal('withdrawModal')">
+                        <button type="button" class="btn btn-primary btn-lg rounded" onclick="showWithdrawModal()">
                             Cash Out
                         </button>
                     </div>
@@ -166,7 +94,7 @@
                 <div class="section mt-4">
                     <div class="section-header">
                         <h2 class="section-title">Savings accounts</h2>
-                        <button class="btn-text" onclick="openModal('transferModal')">Transfer</button>
+                        <button class="btn-text" onclick="showTransferModal()">Transfer</button>
                     </div>
                     <div id="savingsList" class="ios-cards-container">
                         <!-- Cards generadas por JS -->
@@ -182,7 +110,7 @@
                         <div class="col-12">
                             <ul class="listview image-listview flush transparent mb-1">
                                 <li>
-                                    <a href="#" class="item" onclick="openModal('transferModal'); return false;">
+                                    <a href="#" class="item" onclick="showTransferModal(); return false;">
                                         <div class="icon-box bg-success">
                                             <ion-icon name="swap-vertical-outline"></ion-icon>
                                         </div>
@@ -247,7 +175,7 @@
 
     </div>
 
-    <!-- Modales... (Add Cash, Cash Out, Transfer, etc - igual que antes) -->
+    <!-- Modales -->
     <!-- Add Cash Modal -->
     <div id="addModal" class="modal hidden">
         <div class="modal-dialog">
@@ -272,7 +200,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="form-group boxed" id="savingsSelectGroup">
                         <div class="input-wrapper">
                             <label class="label">Savings Account</label>
@@ -281,7 +209,7 @@
                             </select>
                         </div>
                     </div>
-                    
+
                     <div class="form-group boxed hidden" id="goalsSelectGroup">
                         <div class="input-wrapper">
                             <label class="label">Goal</label>
@@ -290,7 +218,7 @@
                             </select>
                         </div>
                     </div>
-                    
+
                     <div class="form-group boxed">
                         <div class="input-wrapper">
                             <label class="label">Amount</label>
@@ -458,30 +386,7 @@
     <script src="app.js"></script>    
 
     <script>
-        // FUNCIONES DE MODAL CORREGIDAS
-        function openModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.remove('hidden');
-                document.body.classList.add('modal-open');
-            }
-        }
-
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.add('hidden');
-                document.body.classList.remove('modal-open');
-            }
-        }
-
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('modal')) {
-                const modalId = e.target.id;
-                closeModal(modalId);
-            }
-        });
-
+        // Aplicar tema inmediatamente
         (function() {
             const isDarkMode = localStorage.getItem('pesso_dark_mode') === 'true';
             if (isDarkMode) {
@@ -491,25 +396,14 @@
     </script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const menu = document.querySelector('.floating-menu-container');
-            if (menu) {
-                menu.style.display = 'block';
-                menu.style.visibility = 'visible';
-                menu.style.opacity = '1';
-            }
-        });
-    </script>
-
-    <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
                     .then((registration) => {
-                        console.log('✅ SW registrado:', registration.scope);
+                        console.log('SW registrado:', registration.scope);
                     })
                     .catch((error) => {
-                        console.error('❌ Error registrando SW:', error);
+                        console.error('Error registrando SW:', error);
                     });
             });
         }
