@@ -64,6 +64,32 @@
         [data-theme="dark"] .modal-content {
             background: var(--bg-dark) !important;
         }
+
+/* ==================== FIX SELECTS HOME ==================== */
+
+/* Dark mode */
+[data-theme="dark"] select,
+[data-theme="dark"] select.form-control,
+[data-theme="dark"] .custom-select,
+[data-theme="dark"] #addSavingsSelect,
+[data-theme="dark"] #addGoalSelect,
+[data-theme="dark"] #withdrawEnvelope,
+[data-theme="dark"] #transferFrom,
+[data-theme="dark"] #transferTo {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238B92A8' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
+    background-color: #111b36 !important;
+    color: #E8ECF4 !important;
+    border-color: rgba(74, 158, 255, 0.2) !important;
+}      
+
+/* FIX: Saludo en home */
+#userName {
+    color: var(--text) !important;
+}
+
+[data-theme="dark"] #userName {
+    color: #E8ECF4 !important;
+}  
     </style>
 </head>
 
@@ -110,7 +136,7 @@
             <!-- HOME SCREEN -->
             <div id="screen-home" class="screen-content active">
                 <div class="header-large-title">
-                    <h2 id="userName">Hi 👋🏼</h2>
+                    <h2 id="userName" style="color: var(--text);">Hi 👋🏼</h2>
                 </div>
 
                 <div class="section mt-4">
@@ -176,7 +202,7 @@
                                     </a>      
                                 </li>                                                          
                                 <li>
-                                    <a href="#" class="item" onclick="showToast('Get Pesso+ Coming soon'); return false;">
+                                    <a href="#" class="item" onclick="showToast('Pesso+ Coming soon'); return false;">
                                         <div class="icon-box bg-primary">
                                             <ion-icon name="flash-outline"></ion-icon>
                                         </div>
