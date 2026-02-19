@@ -8,7 +8,9 @@
     <meta name="theme-color" content="#1C5CCF" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
     <title>Pesso</title>
+    <!-- Manifest PWA -->  
     <link rel="manifest" href="manifest.json">
+    <!-- Style CSS / ICONS -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png" sizes="32x32">    
     <link rel="apple-touch-icon" href="assets/icon/iconicon-192.png">
     <link rel="stylesheet" href="style.css">
@@ -21,7 +23,7 @@
         
         /* Balance más grande */
         .balance {
-            font-size: 64px !important;
+            font-size: 60px !important;
             font-weight: 800 !important;
             letter-spacing: -2px !important;
         }
@@ -105,7 +107,7 @@
             <!-- HOME SCREEN -->
             <div id="screen-home" class="screen-content active">
                 <div class="header-large-title">
-                    <h1 class="subtitle" id="userName">Welcome back</h1>
+                    <h2 id="userName">Hi</h2>
                     <h3 class="subtitle font-weight-bold" id="currentDate"></h3>
                 </div>
 
@@ -170,8 +172,8 @@
                                     </a>      
                                 </li>                                                          
                                 <li>
-                                    <a href="#" class="item" onclick="showToast('Coming soon'); return false;">
-                                        <div class="icon-box bg-danger">
+                                    <a href="#" class="item" onclick="showToast('Get Pesso+ Coming soon'); return false;">
+                                        <div class="icon-box bg-primary">
                                             <ion-icon name="flash-outline"></ion-icon>
                                         </div>
                                         <div class="in font-weight-bold">
@@ -262,7 +264,7 @@
                     <div class="form-group boxed">
                         <div class="input-wrapper">
                             <label class="label">Amount</label>
-                            <input type="number" class="form-control" id="addAmount" placeholder="Enter amount" step="0.01" min="0.01">
+                            <input type="number" inputmode="numeric" pattern="[0-9]*" class="form-control" id="addAmount" placeholder="Enter amount" step="0.01" min="0.01">
                         </div>
                     </div>
 

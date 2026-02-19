@@ -8,7 +8,9 @@
     <meta name="theme-color" content="#1C5CCF" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
     <title>Goals - Pesso</title>
+    <!-- Manifest PWA -->    
     <link rel="manifest" href="manifest.json">
+    <!-- Style CSS / ICONS -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png" sizes="32x32">    
     <link rel="apple-touch-icon" href="assets/icon/iconicon-192.png">
     <link rel="stylesheet" href="style.css">
@@ -378,7 +380,7 @@
                 
                 <div class="sheet-form-group">
                     <label>Target Amount</label>
-                    <input type="number" class="form-control" id="newGoalTarget" placeholder="0.00" step="0.01">
+                    <input type="number" inputmode="numeric" pattern="[0-9]*" class="form-control" id="newGoalTarget" placeholder="0.00" step="0.01">
                 </div>
                 
                 <div class="sheet-form-group">
