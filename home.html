@@ -76,6 +76,12 @@
         }
 
         /* ==================== SECTIONS - Estilo Home ==================== */
+
+#appCapsule.profile-container {
+    padding-left: 0;
+    padding-right: 0;
+}
+        
         .settings-section-glass {
             margin-bottom: 24px;
             padding: 0 16px;  /* Mismo padding que home */
@@ -92,17 +98,16 @@
             letter-spacing: normal;    /* Sin espaciado extra */
         }
 
-/* Grupo de settings - MISMO ancho que cards de home */
-.settings-group-glass {
-    margin: 0;
-    background: var(--bg-card);
-    border-radius: 16px;
-    border: none;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.02);
-    overflow: hidden;
-    width: 100%;           /* Ancho completo del contenedor */
-    box-sizing: border-box;
-}
+        /* Grupo de settings igual que cards de home */
+        .settings-group-glass {
+            margin: 0;
+            background: var(--bg-card);  /* Mismo fondo que ios-card */
+            border-radius: 16px;         /* Mismo radio que ios-card */
+            border: none;                /* Sin borde extra */
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.02);
+            width: 100%;           /* Ancho completo del contenedor */
+            overflow: hidden;
+        }
 
         [data-theme="dark"] .settings-group-glass {
             background: rgba(44, 44, 46, 0.8);
