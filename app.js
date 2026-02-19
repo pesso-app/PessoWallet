@@ -1,6 +1,6 @@
 // ==================== CONFIGURACIÓN ====================
 const DB_NAME = 'PessoDB';
-const DB_VERSION = 4; // Incrementado para forzar actualización
+const DB_VERSION = 4;
 const PRIMARY_COLOR = '#1C5CCF';
 
 let db = null;
@@ -117,19 +117,15 @@ async function initDB() {
             console.log('Actualizando DB a versión:', event.newVersion);
             const db = event.target.result;
             
-            // Crear object stores si no existen
             if (!db.objectStoreNames.contains('envelopes')) {
-                console.log('Creando object store: envelopes');
                 db.createObjectStore('envelopes', { keyPath: 'id' });
             }
             
             if (!db.objectStoreNames.contains('goals')) {
-                console.log('Creando object store: goals');
                 db.createObjectStore('goals', { keyPath: 'id' });
             }
             
             if (!db.objectStoreNames.contains('notifications')) {
-                console.log('Creando object store: notifications');
                 const notifStore = db.createObjectStore('notifications', { 
                     keyPath: 'id', 
                     autoIncrement: true 
@@ -340,20 +336,21 @@ function showAddModal() {
         return;
     }
     
-    // Resetear formulario
     document.getElementById('addAmount').value = '';
     document.getElementById('savingGoalCheck').checked = false;
     document.getElementById('savingGoalGroup').classList.add('hidden');
     document.getElementById('savingGoalAmount').value = '';
     
-    // Resetear radio buttons
     document.getElementById('addToSavings').checked = true;
     toggleAddDestination();
     
     populateSelects();
     
     const modal = document.getElementById('addModal');
-    if (modal) modal.classList.remove('hidden');
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.body.classList.add('modal-open');
+    }
 }
 
 function showWithdrawModal() {
@@ -366,7 +363,10 @@ function showWithdrawModal() {
     populateSelects();
     
     const modal = document.getElementById('withdrawModal');
-    if (modal) modal.classList.remove('hidden');
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.body.classList.add('modal-open');
+    }
 }
 
 function showTransferModal() {
@@ -378,7 +378,10 @@ function showTransferModal() {
     populateTransferSelects();
     
     const modal = document.getElementById('transferModal');
-    if (modal) modal.classList.remove('hidden');
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.body.classList.add('modal-open');
+    }
 }
 
 function closeModal(modalId) {
@@ -389,7 +392,6 @@ function closeModal(modalId) {
             document.body.classList.remove('modal-open');
         }
     } else {
-        // Cerrar todos los modales si no se especifica ID
         document.querySelectorAll('.modal').forEach(m => {
             m.classList.add('hidden');
         });
@@ -414,25 +416,31 @@ function toggleSavingGoal() {
     if (group) group.classList.toggle('hidden', !isChecked);
 }
 
-// ==================== SELECTS ====================
+// ==================== SELECTS - CORREGIDO ====================
 
 function populateSelects() {
     const addSavingsSelect = document.getElementById('addSavingsSelect');
     const addGoalSelect = document.getElementById('addGoalSelect');
     const withdrawSelect = document.getElementById('withdrawEnvelope');
     
-    // Savings select
+    // Add to Savings select
     if (addSavingsSelect) {
         addSavingsSelect.innerHTML = '';
-        envelopes.forEach(env => {
+        if (envelopes.length === 0) {
             const option = document.createElement('option');
-            option.value = env.id;
-            option.textContent = `${env.name} ($${env.amount.toFixed(2)})`;
+            option.textContent = 'No accounts available';
             addSavingsSelect.appendChild(option);
-        });
+        } else {
+            envelopes.forEach(env => {
+                const option = document.createElement('option');
+                option.value = env.id;
+                option.textContent = `${env.name} ($${env.amount.toFixed(2)})`;
+                addSavingsSelect.appendChild(option);
+            });
+        }
     }
     
-    // Goals select
+    // Add to Goals select
     if (addGoalSelect) {
         addGoalSelect.innerHTML = '';
         if (goals.length === 0) {
@@ -452,12 +460,18 @@ function populateSelects() {
     // Withdraw select
     if (withdrawSelect) {
         withdrawSelect.innerHTML = '';
-        envelopes.forEach(env => {
+        if (envelopes.length === 0) {
             const option = document.createElement('option');
-            option.value = env.id;
-            option.textContent = `${env.name} ($${env.amount.toFixed(2)})`;
+            option.textContent = 'No accounts available';
             withdrawSelect.appendChild(option);
-        });
+        } else {
+            envelopes.forEach(env => {
+                const option = document.createElement('option');
+                option.value = env.id;
+                option.textContent = `${env.name} ($${env.amount.toFixed(2)})`;
+                withdrawSelect.appendChild(option);
+            });
+        }
         withdrawSelect.onchange = updateMaxAvailable;
         updateMaxAvailable();
     }
@@ -467,22 +481,51 @@ function populateTransferSelects() {
     const fromSelect = document.getElementById('transferFrom');
     const toSelect = document.getElementById('transferTo');
     
-    if (fromSelect && toSelect) {
-        fromSelect.innerHTML = '';
-        toSelect.innerHTML = '';
-        
-        envelopes.forEach(env => {
-            const option1 = document.createElement('option');
-            option1.value = env.id;
-            option1.textContent = `${env.name} ($${env.amount.toFixed(2)})`;
-            fromSelect.appendChild(option1);
-            
-            const option2 = document.createElement('option');
-            option2.value = env.id;
-            option2.textContent = `${env.name} ($${env.amount.toFixed(2)})`;
-            toSelect.appendChild(option2);
-        });
+    if (!fromSelect || !toSelect) {
+        console.error('Select elements not found');
+        return;
     }
+    
+    // Limpiar opciones existentes
+    fromSelect.innerHTML = '';
+    toSelect.innerHTML = '';
+    
+    if (envelopes.length === 0) {
+        const emptyOption = document.createElement('option');
+        emptyOption.textContent = 'No accounts available';
+        fromSelect.appendChild(emptyOption.cloneNode(true));
+        toSelect.appendChild(emptyOption.cloneNode(true));
+        return;
+    }
+    
+    // Si solo hay una cuenta, mostrar mensaje
+    if (envelopes.length < 2) {
+        const option = document.createElement('option');
+        option.textContent = 'Need 2+ accounts to transfer';
+        fromSelect.appendChild(option.cloneNode(true));
+        toSelect.appendChild(option.cloneNode(true));
+        return;
+    }
+    
+    // Poblar ambos selects con las cuentas
+    envelopes.forEach(env => {
+        const optionFrom = document.createElement('option');
+        optionFrom.value = env.id;
+        optionFrom.textContent = `${env.name} ($${env.amount.toFixed(2)})`;
+        fromSelect.appendChild(optionFrom);
+        
+        const optionTo = document.createElement('option');
+        optionTo.value = env.id;
+        optionTo.textContent = `${env.name} ($${env.amount.toFixed(2)})`;
+        toSelect.appendChild(optionTo);
+    });
+    
+    // Seleccionar diferentes cuentas por defecto
+    if (envelopes.length >= 2) {
+        toSelect.selectedIndex = 1;
+    }
+    
+    console.log('Transfer selects populated:', envelopes.length, 'accounts');
 }
 
 function updateMaxAvailable() {
@@ -509,7 +552,6 @@ function updateMaxAvailable() {
 
 // ==================== TRANSACCIONES ====================
 
-// Arreglar confirmAdd - asegurar que cierra
 async function confirmAdd() {
     const amountInput = document.getElementById('addAmount');
     const isSavings = document.getElementById('addToSavings').checked;
@@ -558,16 +600,13 @@ async function confirmAdd() {
             showToast(`Agregado $${amount.toFixed(2)} a ${envelope.name}`);
             updateActivity();
             
-            // CERRAR MODAL EXPLÍCITAMENTE
             closeModal('addModal');
-            // Limpiar formulario
             amountInput.value = '';
         } catch (error) {
             console.error('Error:', error);
             showToast('Error al guardar');
         }
     } else {
-        // Agregar a Goals
         const goalSelect = document.getElementById('addGoalSelect');
         if (!goalSelect || goals.length === 0) {
             showToast('No goals available');
@@ -593,9 +632,7 @@ async function confirmAdd() {
             showToast(`Agregado $${amount.toFixed(2)} a meta ${goal.name}`);
             updateActivity();
             
-            // CERRAR MODAL EXPLÍCITAMENTE
             closeModal('addModal');
-            // Limpiar formulario
             amountInput.value = '';
         } catch (error) {
             console.error('Error:', error);
@@ -604,7 +641,6 @@ async function confirmAdd() {
     }
 }
 
-// Arreglar confirmWithdraw
 async function confirmWithdraw() {
     const amountInput = document.getElementById('withdrawAmount');
     const envelopeSelect = document.getElementById('withdrawEnvelope');
@@ -635,7 +671,6 @@ async function confirmWithdraw() {
     
     await processWithdrawal(envelope, amount);
     closeModal('withdrawModal');
-    // Limpiar input
     amountInput.value = '';
 }
 
@@ -645,7 +680,10 @@ function showGoalWarning(envelope) {
         warningEl.textContent = `$${envelope.goal.toFixed(2)}`;
     }
     const modal = document.getElementById('goalWarningModal');
-    if (modal) modal.classList.remove('hidden');
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.body.classList.add('modal-open');
+    }
 }
 
 function closeGoalWarning() {
@@ -678,7 +716,6 @@ async function processWithdrawal(envelope, amount) {
         updateTotal();
         populateSelects();
         renderSavingsCards();
-        closeModal();
         showToast(`Retirado $${amount.toFixed(2)} de ${envelope.name}`);
         updateActivity();
     } catch (error) {
@@ -687,38 +724,45 @@ async function processWithdrawal(envelope, amount) {
     }
 }
 
-// Arreglar processTransfer (si existe) o confirmTransfer
 async function confirmTransfer() {
     const fromSelect = document.getElementById('transferFrom');
     const toSelect = document.getElementById('transferTo');
     const amountInput = document.getElementById('transferAmount');
     
-    if (!fromSelect || !toSelect || !amountInput) return;
+    if (!fromSelect || !toSelect || !amountInput) {
+        console.error('Transfer form elements not found');
+        return;
+    }
     
     const fromId = fromSelect.value;
     const toId = toSelect.value;
     const amount = parseFloat(amountInput.value);
     
+    // Validaciones
     if (fromId === toId) {
-        showToast('Selecciona cuentas diferentes');
+        showToast('Select different accounts');
         return;
     }
     
-    if (!amount || amount <= 0) {
-        showToast('Ingresa un monto válido');
+    if (!amount || amount <= 0 || isNaN(amount)) {
+        showToast('Enter a valid amount');
         return;
     }
     
     const fromEnvelope = envelopes.find(e => e.id === fromId);
     const toEnvelope = envelopes.find(e => e.id === toId);
     
-    if (!fromEnvelope || !toEnvelope) return;
-    
-    if (amount > fromEnvelope.amount) {
-        showToast('Fondos insuficientes');
+    if (!fromEnvelope || !toEnvelope) {
+        showToast('Accounts not found');
         return;
     }
     
+    if (amount > fromEnvelope.amount) {
+        showToast('Insufficient funds');
+        return;
+    }
+    
+    // Procesar transferencia
     fromEnvelope.amount -= amount;
     toEnvelope.amount += amount;
     
@@ -734,28 +778,25 @@ async function confirmTransfer() {
         updateTotal();
         populateSelects();
         renderSavingsCards();
-        showToast(`Transferido $${amount.toFixed(2)}`);
+        showToast(`Transferred $${amount.toFixed(2)}`);
         updateActivity();
         
-        // CERRAR MODAL Y LIMPIAR
         closeModal('transferModal');
         amountInput.value = '';
     } catch (error) {
-        console.error('Error:', error);
-        showToast('Error al transferir');
+        console.error('Error transferring:', error);
+        showToast('Error transferring');
     }
 }
 
 // ==================== NOTIFICACIONES ====================
 
 async function addNotification(type, title, description, amount = null) {
-    // Verificar que la DB esté lista
     if (!db) {
         console.error('DB no inicializada');
         return;
     }
     
-    // Verificar que el object store exista
     if (!db.objectStoreNames.contains('notifications')) {
         console.error('Object store notifications no existe');
         return;
@@ -787,7 +828,10 @@ function showErrorModal(envelopeName, available, attempted) {
     
     if (errorAvailable) errorAvailable.textContent = `$${available.toFixed(2)}`;
     if (errorAttempted) errorAttempted.textContent = `$${attempted.toFixed(2)}`;
-    if (errorModal) errorModal.classList.remove('hidden');
+    if (errorModal) {
+        errorModal.classList.remove('hidden');
+        document.body.classList.add('modal-open');
+    }
 }
 
 function closeErrorModal() {
@@ -807,7 +851,6 @@ async function saveToStore(storeName, data) {
             return;
         }
         
-        // Verificar que el object store exista
         if (!db.objectStoreNames.contains(storeName)) {
             reject(new Error(`Object store ${storeName} no existe`));
             return;
@@ -832,9 +875,7 @@ async function getAllFromStore(storeName) {
             return;
         }
         
-        // Verificar que el object store exista
         if (!db.objectStoreNames.contains(storeName)) {
-            console.warn(`Object store ${storeName} no existe`);
             resolve([]);
             return;
         }
@@ -870,14 +911,16 @@ function showToast(message) {
 document.addEventListener('click', updateActivity);
 document.addEventListener('touchstart', updateActivity);
 
+// Cerrar modales al hacer click fuera
 document.addEventListener('click', (e) => {
     if (e.target.classList.contains('modal')) {
-        if (e.target.id === 'errorModal') {
+        const modalId = e.target.id;
+        if (modalId === 'errorModal') {
             closeErrorModal();
-        } else if (e.target.id === 'goalWarningModal') {
+        } else if (modalId === 'goalWarningModal') {
             closeGoalWarning();
         } else {
-            e.target.classList.add('hidden');
+            closeModal(modalId);
         }
     }
 });

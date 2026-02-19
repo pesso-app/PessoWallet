@@ -6,22 +6,27 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#1C5CCF" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">    <title>Pesso</title>
-    <!-- Manifest PWA -->    
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+    <title>Pesso</title>
     <link rel="manifest" href="manifest.json">
-    <!-- Style CSS / ICONS -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png" sizes="32x32">    
     <link rel="apple-touch-icon" href="assets/icon/iconicon-192.png">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Balance más grande - CORREGIDO */
+        /* FIX: Header al borde del notch */
+        .header-large-title {
+            padding-top: env(safe-area-inset-top) !important;
+            padding-bottom: 8px;
+        }
+        
+        /* Balance más grande */
         .balance {
             font-size: 64px !important;
             font-weight: 800 !important;
             letter-spacing: -2px !important;
         }
         
-        /* Modal styles específicos para index - FONDO SÓLIDO */
+        /* Modal styles específicos para index */
         .modal {
             background: rgba(0,0,0,0) !important;
             transition: background 0.3s ease !important;
@@ -58,12 +63,12 @@
 
 <body>
 
-    <!-- Login Screen - Fijo sin scroll -->
+    <!-- Login Screen -->
     <div id="loginScreen" class="screen fixed-login">
         <div class="login-container">
             <div class="login-logo">P</div>
             <h1 class="login-title">Pesso</h1>
-            <p class="login-subtitle" id="loginSubtitle">Ingresa tu PIN para continuar</p>
+            <p class="login-subtitle" id="loginSubtitle">Enter your PIN to continue</p>
             
             <div class="pin-dots" id="pinDots">
                 <span></span><span></span><span></span><span></span>
@@ -125,7 +130,7 @@
                     </div>
                 </div>
 
-                <!-- Savings Accounts - Estilo iOS 26 -->
+                <!-- Savings Accounts -->
                 <div class="section mt-4">
                     <div class="section-header">
                         <h2 class="section-title">Savings accounts</h2>
@@ -182,34 +187,35 @@
 
         </div>
 
-<!-- Menú Flotante iOS 26 -->
-<div class="floating-menu-container">
-    <nav class="floating-menu">
-        <a href="index.html" class="menu-item" data-page="home">
-            <ion-icon name="home-outline"></ion-icon>
-            <strong>Home</strong>
-            <div class="active-indicator"></div>
-        </a>
-        <a href="goals.html" class="menu-item" data-page="goals">
-            <ion-icon name="flag-outline"></ion-icon>
-            <strong>Goals</strong>
-            <div class="active-indicator"></div>
-        </a>
-        <a href="alerts.html" class="menu-item" data-page="activity">
-            <ion-icon name="notifications-outline"></ion-icon>
-            <strong>Activity</strong>
-            <div class="active-indicator"></div>
-        </a>
-        <a href="profile.html" class="menu-item" data-page="me">
-            <ion-icon name="person-outline"></ion-icon>
-            <strong>Me</strong>
-            <div class="active-indicator"></div>
-        </a>
-    </nav>
-</div>
+        <!-- Menú Flotante -->
+        <div class="floating-menu-container">
+            <nav class="floating-menu">
+                <a href="index.html" class="menu-item active" data-page="home">
+                    <ion-icon name="home-outline"></ion-icon>
+                    <strong>Home</strong>
+                    <div class="active-indicator"></div>
+                </a>
+                <a href="goals.html" class="menu-item" data-page="goals">
+                    <ion-icon name="flag-outline"></ion-icon>
+                    <strong>Goals</strong>
+                    <div class="active-indicator"></div>
+                </a>
+                <a href="alerts.html" class="menu-item" data-page="activity">
+                    <ion-icon name="notifications-outline"></ion-icon>
+                    <strong>Activity</strong>
+                    <div class="active-indicator"></div>
+                </a>
+                <a href="profile.html" class="menu-item" data-page="me">
+                    <ion-icon name="person-outline"></ion-icon>
+                    <strong>Me</strong>
+                    <div class="active-indicator"></div>
+                </a>
+            </nav>
+        </div>
 
     </div>
 
+    <!-- Modales... (Add Cash, Cash Out, Transfer, etc - igual que antes) -->
     <!-- Add Cash Modal -->
     <div id="addModal" class="modal hidden">
         <div class="modal-dialog">
@@ -239,7 +245,7 @@
                         <div class="input-wrapper">
                             <label class="label">Savings Account</label>
                             <select class="form-control custom-select" id="addSavingsSelect">
-                                <option>Cargando...</option>
+                                <option>Loading...</option>
                             </select>
                         </div>
                     </div>
@@ -248,7 +254,7 @@
                         <div class="input-wrapper">
                             <label class="label">Goal</label>
                             <select class="form-control custom-select" id="addGoalSelect">
-                                <option>Cargando...</option>
+                                <option>Loading...</option>
                             </select>
                         </div>
                     </div>
@@ -264,16 +270,16 @@
                         <label class="ios-checkbox">
                             <input type="checkbox" id="savingGoalCheck" onchange="toggleSavingGoal()">
                             <span class="checkmark"></span>
-                            <span class="label-text">Establecer meta de ahorro</span>
+                            <span class="label-text">Set savings goal</span>
                         </label>
                     </div>
 
                     <div class="form-group boxed hidden" id="savingGoalGroup">
                         <div class="input-wrapper">
-                            <label class="label">Meta objetivo ($)</label>
+                            <label class="label">Goal target ($)</label>
                             <input type="number" class="form-control" id="savingGoalAmount" placeholder="0.00" step="0.01">
                         </div>
-                        <p class="hint-text">No podrás retirar hasta alcanzar esta meta</p>
+                        <p class="hint-text">You won't be able to withdraw until you reach this goal</p>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -299,7 +305,7 @@
                         <div class="input-wrapper">
                             <label class="label">Account</label>
                             <select class="form-control custom-select" id="withdrawEnvelope">
-                                <option>Cargando...</option>
+                                <option>Loading...</option>
                             </select>
                         </div>
                     </div>
@@ -335,7 +341,7 @@
                         <div class="input-wrapper">
                             <label class="label">From</label>
                             <select class="form-control custom-select" id="transferFrom">
-                                <option>Cargando...</option>
+                                <option>Loading...</option>
                             </select>
                         </div>
                     </div>
@@ -343,7 +349,7 @@
                         <div class="input-wrapper">
                             <label class="label">To</label>
                             <select class="form-control custom-select" id="transferTo">
-                                <option>Cargando...</option>
+                                <option>Loading...</option>
                             </select>
                         </div>
                     </div>
@@ -368,16 +374,16 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="warning-icon">⚠️</div>
-                    <h5 class="modal-title">Meta de ahorro activa</h5>
+                    <h5 class="modal-title">Savings goal active</h5>
                 </div>
                 <div class="modal-body text-center">
-                    <p>Esta cuenta tiene una meta de <strong id="warningGoalAmount">$0.00</strong>.</p>
-                    <p style="margin-top: 12px; color: var(--text-secondary);">Aún no has alcanzado tu objetivo. ¿Deseas retirar de todos modos?</p>
+                    <p>This account has a goal of <strong id="warningGoalAmount">$0.00</strong>.</p>
+                    <p style="margin-top: 12px; color: var(--text-secondary);">You haven't reached your goal yet. Withdraw anyway?</p>
                 </div>
                 <div class="modal-footer">
                     <div class="btn-inline">
-                        <button class="btn btn-text-secondary" onclick="closeModal('goalWarningModal')">Cancelar</button>
-                        <button class="btn btn-text-danger" onclick="confirmWithdrawAnyway()">Retirar de todos modos</button>
+                        <button class="btn btn-text-secondary" onclick="closeGoalWarning()">Cancel</button>
+                        <button class="btn btn-text-danger" onclick="confirmWithdrawAnyway()">Withdraw anyway</button>
                     </div>
                 </div>
             </div>
@@ -390,23 +396,23 @@
             <div class="modal-content error">
                 <div class="modal-header">
                     <div class="error-icon">⚠️</div>
-                    <h5 class="modal-title">Fondos insuficientes</h5>
+                    <h5 class="modal-title">Insufficient funds</h5>
                 </div>
                 <div class="modal-body text-center">
-                    <p>No puedes retirar más de lo disponible en este sobre.</p>
+                    <p>You can't withdraw more than available in this envelope.</p>
                     <div class="error-amounts">
                         <div class="error-row">
-                            <span>Disponible:</span>
+                            <span>Available:</span>
                             <span class="available" id="errorAvailable">$0.00</span>
                         </div>
                         <div class="error-row">
-                            <span>Intentaste:</span>
+                            <span>You tried:</span>
                             <span class="attempted" id="errorAttempted">$0.00</span>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-error" onclick="closeModal('errorModal')">Entendido</button>
+                    <button class="btn btn-error" onclick="closeErrorModal()">Got it</button>
                 </div>
             </div>
         </div>
@@ -420,14 +426,12 @@
     <script src="app.js"></script>    
 
     <script>
-        // FUNCIONES DE MODAL CORREGIDAS - Solo para index.html
+        // FUNCIONES DE MODAL CORREGIDAS
         function openModal(modalId) {
             const modal = document.getElementById(modalId);
             if (modal) {
                 modal.classList.remove('hidden');
                 document.body.classList.add('modal-open');
-                // Forzar reflow para activar la animación
-                void modal.offsetWidth;
             }
         }
 
@@ -439,7 +443,6 @@
             }
         }
 
-        // Cerrar al hacer click fuera
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('modal')) {
                 const modalId = e.target.id;
@@ -447,7 +450,6 @@
             }
         });
 
-        // Aplicar tema inmediatamente (prevenir flash)
         (function() {
             const isDarkMode = localStorage.getItem('pesso_dark_mode') === 'true';
             if (isDarkMode) {
@@ -456,66 +458,30 @@
         })();
     </script>
 
-<script>
-    // Asegurar que el menú siempre esté visible
-    document.addEventListener('DOMContentLoaded', function() {
-        const menu = document.querySelector('.floating-menu-container');
-        if (menu) {
-            menu.style.display = 'block';
-            menu.style.visibility = 'visible';
-            menu.style.opacity = '1';
-        }
-    });
-    
-    // Prevenir que el menú desaparezca al hacer scroll
-    window.addEventListener('scroll', function() {
-        const menu = document.querySelector('.floating-menu-container');
-        if (menu) {
-            menu.style.transform = 'translateX(-50%) translateZ(0)';
-        }
-    });
-</script>
-
-<script>
-    // Registrar Service Worker
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js')
-                .then((registration) => {
-                    console.log('✅ SW registrado:', registration.scope);
-                    
-                    // Verificar actualizaciones cada vez que carga la página
-                    registration.addEventListener('updatefound', () => {
-                        const newWorker = registration.installing;
-                        newWorker.addEventListener('statechange', () => {
-                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                console.log('🔄 Nueva versión disponible');
-                                // Opcional: Mostrar toast para actualizar
-                                if (confirm('Nueva versión disponible. ¿Actualizar ahora?')) {
-                                    newWorker.postMessage('SKIP_WAITING');
-                                    window.location.reload();
-                                }
-                            }
-                        });
-                    });
-                })
-                .catch((error) => {
-                    console.error('❌ Error registrando SW:', error);
-                });
-                
-            // Escuchar cuando el SW tome control
-            let refreshing = false;
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (!refreshing) {
-                    refreshing = true;
-                    window.location.reload();
-                }
-            });
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menu = document.querySelector('.floating-menu-container');
+            if (menu) {
+                menu.style.display = 'block';
+                menu.style.visibility = 'visible';
+                menu.style.opacity = '1';
+            }
         });
-    } else {
-        console.warn('Service Worker no soportado en este navegador');
-    }
-</script>    
+    </script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('✅ SW registrado:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.error('❌ Error registrando SW:', error);
+                    });
+            });
+        }
+    </script>    
 
 </body>
 </html>

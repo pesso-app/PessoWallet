@@ -1,43 +1,4 @@
 <!DOCTYPE html>
-<script>
-// Manejo de modales con clase body
-function openModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.remove('hidden');
-        document.body.classList.add('modal-open');
-    }
-}
-
-function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.add('hidden');
-        document.body.classList.remove('modal-open');
-    }
-}
-
-// Cerrar al hacer click fuera
-document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('modal')) {
-        e.target.classList.add('hidden');
-        document.body.classList.remove('modal-open');
-    }
-});
-
-// Cerrar con botón X o Cancel
-document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const modal = this.closest('.modal');
-        if (modal) {
-            modal.classList.add('hidden');
-            document.body.classList.remove('modal-open');
-        }
-    });
-});
-</script>
-
-
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -47,12 +8,122 @@ document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
     <meta name="theme-color" content="#1C5CCF" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
     <title>Activity - Pesso</title>
-    <!-- Manifest PWA -->    
     <link rel="manifest" href="manifest.json">
-    <!-- Style CSS / ICONS -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png" sizes="32x32">    
     <link rel="apple-touch-icon" href="assets/icon/iconicon-192.png">
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Fix header to edge of notch */
+        .header-large-title {
+            padding-top: env(safe-area-inset-top) !important;
+            padding-bottom: 8px;
+        }
+        
+        /* Reminders section */
+        .reminders-section {
+            margin-top: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .reminder-card {
+            background: linear-gradient(135deg, var(--warning) 0%, #ff6b35 100%);
+            border-radius: 16px;
+            padding: 16px;
+            color: white;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 15px rgba(255, 149, 0, 0.3);
+        }
+        
+        .reminder-card.danger {
+            background: linear-gradient(135deg, var(--danger) 0%, #ff2d55 100%);
+            box-shadow: 0 4px 15px rgba(255, 59, 48, 0.3);
+        }
+        
+        .reminder-card.success {
+            background: linear-gradient(135deg, var(--success) 0%, #30d158 100%);
+            box-shadow: 0 4px 15px rgba(52, 199, 89, 0.3);
+        }
+        
+        .reminder-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        .reminder-text {
+            font-size: 14px;
+            opacity: 0.95;
+            line-height: 1.4;
+        }
+        
+        .reminder-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .reminder-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            background: rgba(255,255,255,0.25);
+            color: white;
+        }
+        
+        .reminder-btn:active {
+            transform: scale(0.95);
+            background: rgba(255,255,255,0.35);
+        }
+        
+        /* Section headers */
+        .section-header-activity {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding: 0 4px;
+        }
+        
+        .section-title-activity {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        
+        .clear-all-btn {
+            font-size: 14px;
+            color: var(--primary);
+            background: none;
+            border: none;
+            font-weight: 500;
+        }
+        
+        /* Empty state improvements */
+        .empty-state-activity {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+        
+        .empty-state-activity ion-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+        
+        .empty-state-activity h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+    </style>
 </head>
 
 <body class="fade-in">
@@ -62,7 +133,12 @@ document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
 
         <div class="header-large-title">
             <h1 class="title">Activity</h1>
-            <p class="subtitle" style="color: var(--text-secondary);">Your transactions</p>
+            <p class="subtitle" style="color: var(--text-secondary);">Your transactions & reminders</p>
+        </div>
+
+        <!-- Reminders Section -->
+        <div class="reminders-section" id="remindersSection">
+            <!-- Reminders loaded dynamically -->
         </div>
 
         <!-- Search -->
@@ -101,6 +177,11 @@ document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
             </ul>
 
             <!-- Transactions List -->
+            <div class="section-header-activity" style="margin-top: 16px;">
+                <span class="section-title-activity">History</span>
+                <button class="clear-all-btn" onclick="clearAllNotifications()">Clear All</button>
+            </div>
+            
             <div id="transactionsList" class="transactions-container">
                 <!-- Transacciones cargadas dinámicamente -->
             </div>
@@ -113,89 +194,33 @@ document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
     </div>
 
     <!-- Bottom Menu -->
-<!-- Menú Flotante iOS 26 - Reemplazar en index.html, goals.html, alerts.html, profile.html -->
-<div class="floating-menu-container">
-    <nav class="floating-menu">
-        <a href="index.html" class="menu-item" data-page="home">
-            <ion-icon name="home-outline"></ion-icon>
-            <strong>Home</strong>
-            <div class="active-indicator"></div>
-        </a>
+    <div class="floating-menu-container">
+        <nav class="floating-menu">
+            <a href="index.html" class="menu-item" data-page="home">
+                <ion-icon name="home-outline"></ion-icon>
+                <strong>Home</strong>
+                <div class="active-indicator"></div>
+            </a>
 
-        <a href="goals.html" class="menu-item" data-page="goals">
-            <ion-icon name="flag-outline"></ion-icon>
-            <strong>Goals</strong>
-            <div class="active-indicator"></div>
-        </a>
+            <a href="goals.html" class="menu-item" data-page="goals">
+                <ion-icon name="flag-outline"></ion-icon>
+                <strong>Goals</strong>
+                <div class="active-indicator"></div>
+            </a>
 
-        <a href="alerts.html" class="menu-item" data-page="activity">
-            <ion-icon name="notifications-outline"></ion-icon>
-            <strong>Activity</strong>
-            <div class="active-indicator"></div>
-        </a>
+            <a href="alerts.html" class="menu-item active" data-page="activity">
+                <ion-icon name="notifications-outline"></ion-icon>
+                <strong>Activity</strong>
+                <div class="active-indicator"></div>
+            </a>
 
-        <a href="profile.html" class="menu-item" data-page="me">
-            <ion-icon name="person-outline"></ion-icon>
-            <strong>Me</strong>
-            <div class="active-indicator"></div>
-        </a>
-    </nav>
-</div>
-
-<script>
-    // Script para manejar el menú flotante
-    (function() {
-        // Detectar página actual y marcar como activa
-        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-        const pageMap = {
-            'index.html': 'home',
-            'goals.html': 'goals',
-            'alerts.html': 'activity',
-            'activity.html': 'activity',
-            'profile.html': 'me'
-        };
-        
-        const currentKey = pageMap[currentPage] || 'home';
-        
-        document.querySelectorAll('.menu-item').forEach(item => {
-            if (item.getAttribute('data-page') === currentKey) {
-                item.classList.add('active');
-            }
-            
-            // Efecto ripple al click
-            item.addEventListener('click', function(e) {
-                createRipple(this, e);
-                
-                // Haptic feedback si está disponible
-                if (navigator.vibrate) {
-                    navigator.vibrate(8);
-                }
-            });
-        });
-        
-        function createRipple(element, event) {
-            const ripple = document.createElement('span');
-            ripple.classList.add('ripple');
-            
-            const rect = element.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const x = event.clientX - rect.left - size / 2;
-            const y = event.clientY - rect.top - size / 2;
-            
-            ripple.style.width = ripple.style.height = size + 'px';
-            ripple.style.left = x + 'px';
-            ripple.style.top = y + 'px';
-            
-            element.appendChild(ripple);
-            setTimeout(() => ripple.remove(), 600);
-        }
-        
-        // Prevenir zoom en double tap (iOS)
-        document.addEventListener('dblclick', function(e) {
-            e.preventDefault();
-        }, { passive: false });
-    })();
-</script>
+            <a href="profile.html" class="menu-item" data-page="me">
+                <ion-icon name="person-outline"></ion-icon>
+                <strong>Me</strong>
+                <div class="active-indicator"></div>
+            </a>
+        </nav>
+    </div>
 
     <!-- Toast -->
     <div id="toast" class="toast hidden"></div>
@@ -213,7 +238,6 @@ document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
 
         // ==================== INICIALIZACIÓN ====================
         document.addEventListener('DOMContentLoaded', () => {
-            // Aplicar tema
             const isDarkMode = localStorage.getItem('pesso_dark_mode') === 'true';
             if (isDarkMode) {
                 document.documentElement.setAttribute('data-theme', 'dark');
@@ -226,6 +250,7 @@ document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
             try {
                 await initDB();
                 await loadTransactions();
+                await loadReminders();
                 setupSearch();
             } catch (error) {
                 console.error('Error inicializando alerts:', error);
@@ -236,19 +261,14 @@ document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
             return new Promise((resolve, reject) => {
                 const request = indexedDB.open(DB_NAME, DB_VERSION);
                 
-                request.onerror = () => {
-                    console.error('Error abriendo DB:', request.error);
-                    reject(request.error);
-                };
+                request.onerror = () => reject(request.error);
                 
                 request.onsuccess = () => {
                     db = request.result;
-                    console.log('Alerts: DB conectada');
                     resolve(db);
                 };
                 
                 request.onupgradeneeded = (event) => {
-                    console.log('Alerts: Actualizando DB');
                     const db = event.target.result;
                     
                     if (!db.objectStoreNames.contains('envelopes')) {
@@ -268,6 +288,105 @@ document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
             });
         }
 
+        // ==================== REMINDERS ====================
+        async function loadReminders() {
+            const envelopes = await getAllFromStore('envelopes');
+            const goals = await getAllFromStore('goals');
+            const remindersContainer = document.getElementById('remindersSection');
+            
+            let remindersHTML = '';
+            
+            // Check for low balance envelopes (less than 20% of goal or less than $50)
+            envelopes.forEach(env => {
+                if (env.goal && env.goal > 0) {
+                    const percent = (env.amount / env.goal) * 100;
+                    if (percent < 20 && env.amount < 50) {
+                        remindersHTML += `
+                            <div class="reminder-card danger">
+                                <div class="reminder-header">
+                                    <ion-icon name="warning-outline"></ion-icon>
+                                    <span>Low Balance Alert</span>
+                                </div>
+                                <div class="reminder-text">
+                                    "${env.name}" is at ${percent.toFixed(0)}% of goal ($${env.amount.toFixed(2)}). Consider adding funds.
+                                </div>
+                                <div class="reminder-actions">
+                                    <button class="reminder-btn" onclick="location.href='index.html'">Add Cash</button>
+                                </div>
+                            </div>
+                        `;
+                    } else if (percent >= 100) {
+                        remindersHTML += `
+                            <div class="reminder-card success">
+                                <div class="reminder-header">
+                                    <ion-icon name="trophy-outline"></ion-icon>
+                                    <span>Goal Reached! 🎉</span>
+                                </div>
+                                <div class="reminder-text">
+                                    Congratulations! You've reached your goal for "${env.name}" ($${env.goal.toFixed(2)})
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+            });
+            
+            // Check for goals with approaching deadlines (within 7 days)
+            goals.forEach(goal => {
+                if (goal.date) {
+                    const daysLeft = Math.ceil((new Date(goal.date) - new Date()) / (1000 * 60 * 60 * 24));
+                    const percent = (goal.saved / goal.target) * 100;
+                    
+                    if (daysLeft <= 7 && daysLeft > 0 && percent < 100) {
+                        remindersHTML += `
+                            <div class="reminder-card">
+                                <div class="reminder-header">
+                                    <ion-icon name="time-outline"></ion-icon>
+                                    <span>Goal Deadline Approaching</span>
+                                </div>
+                                <div class="reminder-text">
+                                    "${goal.name}" is due in ${daysLeft} days. You've saved ${percent.toFixed(0)}% of $${goal.target.toFixed(2)}
+                                </div>
+                                <div class="reminder-actions">
+                                    <button class="reminder-btn" onclick="location.href='index.html'">Add Funds</button>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+            });
+            
+            // Weekly summary reminder (show on Sundays or if no activity in 7 days)
+            const lastActivity = localStorage.getItem('pesso_last_activity');
+            const daysSinceActivity = lastActivity ? 
+                Math.floor((Date.now() - parseInt(lastActivity)) / (1000 * 60 * 60 * 24)) : 0;
+            
+            if (daysSinceActivity >= 7) {
+                const totalSaved = envelopes.reduce((sum, e) => sum + e.amount, 0);
+                remindersHTML += `
+                    <div class="reminder-card" style="background: linear-gradient(135deg, var(--primary) 0%, var(--info) 100%);">
+                        <div class="reminder-header">
+                            <ion-icon name="calendar-outline"></ion-icon>
+                            <span>Weekly Check-in</span>
+                        </div>
+                        <div class="reminder-text">
+                            You have $${totalSaved.toFixed(2)} total saved. Review your progress and keep saving!
+                        </div>
+                        <div class="reminder-actions">
+                            <button class="reminder-btn" onclick="location.href='goals.html'">View Goals</button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (remindersHTML) {
+                remindersContainer.innerHTML = '<div class="section-title-activity" style="margin-bottom: 12px; padding-left: 4px;">Reminders</div>' + remindersHTML;
+            } else {
+                remindersContainer.style.display = 'none';
+            }
+        }
+
+        // ==================== TRANSACTIONS ====================
         async function loadTransactions() {
             try {
                 allTransactions = await getRecentTransactions(30);
@@ -288,12 +407,10 @@ document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
             
             if (filtered.length === 0) {
                 list.innerHTML = `
-                    <div class="empty-state">
-                        <ion-icon name="receipt-outline" style="font-size: 48px; color: var(--text-secondary);"></ion-icon>
-                        <p>${currentTab === 'all' ? 'No transactions yet' : `No ${currentTab} transactions`}</p>
-                        <p style="font-size:13px; margin-top:8px;">
-                            ${currentTab === 'all' ? 'Your activity will appear here' : 'Try another filter'}
-                        </p>
+                    <div class="empty-state-activity">
+                        <ion-icon name="receipt-outline"></ion-icon>
+                        <h3>No transactions yet</h3>
+                        <p>Your activity will appear here</p>
                     </div>
                 `;
                 return;
@@ -371,13 +488,11 @@ document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
         async function getRecentTransactions(days = 30) {
             return new Promise((resolve) => {
                 if (!db) {
-                    console.log('DB no lista');
                     resolve([]);
                     return;
                 }
                 
                 if (!db.objectStoreNames.contains('notifications')) {
-                    console.warn('Object store notifications no existe');
                     resolve([]);
                     return;
                 }
@@ -389,8 +504,6 @@ document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
                     
                     request.onsuccess = () => {
                         const allNotifications = request.result || [];
-                        console.log('Notificaciones cargadas:', allNotifications.length);
-                        
                         const cutoffDate = new Date();
                         cutoffDate.setDate(cutoffDate.getDate() - days);
                         
@@ -401,27 +514,39 @@ document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
                         resolve(filtered);
                     };
                     
-                    request.onerror = () => {
-                        console.error('Error obteniendo notificaciones');
-                        resolve([]);
-                    };
+                    request.onerror = () => resolve([]);
                 } catch (error) {
-                    console.error('Error en transacción:', error);
                     resolve([]);
                 }
             });
+        }
+
+        async function clearAllNotifications() {
+            if (!db || !db.objectStoreNames.contains('notifications')) return;
+            
+            if (!confirm('Clear all transaction history?')) return;
+            
+            try {
+                const tx = db.transaction('notifications', 'readwrite');
+                const store = tx.objectStore('notifications');
+                await store.clear();
+                allTransactions = [];
+                renderTransactions();
+                updateCount();
+                showToast('History cleared');
+            } catch (error) {
+                console.error('Error clearing notifications:', error);
+            }
         }
 
         // ==================== TABS ====================
         function switchTab(tabName) {
             currentTab = tabName;
             
-            // Actualizar UI de tabs
             document.querySelectorAll('.nav-link').forEach(tab => {
                 tab.classList.remove('active');
             });
             
-            // Encontrar el tab correcto
             const tabs = document.querySelectorAll('.nav-link');
             tabs.forEach(tab => {
                 const text = tab.textContent.trim().toLowerCase();
@@ -453,6 +578,30 @@ document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
         }
 
         // ==================== UTILIDADES ====================
+        async function getAllFromStore(storeName) {
+            return new Promise((resolve) => {
+                if (!db) {
+                    resolve([]);
+                    return;
+                }
+                
+                if (!db.objectStoreNames.contains(storeName)) {
+                    resolve([]);
+                    return;
+                }
+                
+                try {
+                    const tx = db.transaction(storeName, 'readonly');
+                    const store = tx.objectStore(storeName);
+                    const request = store.getAll();
+                    request.onsuccess = () => resolve(request.result || []);
+                    request.onerror = () => resolve([]);
+                } catch (error) {
+                    resolve([]);
+                }
+            });
+        }
+
         function showToast(message) {
             const toast = document.getElementById('toast');
             if (!toast) {
@@ -467,114 +616,59 @@ document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
                 toast.classList.add('hidden');
             }, 3000);
         }
-    </script>
 
-<script>
-// Manejo de modales con clase body
-function openModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.remove('hidden');
-        document.body.classList.add('modal-open');
-    }
-}
-
-function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.add('hidden');
-        document.body.classList.remove('modal-open');
-    }
-}
-
-// Cerrar al hacer click fuera
-document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('modal')) {
-        e.target.classList.add('hidden');
-        document.body.classList.remove('modal-open');
-    }
-});
-
-// Cerrar con botón X o Cancel
-document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const modal = this.closest('.modal');
-        if (modal) {
-            modal.classList.add('hidden');
-            document.body.classList.remove('modal-open');
-        }
-    });
-});
-
-// Aplicar tema inmediatamente (prevenir flash)
-(function() {
-    const isDarkMode = localStorage.getItem('pesso_dark_mode') === 'true';
-    if (isDarkMode) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-    }
-})();
-</script>
-    
-<script>
-    // Asegurar que el menú siempre esté visible
-    document.addEventListener('DOMContentLoaded', function() {
-        const menu = document.querySelector('.floating-menu-container');
-        if (menu) {
-            menu.style.display = 'block';
-            menu.style.visibility = 'visible';
-            menu.style.opacity = '1';
-        }
-    });
-    
-    // Prevenir que el menú desaparezca al hacer scroll
-    window.addEventListener('scroll', function() {
-        const menu = document.querySelector('.floating-menu-container');
-        if (menu) {
-            menu.style.transform = 'translateX(-50%) translateZ(0)';
-        }
-    });
-</script>
-
-<script>
-    // Registrar Service Worker
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js')
-                .then((registration) => {
-                    console.log('✅ SW registrado:', registration.scope);
-                    
-                    // Verificar actualizaciones cada vez que carga la página
-                    registration.addEventListener('updatefound', () => {
-                        const newWorker = registration.installing;
-                        newWorker.addEventListener('statechange', () => {
-                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                console.log('🔄 Nueva versión disponible');
-                                // Opcional: Mostrar toast para actualizar
-                                if (confirm('Nueva versión disponible. ¿Actualizar ahora?')) {
-                                    newWorker.postMessage('SKIP_WAITING');
-                                    window.location.reload();
-                                }
-                            }
-                        });
-                    });
-                })
-                .catch((error) => {
-                    console.error('❌ Error registrando SW:', error);
-                });
-                
-            // Escuchar cuando el SW tome control
-            let refreshing = false;
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (!refreshing) {
-                    refreshing = true;
-                    window.location.reload();
-                }
+        // Menu ripple effect
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                ripple.classList.add('ripple');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = (rect.width/2 - size/2) + 'px';
+                ripple.style.top = (rect.height/2 - size/2) + 'px';
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
             });
         });
-    } else {
-        console.warn('Service Worker no soportado en este navegador');
-    }
-</script>
+    </script>
+
+    <script>
+        // Aplicar tema inmediatamente
+        (function() {
+            const isDarkMode = localStorage.getItem('pesso_dark_mode') === 'true';
+            if (isDarkMode) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+    
+    <script>
+        // Asegurar que el menú siempre esté visible
+        document.addEventListener('DOMContentLoaded', function() {
+            const menu = document.querySelector('.floating-menu-container');
+            if (menu) {
+                menu.style.display = 'block';
+                menu.style.visibility = 'visible';
+                menu.style.opacity = '1';
+            }
+        });
+    </script>
+
+    <script>
+        // Registrar Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('✅ SW registrado:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.error('❌ Error registrando SW:', error);
+                    });
+            });
+        }
+    </script>
 
 </body>
 </html>

@@ -8,32 +8,27 @@
     <meta name="theme-color" content="#1C5CCF" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
     <title>Profile - Pesso</title>
-    <!-- Manifest PWA -->    
     <link rel="manifest" href="manifest.json">
-    <!-- Style CSS / ICONS -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png" sizes="32x32">    
     <link rel="apple-touch-icon" href="assets/icon/iconicon-192.png">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* ==================== GLASSMORPHISM iOS 26 ==================== */
+        /* Fix header to edge of notch */
         .profile-container {
-            padding-top: calc(20px + env(safe-area-inset-top));
-            padding-bottom: calc(40px + env(safe-area-inset-bottom));
+            padding-top: env(safe-area-inset-top) !important;
         }
-
-        /* Header con avatar - Glassmorphism */
+        
+        /* Glassmorphism profile */
         .profile-header-glass {
             text-align: center;
-            padding: 30px 20px 40px;
+            padding: 20px 20px 30px;
             margin: 0 16px 24px;
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-radius: 24px;
             border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.08),
-                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
             position: relative;
             overflow: hidden;
         }
@@ -41,23 +36,9 @@
         [data-theme="dark"] .profile-header-glass {
             background: rgba(30, 30, 30, 0.7);
             border-color: rgba(255, 255, 255, 0.1);
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
-        /* Brillo superior */
-        .profile-header-glass::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 20%;
-            right: 20%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
-        }
-
-        /* Avatar con borde brillante */
         .profile-avatar-glass {
             width: 90px;
             height: 90px;
@@ -69,10 +50,7 @@
             font-size: 40px;
             color: white;
             margin: 0 auto 16px;
-            box-shadow: 
-                0 8px 24px rgba(28, 92, 207, 0.4),
-                0 0 0 4px rgba(255, 255, 255, 0.3),
-                inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 24px rgba(28, 92, 207, 0.4), 0 0 0 4px rgba(255, 255, 255, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.3);
             position: relative;
             cursor: pointer;
             transition: transform 0.3s ease;
@@ -82,19 +60,11 @@
             transform: scale(0.95);
         }
 
-        [data-theme="dark"] .profile-avatar-glass {
-            box-shadow: 
-                0 8px 24px rgba(10, 132, 255, 0.4),
-                0 0 0 4px rgba(255, 255, 255, 0.1),
-                inset 0 2px 4px rgba(255, 255, 255, 0.1);
-        }
-
         .profile-name-glass {
             font-size: 24px;
             font-weight: 700;
             color: var(--text);
             margin-bottom: 6px;
-            letter-spacing: -0.3px;
         }
 
         .profile-role-glass {
@@ -103,7 +73,7 @@
             font-weight: 500;
         }
 
-        /* Secciones con glassmorphism */
+        /* Settings sections */
         .settings-section-glass {
             margin-bottom: 20px;
             padding: 0;
@@ -119,29 +89,23 @@
             padding-left: 4px;
         }
 
-        /* Grupo glassmorphism */
         .settings-group-glass {
-            margin: 0;
+            margin: 0 16px;
             background: rgba(255, 255, 255, 0.65);
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-radius: 16px;
             border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 
-                0 4px 24px rgba(0, 0, 0, 0.06),
-                inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.5);
             overflow: hidden;
         }
 
         [data-theme="dark"] .settings-group-glass {
             background: rgba(40, 40, 40, 0.65);
             border-color: rgba(255, 255, 255, 0.08);
-            box-shadow: 
-                0 4px 24px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
         }
 
-        /* Items con divisor sutil */
         .settings-item-glass {
             display: flex;
             align-items: center;
@@ -149,7 +113,6 @@
             border-bottom: 0.5px solid rgba(0, 0, 0, 0.04);
             cursor: pointer;
             transition: all 0.2s ease;
-            position: relative;
         }
 
         .settings-item-glass:last-child {
@@ -160,15 +123,6 @@
             background: rgba(0, 0, 0, 0.02);
         }
 
-        [data-theme="dark"] .settings-item-glass {
-            border-bottom-color: rgba(255, 255, 255, 0.05);
-        }
-
-        [data-theme="dark"] .settings-item-glass:active {
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        /* Iconos con glassmorphism */
         .settings-icon-glass {
             width: 36px;
             height: 36px;
@@ -180,33 +134,16 @@
             font-size: 20px;
             color: white;
             flex-shrink: 0;
-            box-shadow: 
-                0 2px 8px rgba(0,0,0,0.15),
-                inset 0 1px 0 rgba(255,255,255,0.3);
         }
 
-        /* Colores glassmorphism */
-        .settings-icon-glass.blue { 
-            background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
-        }
-        .settings-icon-glass.green { 
-            background: linear-gradient(135deg, #34C759 0%, #30D158 100%);
-        }
-        .settings-icon-glass.orange { 
-            background: linear-gradient(135deg, #FF9500 0%, #FFCC00 100%);
-        }
-        .settings-icon-glass.purple { 
-            background: linear-gradient(135deg, #AF52DE 0%, #BF5AF2 100%);
-        }
-        .settings-icon-glass.red { 
-            background: linear-gradient(135deg, #FF3B30 0%, #FF453A 100%);
-        }
-        .settings-icon-glass.gray { 
-            background: linear-gradient(135deg, #8E8E93 0%, #636366 100%);
-        }
-        .settings-icon-glass.teal { 
-            background: linear-gradient(135deg, #5AC8FA 0%, #64D2FF 100%);
-        }
+        .settings-icon-glass.blue { background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%); }
+        .settings-icon-glass.green { background: linear-gradient(135deg, #34C759 0%, #30D158 100%); }
+        .settings-icon-glass.orange { background: linear-gradient(135deg, #FF9500 0%, #FFCC00 100%); }
+        .settings-icon-glass.purple { background: linear-gradient(135deg, #AF52DE 0%, #BF5AF2 100%); }
+        .settings-icon-glass.red { background: linear-gradient(135deg, #FF3B30 0%, #FF453A 100%); }
+        .settings-icon-glass.gray { background: linear-gradient(135deg, #8E8E93 0%, #636366 100%); }
+        .settings-icon-glass.teal { background: linear-gradient(135deg, #5AC8FA 0%, #64D2FF 100%); }
+        .settings-icon-glass.pink { background: linear-gradient(135deg, #FF2D55 0%, #FF375F 100%); }
 
         .settings-content-glass {
             flex: 1;
@@ -234,7 +171,7 @@
             opacity: 0.4;
         }
 
-        /* Toggle switch glassmorphism */
+        /* Toggle switch */
         .toggle-switch-glass {
             width: 51px;
             height: 31px;
@@ -243,7 +180,6 @@
             position: relative;
             cursor: pointer;
             transition: background-color 0.3s;
-            backdrop-filter: blur(10px);
         }
 
         .toggle-switch-glass.active {
@@ -267,7 +203,7 @@
             transform: translateX(20px);
         }
 
-        /* Logout glassmorphism */
+        /* Logout button */
         .logout-section-glass {
             margin: 32px 16px;
         }
@@ -285,7 +221,6 @@
             text-align: center;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(255, 59, 48, 0.1);
         }
 
         .logout-btn-glass:active {
@@ -293,12 +228,7 @@
             background: rgba(255, 59, 48, 0.25);
         }
 
-        [data-theme="dark"] .logout-btn-glass {
-            background: rgba(255, 69, 58, 0.2);
-            border-color: rgba(255, 69, 58, 0.3);
-        }
-
-        /* Versión info */
+        /* Version info */
         .version-info-glass {
             text-align: center;
             padding: 20px;
@@ -307,170 +237,327 @@
             opacity: 0.8;
         }
 
-        /* ==================== MODALES GLASSMORPHISM ==================== */
-        .modal-glass .modal-content {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(25px) saturate(180%);
-            -webkit-backdrop-filter: blur(25px) saturate(180%);
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 
-                0 20px 60px rgba(0, 0, 0, 0.15),
-                inset 0 1px 0 rgba(255, 255, 255, 0.6);
-            overflow: hidden;
+        /* MODAL SHEET STYLES - Slide up from bottom */
+        .modal-sheet {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
 
-        [data-theme="dark"] .modal-glass .modal-content {
-            background: rgba(40, 40, 40, 0.85);
-            border-color: rgba(255, 255, 255, 0.1);
-            box-shadow: 
-                0 20px 60px rgba(0, 0, 0, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        .modal-sheet.active {
+            opacity: 1;
+            visibility: visible;
         }
 
-        .modal-glass .modal-header {
-            padding: 20px;
-            border-bottom: 0.5px solid rgba(0, 0, 0, 0.05);
+        .modal-sheet-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0);
+            transition: background 0.3s ease;
+        }
+
+        .modal-sheet.active .modal-sheet-backdrop {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(3px);
+        }
+
+        .modal-sheet-content {
+            width: 100%;
+            max-width: 500px;
+            background: var(--bg);
+            border-radius: 24px 24px 0 0;
+            transform: translateY(100%);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
+            z-index: 10001;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding-bottom: calc(20px + env(safe-area-inset-bottom));
         }
 
-        [data-theme="dark"] .modal-glass .modal-header {
-            border-bottom-color: rgba(255, 255, 255, 0.08);
+        [data-theme="dark"] .modal-sheet-content {
+            background: var(--bg-dark);
         }
 
-        .modal-glass .modal-title {
+        .modal-sheet.active .modal-sheet-content {
+            transform: translateY(0);
+        }
+
+        /* Modal handle bar */
+        .modal-handle {
+            width: 40px;
+            height: 5px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 3px;
+            margin: 12px auto;
+        }
+
+        [data-theme="dark"] .modal-handle {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .modal-sheet-header {
+            padding: 8px 20px 16px;
+            text-align: center;
+            border-bottom: 0.5px solid rgba(0,0,0,0.1);
+        }
+
+        [data-theme="dark"] .modal-sheet-header {
+            border-bottom-color: rgba(255,255,255,0.1);
+        }
+
+        .modal-sheet-title {
             font-size: 18px;
             font-weight: 700;
+            color: var(--text);
         }
 
-        /* Form fields glassmorphism */
-        .form-field-glass {
+        .modal-sheet-body {
+            padding: 20px;
+        }
+
+        .modal-sheet-footer {
+            display: flex;
+            gap: 12px;
+            padding: 16px 20px;
+            border-top: 0.5px solid rgba(0,0,0,0.1);
+        }
+
+        [data-theme="dark"] .modal-sheet-footer {
+            border-top-color: rgba(255,255,255,0.1);
+        }
+
+        .btn-sheet {
+            flex: 1;
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-sheet-secondary {
+            background: var(--bg-card);
+            color: var(--text);
+        }
+
+        .btn-sheet-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-sheet-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-sheet:active {
+            transform: scale(0.96);
+            opacity: 0.9;
+        }
+
+        /* Form fields in modal */
+        .sheet-form-group {
             margin-bottom: 20px;
         }
 
-        .form-field-glass label {
+        .sheet-form-group label {
             display: block;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
             color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 8px;
-            margin-left: 4px;
         }
 
-        .form-field-glass input {
+        .sheet-form-group input {
             width: 100%;
             padding: 16px;
-            border: 1px solid rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0,0,0,0.1);
             border-radius: 12px;
             font-size: 17px;
-            background: rgba(255, 255, 255, 0.5);
+            background: var(--bg-card);
             color: var(--text);
             outline: none;
-            transition: all 0.2s;
-            backdrop-filter: blur(10px);
         }
 
-        [data-theme="dark"] .form-field-glass input {
+        [data-theme="dark"] .sheet-form-group input {
             background: rgba(60, 60, 60, 0.5);
-            border-color: rgba(255, 255, 255, 0.1);
-            color: var(--text);
+            border-color: rgba(255,255,255,0.1);
         }
 
-        .form-field-glass input:focus {
+        .sheet-form-group input:focus {
             border-color: var(--primary);
-            background: rgba(255, 255, 255, 0.8);
-            box-shadow: 0 0 0 4px rgba(28, 92, 207, 0.1);
         }
 
-        /* Opciones en modal */
-        .options-list-glass {
+        /* Appearance options */
+        .appearance-options {
             padding: 8px 0;
         }
 
-        .option-item-glass {
+        .appearance-option {
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 16px 20px;
             cursor: pointer;
-            transition: background-color 0.2s;
-            border-bottom: 0.5px solid rgba(0, 0, 0, 0.03);
+            border-bottom: 0.5px solid rgba(0,0,0,0.05);
         }
 
-        .option-item-glass:last-child {
+        .appearance-option:last-child {
             border-bottom: none;
         }
 
-        .option-item-glass:active {
-            background: rgba(0, 0, 0, 0.02);
+        .appearance-option:active {
+            background: rgba(0,0,0,0.02);
         }
 
-        .option-label-glass {
+        .appearance-option-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .appearance-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .appearance-label {
             font-size: 17px;
             color: var(--text);
         }
 
-        .option-check-glass {
-            width: 24px;
-            height: 24px;
+        .appearance-check {
             color: var(--primary);
             font-size: 22px;
             opacity: 0;
+            transform: scale(0.8);
             transition: all 0.2s;
         }
 
-        .option-item-glass.selected .option-check-glass {
+        .appearance-option.selected .appearance-check {
             opacity: 1;
-            transform: scale(1.1);
+            transform: scale(1);
         }
 
-        .option-item-glass.selected .option-label-glass {
+        .appearance-option.selected .appearance-label {
             color: var(--primary);
             font-weight: 600;
         }
 
-        /* Botones en modal */
-        .modal-glass .modal-footer {
-            padding: 16px 20px;
-            border-top: 0.5px solid rgba(0, 0, 0, 0.05);
-            background: rgba(0, 0, 0, 0.02);
+        /* PIN dots in modal */
+        .pin-dots-sheet {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin: 24px 0;
         }
 
-        [data-theme="dark"] .modal-glass .modal-footer {
-            border-top-color: rgba(255, 255, 255, 0.05);
-            background: rgba(255, 255, 255, 0.02);
+        .pin-dots-sheet span {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--text-secondary);
+            border-radius: 50%;
+            transition: all 0.2s;
         }
 
-        .btn-glass {
-            padding: 12px 24px;
+        .pin-dots-sheet span.filled {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .pin-error-sheet {
+            text-align: center;
+            color: var(--danger);
+            font-size: 14px;
+            min-height: 20px;
+            margin-bottom: 16px;
+        }
+
+        .pin-pad-sheet {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            max-width: 280px;
+            margin: 0 auto;
+        }
+
+        .pin-pad-sheet button {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            border: none;
+            background: var(--bg-card);
+            color: var(--text);
+            font-size: 26px;
+            font-weight: 500;
+            cursor: pointer;
+            margin: 0 auto;
+        }
+
+        .pin-pad-sheet button:active {
+            background: var(--primary);
+            color: white;
+            transform: scale(0.92);
+        }
+
+        /* Referral section */
+        .referral-box {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--info) 100%);
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .referral-code {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            margin: 12px 0;
+            padding: 12px;
+            background: rgba(255,255,255,0.2);
             border-radius: 12px;
+            font-family: monospace;
+        }
+
+        .referral-text {
+            font-size: 14px;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        .btn-copy {
+            width: 100%;
+            padding: 16px;
+            background: rgba(255,255,255,0.25);
+            border: none;
+            border-radius: 12px;
+            color: white;
             font-size: 17px;
             font-weight: 600;
-            border: none;
             cursor: pointer;
-            transition: all 0.2s;
+            margin-top: 16px;
         }
 
-        .btn-glass-primary {
-            color: var(--primary);
-            background: transparent;
-        }
-
-        .btn-glass-secondary {
-            color: var(--text-secondary);
-            background: transparent;
-        }
-
-        .btn-glass-danger {
-            color: var(--danger);
-            background: transparent;
-        }
-
-        .btn-glass:active {
-            opacity: 0.7;
-            transform: scale(0.98);
+        .btn-copy:active {
+            background: rgba(255,255,255,0.35);
         }
     </style>
 </head>
@@ -480,7 +567,7 @@
     <!-- App Capsule -->
     <div id="appCapsule" class="profile-container">
 
-        <!-- Header con avatar - Glassmorphism -->
+        <!-- Header -->
         <div class="profile-header-glass">
             <div class="profile-avatar-glass" onclick="changeAvatar()">
                 <span id="avatarInitial">S</span>
@@ -502,13 +589,14 @@
                     </button>
                 </div>
             </div>
-        </div> <br><br>       
+        </div>
+        <br><br>       
 
-        <!-- Sección Account -->
+        <!-- Account Section -->
         <div class="settings-section-glass">
             <div class="settings-header-glass">Account</div>
             <div class="settings-group-glass">
-                <div class="settings-item-glass" onclick="openModal('personalInfoModal')">
+                <div class="settings-item-glass" onclick="openSheet('personalInfoSheet')">
                     <div class="settings-icon-glass blue">
                         <ion-icon name="person-outline"></ion-icon>
                     </div>
@@ -521,19 +609,28 @@
                     </div>
                 </div>
                 
+                <div class="settings-item-glass" onclick="openSheet('changePinSheet')">
+                    <div class="settings-icon-glass green">
+                        <ion-icon name="lock-closed-outline"></ion-icon>
+                    </div>
+                    <div class="settings-content-glass">
+                        <span class="settings-label-glass">Change PIN</span>
+                        <ion-icon name="chevron-forward-outline" class="settings-arrow-glass"></ion-icon>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Sección Preferences -->
+        <!-- Preferences Section -->
         <div class="settings-section-glass">
             <div class="settings-header-glass">Preferences</div>
             <div class="settings-group-glass">
-                <div class="settings-item-glass" onclick="openModal('appearanceModal')">
+                <div class="settings-item-glass" onclick="openSheet('appearanceSheet')">
                     <div class="settings-icon-glass purple">
                         <ion-icon name="moon-outline"></ion-icon>
                     </div>
                     <div class="settings-content-glass">
-                        <span class="settings-label-glass">Dark Mode</span>
+                        <span class="settings-label-glass">Appearance</span>
                         <div style="display: flex; align-items: center;">
                             <span class="settings-value-glass" id="currentTheme">System</span>
                             <ion-icon name="chevron-forward-outline" class="settings-arrow-glass"></ion-icon>
@@ -542,7 +639,7 @@
                 </div>
                 
                 <div class="settings-item-glass" onclick="toggleNotifications()">
-                    <div class="settings-icon-glass green">
+                    <div class="settings-icon-glass orange">
                         <ion-icon name="notifications-outline"></ion-icon>
                     </div>
                     <div class="settings-content-glass">
@@ -553,7 +650,23 @@
             </div>
         </div>
 
-        <!-- Sección Security -->
+        <!-- Share Section -->
+        <div class="settings-section-glass">
+            <div class="settings-header-glass">Share</div>
+            <div class="settings-group-glass">
+                <div class="settings-item-glass" onclick="openSheet('referSheet')">
+                    <div class="settings-icon-glass pink">
+                        <ion-icon name="gift-outline"></ion-icon>
+                    </div>
+                    <div class="settings-content-glass">
+                        <span class="settings-label-glass">Refer a Friend</span>
+                        <ion-icon name="chevron-forward-outline" class="settings-arrow-glass"></ion-icon>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Section -->
         <div class="settings-section-glass">
             <div class="settings-header-glass">Security</div>
             <div class="settings-group-glass">
@@ -569,7 +682,7 @@
             </div>
         </div>
 
-        <!-- Sección Support -->
+        <!-- Support Section -->
         <div class="settings-section-glass">
             <div class="settings-header-glass">Support</div>
             <div class="settings-group-glass">
@@ -587,7 +700,7 @@
 
         <!-- Logout -->
         <div class="logout-section-glass">
-            <div class="logout-btn-glass" onclick="showLogoutModal()">
+            <div class="logout-btn-glass" onclick="openSheet('logoutSheet')">
                 Log Out
             </div>
         </div>
@@ -596,94 +709,233 @@
         <div class="version-info-glass">
             <b>Made with ❤️ in New Jersey</b><br>
             Pesso App v1.2.18<br>
-            <a href="https://www.instagram.com/sixtohenriquez_" target="_blank" type="button" class="btn btn-glass">
-               <ion-icon name="logo-instagram"></ion-icon>
+            <a href="https://www.instagram.com/sixtohenriquez_" target="_blank" style="color: var(--primary); text-decoration: none;">
+                <ion-icon name="logo-instagram" style="font-size: 20px; margin-top: 8px;"></ion-icon>
             </a>
         </div>
 
     </div>
 
-    <!-- Modal Personal Info -->
-    <!-- Modal Personal Info (Estilo Sheet desde abajo) -->
-    <div id="personalInfoModal" class="modal hidden">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Personal Info</h5>
-                    <button class="close-btn" onclick="closeModal('personalInfoModal')">
-                        <ion-icon name="close-outline"></ion-icon>
+    <!-- ==================== MODAL SHEETS ==================== -->
+
+    <!-- Personal Info Sheet -->
+    <div id="personalInfoSheet" class="modal-sheet">
+        <div class="modal-sheet-backdrop" onclick="closeSheet('personalInfoSheet')"></div>
+        <div class="modal-sheet-content">
+            <div class="modal-handle"></div>
+            <div class="modal-sheet-header">
+                <h3 class="modal-sheet-title">Personal Info</h3>
+            </div>
+            <div class="modal-sheet-body">
+                <div class="sheet-form-group">
+                    <label>Your Name</label>
+                    <input type="text" id="nameInput" placeholder="Enter your name">
+                </div>
+                <div class="sheet-form-group">
+                    <label>Occupation</label>
+                    <input type="text" id="roleInput" placeholder="What do you do?">
+                </div>
+            </div>
+            <div class="modal-sheet-footer">
+                <button class="btn-sheet btn-sheet-secondary" onclick="closeSheet('personalInfoSheet')">Cancel</button>
+                <button class="btn-sheet btn-sheet-primary" onclick="savePersonalInfo()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change PIN Sheet -->
+    <div id="changePinSheet" class="modal-sheet">
+        <div class="modal-sheet-backdrop" onclick="closeSheet('changePinSheet')"></div>
+        <div class="modal-sheet-content">
+            <div class="modal-handle"></div>
+            <div class="modal-sheet-header">
+                <h3 class="modal-sheet-title">Change PIN</h3>
+            </div>
+            <div class="modal-sheet-body">
+                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 8px;">Enter your current PIN</p>
+                <div class="pin-dots-sheet" id="currentPinDots">
+                    <span></span><span></span><span></span><span></span>
+                </div>
+                <div class="pin-error-sheet" id="pinErrorSheet"></div>
+                
+                <div class="pin-pad-sheet" id="currentPinPad">
+                    <button onclick="enterPinChange('1')">1</button>
+                    <button onclick="enterPinChange('2')">2</button>
+                    <button onclick="enterPinChange('3')">3</button>
+                    <button onclick="enterPinChange('4')">4</button>
+                    <button onclick="enterPinChange('5')">5</button>
+                    <button onclick="enterPinChange('6')">6</button>
+                    <button onclick="enterPinChange('7')">7</button>
+                    <button onclick="enterPinChange('8')">8</button>
+                    <button onclick="enterPinChange('9')">9</button>
+                    <button onclick="clearPinChange()">
+                        <ion-icon name="backspace-outline"></ion-icon>
                     </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group boxed">
-                        <div class="input-wrapper">
-                            <label class="label">Your Name</label>
-                            <input type="text" class="form-control" id="nameInput" placeholder="Enter your name">
-                        </div>
-                    </div>
-                    
-                    <!-- Ocupación movida aquí -->
-                    <div class="form-group boxed">
-                        <div class="input-wrapper">
-                            <label class="label">Occupation</label>
-                            <input type="text" class="form-control" id="roleInput" placeholder="What do you do?">
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-text-secondary" onclick="closeModal('personalInfoModal')">Cancel</button>
-                    <button class="btn btn-text-primary" onclick="savePersonalInfo()">Save</button>
+                    <button onclick="enterPinChange('0')">0</button>
+                    <button onclick="cancelPinChange()">Cancel</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Appearance (Estilo Sheet) -->
-    <div id="appearanceModal" class="modal hidden">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Appearance</h5>
-                    <button class="close-btn" onclick="closeModal('appearanceModal')">
-                        <ion-icon name="close-outline"></ion-icon>
-                    </button>
+    <!-- New PIN Sheet -->
+    <div id="newPinSheet" class="modal-sheet">
+        <div class="modal-sheet-backdrop" onclick="closeSheet('newPinSheet')"></div>
+        <div class="modal-sheet-content">
+            <div class="modal-handle"></div>
+            <div class="modal-sheet-header">
+                <h3 class="modal-sheet-title">Set New PIN</h3>
+            </div>
+            <div class="modal-sheet-body">
+                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 8px;">Enter your new 4-digit PIN</p>
+                <div class="pin-dots-sheet" id="newPinDots">
+                    <span></span><span></span><span></span><span></span>
                 </div>
-                <div class="modal-body" style="padding: 0;">
-                    <div class="options-list-glass" style="padding: 8px 0;">
-                        <div class="option-item-glass selected" data-theme="system" onclick="selectTheme('system')" style="padding: 16px 20px; border-bottom: 0.5px solid rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;">
-                            <span class="option-label-glass">System</span>
-                            <ion-icon name="checkmark-outline" class="option-check-glass" style="color: var(--primary);"></ion-icon>
+                <div class="pin-error-sheet" id="newPinErrorSheet"></div>
+                
+                <div class="pin-pad-sheet">
+                    <button onclick="enterNewPin('1')">1</button>
+                    <button onclick="enterNewPin('2')">2</button>
+                    <button onclick="enterNewPin('3')">3</button>
+                    <button onclick="enterNewPin('4')">4</button>
+                    <button onclick="enterNewPin('5')">5</button>
+                    <button onclick="enterNewPin('6')">6</button>
+                    <button onclick="enterNewPin('7')">7</button>
+                    <button onclick="enterNewPin('8')">8</button>
+                    <button onclick="enterNewPin('9')">9</button>
+                    <button onclick="clearNewPin()">
+                        <ion-icon name="backspace-outline"></ion-icon>
+                    </button>
+                    <button onclick="enterNewPin('0')">0</button>
+                    <button onclick="cancelNewPin()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm PIN Sheet -->
+    <div id="confirmPinSheet" class="modal-sheet">
+        <div class="modal-sheet-backdrop" onclick="closeSheet('confirmPinSheet')"></div>
+        <div class="modal-sheet-content">
+            <div class="modal-handle"></div>
+            <div class="modal-sheet-header">
+                <h3 class="modal-sheet-title">Confirm PIN</h3>
+            </div>
+            <div class="modal-sheet-body">
+                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 8px;">Confirm your new PIN</p>
+                <div class="pin-dots-sheet" id="confirmPinDots">
+                    <span></span><span></span><span></span><span></span>
+                </div>
+                <div class="pin-error-sheet" id="confirmPinErrorSheet"></div>
+                
+                <div class="pin-pad-sheet">
+                    <button onclick="enterConfirmPin('1')">1</button>
+                    <button onclick="enterConfirmPin('2')">2</button>
+                    <button onclick="enterConfirmPin('3')">3</button>
+                    <button onclick="enterConfirmPin('4')">4</button>
+                    <button onclick="enterConfirmPin('5')">5</button>
+                    <button onclick="enterConfirmPin('6')">6</button>
+                    <button onclick="enterConfirmPin('7')">7</button>
+                    <button onclick="enterConfirmPin('8')">8</button>
+                    <button onclick="enterConfirmPin('9')">9</button>
+                    <button onclick="clearConfirmPin()">
+                        <ion-icon name="backspace-outline"></ion-icon>
+                    </button>
+                    <button onclick="enterConfirmPin('0')">0</button>
+                    <button onclick="cancelConfirmPin()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Appearance Sheet -->
+    <div id="appearanceSheet" class="modal-sheet">
+        <div class="modal-sheet-backdrop" onclick="closeSheet('appearanceSheet')"></div>
+        <div class="modal-sheet-content">
+            <div class="modal-handle"></div>
+            <div class="modal-sheet-header">
+                <h3 class="modal-sheet-title">Appearance</h3>
+            </div>
+            <div class="modal-sheet-body" style="padding: 0;">
+                <div class="appearance-options">
+                    <div class="appearance-option selected" data-theme="system" onclick="selectTheme('system')">
+                        <div class="appearance-option-left">
+                            <div class="appearance-icon" style="background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);">
+                                <ion-icon name="phone-portrait-outline" style="color: white;"></ion-icon>
+                            </div>
+                            <span class="appearance-label">System</span>
                         </div>
-                        <div class="option-item-glass" data-theme="light" onclick="selectTheme('light')" style="padding: 16px 20px; border-bottom: 0.5px solid rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;">
-                            <span class="option-label-glass">Light</span>
-                            <ion-icon name="checkmark-outline" class="option-check-glass" style="color: var(--primary); opacity: 0;"></ion-icon>
+                        <ion-icon name="checkmark-outline" class="appearance-check"></ion-icon>
+                    </div>
+                    <div class="appearance-option" data-theme="light" onclick="selectTheme('light')">
+                        <div class="appearance-option-left">
+                            <div class="appearance-icon" style="background: linear-gradient(135deg, #FFCC00 0%, #FF9500 100%);">
+                                <ion-icon name="sunny-outline" style="color: white;"></ion-icon>
+                            </div>
+                            <span class="appearance-label">Light</span>
                         </div>
-                        <div class="option-item-glass" data-theme="dark" onclick="selectTheme('dark')" style="padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;">
-                            <span class="option-label-glass">Dark</span>
-                            <ion-icon name="checkmark-outline" class="option-check-glass" style="color: var(--primary); opacity: 0;"></ion-icon>
+                        <ion-icon name="checkmark-outline" class="appearance-check"></ion-icon>
+                    </div>
+                    <div class="appearance-option" data-theme="dark" onclick="selectTheme('dark')">
+                        <div class="appearance-option-left">
+                            <div class="appearance-icon" style="background: linear-gradient(135deg, #5856D6 0%, #AF52DE 100%);">
+                                <ion-icon name="moon-outline" style="color: white;"></ion-icon>
+                            </div>
+                            <span class="appearance-label">Dark</span>
                         </div>
+                        <ion-icon name="checkmark-outline" class="appearance-check"></ion-icon>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Logout (Estilo Sheet) -->
-    <div id="logoutModal" class="modal hidden">
-        <div class="modal-dialog" style="max-width: 340px;">
-            <div class="modal-content" style="border-radius: 20px;">
-                <div class="modal-header" style="justify-content: center; border-bottom: none; padding-top: 24px;">
-                    <h5 class="modal-title">Log Out</h5>
+    <!-- Refer a Friend Sheet -->
+    <div id="referSheet" class="modal-sheet">
+        <div class="modal-sheet-backdrop" onclick="closeSheet('referSheet')"></div>
+        <div class="modal-sheet-content">
+            <div class="modal-handle"></div>
+            <div class="modal-sheet-header">
+                <h3 class="modal-sheet-title">Refer a Friend</h3>
+            </div>
+            <div class="modal-sheet-body">
+                <div class="referral-box">
+                    <div style="font-size: 40px; margin-bottom: 8px;">🎁</div>
+                    <div class="referral-text">Share Pesso with friends and both get $5 when they sign up!</div>
+                    <div class="referral-code" id="referralCode">PESSO2024</div>
+                    <div class="referral-text">Your unique referral code</div>
+                    <button class="btn-copy" onclick="copyReferralCode()">
+                        <ion-icon name="copy-outline" style="margin-right: 8px;"></ion-icon>
+                        Copy Code
+                    </button>
                 </div>
-                <div class="modal-body text-center" style="padding: 0 24px 24px;">
-                    <p style="color: var(--text-secondary);">Are you sure you want to log out?</p>
-                </div>
-                <div class="modal-footer" style="border-top: 0.5px solid rgba(0,0,0,0.1); padding: 16px;">
-                    <div class="btn-inline" style="display: flex; gap: 8px; width: 100%;">
-                        <button class="btn btn-text-secondary" style="flex: 1;" onclick="closeModal('logoutModal')">Cancel</button>
-                        <button class="btn btn-text-danger" style="flex: 1;" onclick="confirmLogout()">Log Out</button>
-                    </div>
-                </div>
+                <p style="text-align: center; color: var(--text-secondary); font-size: 14px; line-height: 1.5;">
+                    Share your code via text, email, or social media. Your friend must enter this code during signup.
+                </p>
+            </div>
+            <div class="modal-sheet-footer">
+                <button class="btn-sheet btn-sheet-secondary" onclick="closeSheet('referSheet')">Close</button>
+                <button class="btn-sheet btn-sheet-primary" onclick="shareReferral()">
+                    <ion-icon name="share-outline" style="margin-right: 8px;"></ion-icon>
+                    Share
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Sheet -->
+    <div id="logoutSheet" class="modal-sheet">
+        <div class="modal-sheet-backdrop" onclick="closeSheet('logoutSheet')"></div>
+        <div class="modal-sheet-content" style="max-width: 340px; margin: 0 auto; border-radius: 20px; transform: scale(0.9) translateY(100%);">
+            <div class="modal-sheet-header" style="border-bottom: none; padding-top: 24px;">
+                <h3 class="modal-sheet-title">Log Out?</h3>
+            </div>
+            <div class="modal-sheet-body" style="padding-top: 0; text-align: center;">
+                <p style="color: var(--text-secondary);">Are you sure you want to log out of Pesso?</p>
+            </div>
+            <div class="modal-sheet-footer" style="flex-direction: column; gap: 8px;">
+                <button class="btn-sheet btn-sheet-danger" onclick="confirmLogout()">Log Out</button>
+                <button class="btn-sheet btn-sheet-secondary" onclick="closeSheet('logoutSheet')" style="background: transparent;">Cancel</button>
             </div>
         </div>
     </div>
@@ -691,7 +943,7 @@
     <!-- Toast -->
     <div id="toast" class="toast hidden"></div>
 
-    <!-- Menú Flotante -->
+    <!-- Bottom Menu -->
     <div class="floating-menu-container">
         <nav class="floating-menu">
             <a href="index.html" class="menu-item" data-page="home">
@@ -720,49 +972,81 @@
     <!-- Ionicons -->
     <script type="module" src="https://unpkg.com/ionicons@5.0.0/dist/ionicons/ionicons.js"></script>
     <script>
-        // Cargar datos guardados
+        // ==================== DATA & STATE ====================
+        let currentPinChange = '';
+        let newPin = '';
+        let confirmPin = '';
+        
+        // Load saved data
         const savedName = localStorage.getItem('pesso_user') || 'Sixto M. Henriquez';
         const savedRole = localStorage.getItem('pesso_role') || 'Designer';
         const savedTheme = localStorage.getItem('pesso_theme') || 'system';
         const savedNotif = localStorage.getItem('pesso_notifications') !== 'false';
 
-        // Inicializar UI
-        document.getElementById('displayName').textContent = savedName;
-        document.getElementById('userRole').textContent = savedRole;
-        document.getElementById('occupationDisplay').textContent = savedRole;
-        document.getElementById('avatarInitial').textContent = savedName.charAt(0).toUpperCase();
-        document.getElementById('nameInput').value = savedName;
-        document.getElementById('roleInput').value = savedRole;
+        // ==================== INIT ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Apply theme
+            const isDarkMode = localStorage.getItem('pesso_dark_mode') === 'true';
+            if (isDarkMode) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+            
+            // Load user data
+            document.getElementById('displayName').textContent = savedName;
+            document.getElementById('userRole').textContent = savedRole;
+            document.getElementById('occupationDisplay').textContent = savedRole;
+            document.getElementById('avatarInitial').textContent = savedName.charAt(0).toUpperCase();
+            document.getElementById('nameInput').value = savedName;
+            document.getElementById('roleInput').value = savedRole;
 
-        // Actualizar toggle de notificaciones
-        updateNotifToggle(savedNotif);
+            // Update UI
+            updateNotifToggle(savedNotif);
+            loadTheme(savedTheme);
+            updateThemeSelection(savedTheme);
+            
+            // Load balance
+            const savedBalance = localStorage.getItem('pesso_balance') || '0.00';
+            document.getElementById('profileBalance').textContent = `$${savedBalance}`;
+            
+            // Generate referral code based on user name
+            const referralBase = savedName.replace(/\s+/g, '').toUpperCase().substring(0, 6);
+            document.getElementById('referralCode').textContent = referralBase + '2024';
+        });
 
-        // Load balance
-        const savedBalance = localStorage.getItem('pesso_balance') || '0.00';
-        document.getElementById('profileBalance').textContent = `$${savedBalance}`;        
-
-        // Cargar tema
-        loadTheme(savedTheme);
-        updateThemeSelection(savedTheme);
-
-        // Funciones de modal
-        function openModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.remove('hidden');
-                document.body.classList.add('modal-open');
+        // ==================== SHEET MODALS ====================
+        function openSheet(sheetId) {
+            const sheet = document.getElementById(sheetId);
+            if (sheet) {
+                sheet.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                
+                // Reset PIN states if opening PIN sheet
+                if (sheetId === 'changePinSheet') {
+                    resetPinChange();
+                }
             }
         }
 
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.add('hidden');
-                document.body.classList.remove('modal-open');
+        function closeSheet(sheetId) {
+            const sheet = document.getElementById(sheetId);
+            if (sheet) {
+                sheet.classList.remove('active');
+                document.body.style.overflow = '';
             }
         }
 
-        // Guardar Personal Info
+        // Close on backdrop click
+        document.querySelectorAll('.modal-sheet-backdrop').forEach(backdrop => {
+            backdrop.addEventListener('click', function() {
+                const sheet = this.closest('.modal-sheet');
+                if (sheet) {
+                    sheet.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+        // ==================== PERSONAL INFO ====================
         function savePersonalInfo() {
             const newName = document.getElementById('nameInput').value.trim();
             const newRole = document.getElementById('roleInput').value.trim();
@@ -779,16 +1063,131 @@
             }
             
             showToast('Profile updated!');
-            closeModal('personalInfoModal');
+            closeSheet('personalInfoSheet');
         }
 
-        // Editar rol (abre el modal de personal info enfocado en rol)
-        function editRole() {
-            document.getElementById('roleInput').focus();
-            openModal('personalInfoModal');
+        // ==================== CHANGE PIN ====================
+        function resetPinChange() {
+            currentPinChange = '';
+            newPin = '';
+            confirmPin = '';
+            updatePinDots('currentPinDots', '');
+            document.getElementById('pinErrorSheet').textContent = '';
         }
 
-        // Theme
+        function enterPinChange(num) {
+            if (currentPinChange.length < 4) {
+                currentPinChange += num;
+                updatePinDots('currentPinDots', currentPinChange);
+                
+                if (currentPinChange.length === 4) {
+                    setTimeout(verifyCurrentPin, 200);
+                }
+            }
+        }
+
+        function clearPinChange() {
+            currentPinChange = currentPinChange.slice(0, -1);
+            updatePinDots('currentPinDots', currentPinChange);
+        }
+
+        function cancelPinChange() {
+            closeSheet('changePinSheet');
+        }
+
+        function verifyCurrentPin() {
+            const savedPin = localStorage.getItem('pesso_pin') || '1234';
+            if (currentPinChange === savedPin) {
+                closeSheet('changePinSheet');
+                setTimeout(() => {
+                    openSheet('newPinSheet');
+                    resetNewPin();
+                }, 300);
+            } else {
+                document.getElementById('pinErrorSheet').textContent = 'Incorrect PIN';
+                currentPinChange = '';
+                setTimeout(() => updatePinDots('currentPinDots', ''), 200);
+            }
+        }
+
+        // ==================== NEW PIN ====================
+        function resetNewPin() {
+            newPin = '';
+            updatePinDots('newPinDots', '');
+            document.getElementById('newPinErrorSheet').textContent = '';
+        }
+
+        function enterNewPin(num) {
+            if (newPin.length < 4) {
+                newPin += num;
+                updatePinDots('newPinDots', newPin);
+                
+                if (newPin.length === 4) {
+                    setTimeout(() => {
+                        closeSheet('newPinSheet');
+                        openSheet('confirmPinSheet');
+                        resetConfirmPin();
+                    }, 200);
+                }
+            }
+        }
+
+        function clearNewPin() {
+            newPin = newPin.slice(0, -1);
+            updatePinDots('newPinDots', newPin);
+        }
+
+        function cancelNewPin() {
+            closeSheet('newPinSheet');
+        }
+
+        // ==================== CONFIRM PIN ====================
+        function resetConfirmPin() {
+            confirmPin = '';
+            updatePinDots('confirmPinDots', '');
+            document.getElementById('confirmPinErrorSheet').textContent = '';
+        }
+
+        function enterConfirmPin(num) {
+            if (confirmPin.length < 4) {
+                confirmPin += num;
+                updatePinDots('confirmPinDots', confirmPin);
+                
+                if (confirmPin.length === 4) {
+                    setTimeout(verifyNewPinMatch, 200);
+                }
+            }
+        }
+
+        function clearConfirmPin() {
+            confirmPin = confirmPin.slice(0, -1);
+            updatePinDots('confirmPinDots', confirmPin);
+        }
+
+        function cancelConfirmPin() {
+            closeSheet('confirmPinSheet');
+        }
+
+        function verifyNewPinMatch() {
+            if (newPin === confirmPin) {
+                localStorage.setItem('pesso_pin', newPin);
+                showToast('PIN changed successfully!');
+                closeSheet('confirmPinSheet');
+            } else {
+                document.getElementById('confirmPinErrorSheet').textContent = 'PINs do not match';
+                confirmPin = '';
+                setTimeout(() => updatePinDots('confirmPinDots', ''), 200);
+            }
+        }
+
+        function updatePinDots(dotsId, pin) {
+            const dots = document.querySelectorAll(`#${dotsId} span`);
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('filled', i < pin.length);
+            });
+        }
+
+        // ==================== THEME ====================
         function selectTheme(theme) {
             localStorage.setItem('pesso_theme', theme);
             
@@ -798,7 +1197,7 @@
             updateThemeSelection(theme);
             applyTheme(theme);
             
-            setTimeout(() => closeModal('appearanceModal'), 200);
+            setTimeout(() => closeSheet('appearanceSheet'), 200);
         }
 
         function applyTheme(theme) {
@@ -826,15 +1225,15 @@
         }
 
         function updateThemeSelection(theme) {
-            document.querySelectorAll('#appearanceModal .option-item-glass').forEach(item => {
-                item.classList.remove('selected');
-                if (item.dataset.theme === theme) {
-                    item.classList.add('selected');
+            document.querySelectorAll('.appearance-option').forEach(option => {
+                option.classList.remove('selected');
+                if (option.dataset.theme === theme) {
+                    option.classList.add('selected');
                 }
             });
         }
 
-        // Notificaciones
+        // ==================== NOTIFICATIONS ====================
         function toggleNotifications() {
             const current = localStorage.getItem('pesso_notifications') !== 'false';
             const newValue = !current;
@@ -852,22 +1251,49 @@
             }
         }
 
-        // Logout
-        function showLogoutModal() {
-            openModal('logoutModal');
+        // ==================== REFERRAL ====================
+        function copyReferralCode() {
+            const code = document.getElementById('referralCode').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                showToast('Code copied!');
+            }).catch(() => {
+                // Fallback
+                const input = document.createElement('input');
+                input.value = code;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                showToast('Code copied!');
+            });
         }
 
+        function shareReferral() {
+            const code = document.getElementById('referralCode').textContent;
+            const shareData = {
+                title: 'Join me on Pesso',
+                text: `Use my code ${code} to get $5 when you sign up for Pesso!`,
+                url: 'https://pesso.app'
+            };
+            
+            if (navigator.share) {
+                navigator.share(shareData);
+            } else {
+                copyReferralCode();
+            }
+        }
+
+        // ==================== LOGOUT ====================
         function confirmLogout() {
             localStorage.removeItem('pesso_session');
             window.location.href = 'index.html';
         }
 
-        // Avatar
+        // ==================== UTILITIES ====================
         function changeAvatar() {
             showToast('Avatar change coming soon!');
         }
 
-        // Toast
         function showToast(message) {
             const toast = document.getElementById('toast');
             toast.textContent = message;
@@ -875,15 +1301,7 @@
             setTimeout(() => toast.classList.add('hidden'), 3000);
         }
 
-        // Cerrar al hacer click fuera
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('modal')) {
-                e.target.classList.add('hidden');
-                document.body.classList.remove('modal-open');
-            }
-        });
-
-        // Ripple effect en menú
+        // Menu ripple effect
         document.querySelectorAll('.menu-item').forEach(item => {
             item.addEventListener('click', function(e) {
                 const ripple = document.createElement('span');
@@ -899,111 +1317,42 @@
         });
     </script>
 
-<script>
-// Manejo de modales con clase body
-function openModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.remove('hidden');
-        document.body.classList.add('modal-open');
-    }
-}
-
-function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.add('hidden');
-        document.body.classList.remove('modal-open');
-    }
-}
-
-// Cerrar al hacer click fuera
-document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('modal')) {
-        e.target.classList.add('hidden');
-        document.body.classList.remove('modal-open');
-    }
-});
-
-// Cerrar con botón X o Cancel
-document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const modal = this.closest('.modal');
-        if (modal) {
-            modal.classList.add('hidden');
-            document.body.classList.remove('modal-open');
-        }
-    });
-});
-
-(function() {
-    const isDarkMode = localStorage.getItem('pesso_dark_mode') === 'true';
-    if (isDarkMode) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-    }
-})();
-</script>
-
-<script>
-    // Asegurar que el menú siempre esté visible
-    document.addEventListener('DOMContentLoaded', function() {
-        const menu = document.querySelector('.floating-menu-container');
-        if (menu) {
-            menu.style.display = 'block';
-            menu.style.visibility = 'visible';
-            menu.style.opacity = '1';
-        }
-    });
+    <script>
+        // Aplicar tema inmediatamente
+        (function() {
+            const isDarkMode = localStorage.getItem('pesso_dark_mode') === 'true';
+            if (isDarkMode) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
     
-    // Prevenir que el menú desaparezca al hacer scroll
-    window.addEventListener('scroll', function() {
-        const menu = document.querySelector('.floating-menu-container');
-        if (menu) {
-            menu.style.transform = 'translateX(-50%) translateZ(0)';
-        }
-    });
-</script>
-
-<script>
-    // Registrar Service Worker
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js')
-                .then((registration) => {
-                    console.log('✅ SW registrado:', registration.scope);
-                    
-                    // Verificar actualizaciones cada vez que carga la página
-                    registration.addEventListener('updatefound', () => {
-                        const newWorker = registration.installing;
-                        newWorker.addEventListener('statechange', () => {
-                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                console.log('🔄 Nueva versión disponible');
-                                // Opcional: Mostrar toast para actualizar
-                                if (confirm('Nueva versión disponible. ¿Actualizar ahora?')) {
-                                    newWorker.postMessage('SKIP_WAITING');
-                                    window.location.reload();
-                                }
-                            }
-                        });
-                    });
-                })
-                .catch((error) => {
-                    console.error('❌ Error registrando SW:', error);
-                });
-                
-            // Escuchar cuando el SW tome control
-            let refreshing = false;
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (!refreshing) {
-                    refreshing = true;
-                    window.location.reload();
-                }
-            });
+    <script>
+        // Asegurar que el menú siempre esté visible
+        document.addEventListener('DOMContentLoaded', function() {
+            const menu = document.querySelector('.floating-menu-container');
+            if (menu) {
+                menu.style.display = 'block';
+                menu.style.visibility = 'visible';
+                menu.style.opacity = '1';
+            }
         });
-    } else {
-        console.warn('Service Worker no soportado en este navegador');
-    }
-</script>
+    </script>
+
+    <script>
+        // Registrar Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('✅ SW registrado:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.error('❌ Error registrando SW:', error);
+                    });
+            });
+        }
+    </script>
 
 </body>
 </html>

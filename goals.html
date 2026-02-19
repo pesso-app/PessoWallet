@@ -8,52 +8,293 @@
     <meta name="theme-color" content="#1C5CCF" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
     <title>Goals - Pesso</title>
-    <!-- Manifest PWA -->    
     <link rel="manifest" href="manifest.json">
-    <!-- Style CSS / ICONS -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png" sizes="32x32">    
     <link rel="apple-touch-icon" href="assets/icon/iconicon-192.png">
     <link rel="stylesheet" href="style.css">
-<!-- Agrega esto en el head de goals.html, justo antes del cierre </head> -->
-<style>
-    /* FAB Position Fixed Correcto */
-    #fabAddGoal {
-        position: fixed !important;
-        top: calc(70px + env(safe-area-inset-top)) !important;
-        right: 20px !important;
-        width: 50px !important;
-        height: 50px !important;
-        border-radius: 50% !important;
-        background: var(--primary) !important;
-        color: white !important;
-        border: none !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        font-size: 28px !important;
-        box-shadow: 0 4px 15px rgba(28, 92, 207, 0.4) !important;
-        cursor: pointer !important;
-        z-index: 1000 !important;
-        -webkit-transform: translateZ(0) !important;
-        transform: translateZ(0) !important;
-        will-change: transform !important;
-    }
-    
-    #fabAddGoal:active {
-        transform: scale(0.9) !important;
-    }
-    
-    /* Asegurar que el menú siempre esté arriba */
-    .floating-menu-container {
-        z-index: 9999 !important;
-    }
-    
-    /* Espacio extra abajo para el menú */
-    #appCapsule {
-        padding-bottom: calc(120px + env(safe-area-inset-bottom)) !important;
-    }
-</style>
-
+    <style>
+        /* Fix header to edge of notch */
+        .header-large-title {
+            padding-top: env(safe-area-inset-top) !important;
+            padding-bottom: 8px;
+        }
+        
+        /* FAB Position */
+        #fabAddGoal {
+            position: fixed !important;
+            top: calc(60px + env(safe-area-inset-top)) !important;
+            right: 20px !important;
+            width: 50px !important;
+            height: 50px !important;
+            border-radius: 50% !important;
+            background: var(--primary) !important;
+            color: white !important;
+            border: none !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 28px !important;
+            box-shadow: 0 4px 15px rgba(28, 92, 207, 0.4) !important;
+            cursor: pointer !important;
+            z-index: 1000 !important;
+            transform: translateZ(0) !important;
+            will-change: transform !important;
+        }
+        
+        #fabAddGoal:active {
+            transform: scale(0.9) !important;
+        }
+        
+        /* Goal Card con UNA SOLA barra de progreso */
+        .goal-card-modern {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        [data-theme="dark"] .goal-card-modern {
+            background: rgba(44, 44, 46, 0.95);
+            border-color: rgba(255,255,255,0.05);
+        }
+        
+        .goal-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .goal-emoji-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .goal-info {
+            flex: 1;
+        }
+        
+        .goal-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+        
+        .goal-amount {
+            font-size: 15px;
+            color: var(--text-secondary);
+        }
+        
+        .goal-amount strong {
+            color: var(--primary);
+            font-size: 18px;
+        }
+        
+        /* UNA SOLA barra de progreso */
+        .goal-progress-container {
+            margin-top: 4px;
+        }
+        
+        .goal-progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .goal-percent {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .goal-progress-bg {
+            height: 10px;
+            background: rgba(0,0,0,0.05);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        [data-theme="dark"] .goal-progress-bg {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .goal-progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .goal-date {
+            margin-top: 12px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        /* MODAL ESTILO HOME - Slide up from bottom */
+        .modal-goal {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        
+        .modal-goal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-goal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0);
+            transition: background 0.3s ease;
+        }
+        
+        .modal-goal.active .modal-goal-backdrop {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(3px);
+        }
+        
+        .modal-goal-content {
+            width: 100%;
+            max-width: 500px;
+            background: var(--bg);
+            border-radius: 24px 24px 0 0;
+            transform: translateY(100%);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 10001;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        [data-theme="dark"] .modal-goal-content {
+            background: var(--bg-dark);
+        }
+        
+        .modal-goal.active .modal-goal-content {
+            transform: translateY(0);
+        }
+        
+        .modal-goal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        [data-theme="dark"] .modal-goal-header {
+            border-bottom-color: rgba(255,255,255,0.1);
+        }
+        
+        .modal-goal-title {
+            font-size: 17px;
+            font-weight: 700;
+            flex: 1;
+            text-align: center;
+        }
+        
+        .modal-goal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-goal-body {
+            padding: 20px;
+        }
+        
+        .modal-goal-footer {
+            display: flex;
+            gap: 12px;
+            padding: 16px 20px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        [data-theme="dark"] .modal-goal-footer {
+            border-top-color: rgba(255,255,255,0.1);
+        }
+        
+        .btn-goal {
+            flex: 1;
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .btn-goal-secondary {
+            background: var(--bg-card);
+            color: var(--text);
+        }
+        
+        .btn-goal-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Emoji picker en modal */
+        .emoji-picker-goal {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin: 16px 0;
+        }
+        
+        .emoji-option-goal {
+            aspect-ratio: 1;
+            border-radius: 12px;
+            background: var(--bg-card);
+            border: 2px solid transparent;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .emoji-option-goal.selected {
+            border-color: var(--primary);
+            background: rgba(28, 92, 207, 0.1);
+            transform: scale(1.1);
+        }
+        
+        .emoji-option-goal:active {
+            transform: scale(0.95);
+        }
+    </style>
 </head>
 
 <body class="fade-in">
@@ -88,7 +329,7 @@
             <div class="section-header">
                 <h2 class="section-title">My Goals</h2>
             </div>
-            <div id="goalsList" class="ios-cards-container">
+            <div id="goalsList">
                 <!-- Goals generadas por JS -->
             </div>
         </div>
@@ -100,60 +341,54 @@
         <ion-icon name="add-outline"></ion-icon>
     </button>
 
-    <!-- Modal Agregar Meta -->
-    <div id="addGoalModal" class="modal hidden">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">New Goal</h5>
-                    <button class="close-btn" id="closeModalBtn">
-                        <ion-icon name="close-outline"></ion-icon>
-                    </button>
+    <!-- Modal Agregar Meta - ESTILO HOME -->
+    <div id="addGoalModal" class="modal-goal">
+        <div class="modal-goal-backdrop" onclick="closeGoalModal()"></div>
+        <div class="modal-goal-content">
+            <div class="modal-goal-header">
+                <button class="modal-goal-close" onclick="closeGoalModal()">
+                    <ion-icon name="close-outline"></ion-icon>
+                </button>
+                <h3 class="modal-goal-title">New Goal</h3>
+                <div style="width: 32px;"></div>
+            </div>
+            <div class="modal-goal-body">
+                <div class="sheet-form-group">
+                    <label>Goal Name</label>
+                    <input type="text" class="form-control" id="newGoalName" placeholder="e.g. New Car, Vacation">
                 </div>
-                <div class="modal-body">
-                    <div class="form-group boxed">
-                        <div class="input-wrapper">
-                            <label class="label">Goal Name</label>
-                            <input type="text" class="form-control" id="newGoalName" placeholder="e.g. New Car, Vacation">
-                        </div>
-                    </div>
-                    
-                    <!-- Emoji Picker -->
-                    <div class="form-group">
-                        <label class="label">Choose Icon</label>
-                        <div class="emoji-picker" id="emojiPicker">
-                            <div class="emoji-option selected" data-emoji="🎯">🎯</div>
-                            <div class="emoji-option" data-emoji="🚗">🚗</div>
-                            <div class="emoji-option" data-emoji="✈️">✈️</div>
-                            <div class="emoji-option" data-emoji="🏠">🏠</div>
-                            <div class="emoji-option" data-emoji="📱">📱</div>
-                            <div class="emoji-option" data-emoji="💻">💻</div>
-                            <div class="emoji-option" data-emoji="👕">👕</div>
-                            <div class="emoji-option" data-emoji="🎮">🎮</div>
-                            <div class="emoji-option" data-emoji="📚">📚</div>
-                            <div class="emoji-option" data-emoji="🎓">🎓</div>
-                            <div class="emoji-option" data-emoji="✨">✨</div>
-                            <div class="emoji-option" data-emoji="🎁">🎁</div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group boxed">
-                        <div class="input-wrapper">
-                            <label class="label">Target Amount</label>
-                            <input type="number" class="form-control" id="newGoalTarget" placeholder="0.00" step="0.01">
-                        </div>
-                    </div>
-                    <div class="form-group boxed">
-                        <div class="input-wrapper">
-                            <label class="label">Target Date (Optional)</label>
-                            <input type="date" class="form-control" id="newGoalDate">
-                        </div>
+                
+                <div class="sheet-form-group">
+                    <label>Choose Icon</label>
+                    <div class="emoji-picker-goal" id="emojiPicker">
+                        <div class="emoji-option-goal selected" data-emoji="🎯">🎯</div>
+                        <div class="emoji-option-goal" data-emoji="🚗">🚗</div>
+                        <div class="emoji-option-goal" data-emoji="✈️">✈️</div>
+                        <div class="emoji-option-goal" data-emoji="🏠">🏠</div>
+                        <div class="emoji-option-goal" data-emoji="📱">📱</div>
+                        <div class="emoji-option-goal" data-emoji="💻">💻</div>
+                        <div class="emoji-option-goal" data-emoji="👕">👕</div>
+                        <div class="emoji-option-goal" data-emoji="🎮">🎮</div>
+                        <div class="emoji-option-goal" data-emoji="📚">📚</div>
+                        <div class="emoji-option-goal" data-emoji="🎓">🎓</div>
+                        <div class="emoji-option-goal" data-emoji="✨">✨</div>
+                        <div class="emoji-option-goal" data-emoji="🎁">🎁</div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button class="btn btn-text-secondary" id="cancelBtn">Cancel</button>
-                    <button class="btn btn-text-primary" id="saveGoalBtn">Create Goal</button>
+                
+                <div class="sheet-form-group">
+                    <label>Target Amount</label>
+                    <input type="number" class="form-control" id="newGoalTarget" placeholder="0.00" step="0.01">
                 </div>
+                
+                <div class="sheet-form-group">
+                    <label>Target Date (Optional)</label>
+                    <input type="date" class="form-control" id="newGoalDate">
+                </div>
+            </div>
+            <div class="modal-goal-footer">
+                <button class="btn-goal btn-goal-secondary" onclick="closeGoalModal()">Cancel</button>
+                <button class="btn-goal btn-goal-primary" onclick="saveNewGoal()">Create Goal</button>
             </div>
         </div>
     </div>
@@ -162,94 +397,34 @@
     <div id="toast" class="toast hidden"></div>
 
     <!-- Bottom Menu -->
-<!-- Menú Flotante iOS 26 - Reemplazar en index.html, goals.html, alerts.html, profile.html -->
-<div class="floating-menu-container">
-    <nav class="floating-menu">
-        <a href="index.html" class="menu-item" data-page="home">
-            <ion-icon name="home-outline"></ion-icon>
-            <strong>Home</strong>
-            <div class="active-indicator"></div>
-        </a>
-
-        <a href="goals.html" class="menu-item" data-page="goals">
-            <ion-icon name="flag-outline"></ion-icon>
-            <strong>Goals</strong>
-            <div class="active-indicator"></div>
-        </a>
-
-        <a href="alerts.html" class="menu-item" data-page="activity">
-            <ion-icon name="notifications-outline"></ion-icon>
-            <strong>Activity</strong>
-            <div class="active-indicator"></div>
-        </a>
-
-        <a href="profile.html" class="menu-item" data-page="me">
-            <ion-icon name="person-outline"></ion-icon>
-            <strong>Me</strong>
-            <div class="active-indicator"></div>
-        </a>
-    </nav>
-</div>
-
-<script>
-    // Script para manejar el menú flotante
-    (function() {
-        // Detectar página actual y marcar como activa
-        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-        const pageMap = {
-            'index.html': 'home',
-            'goals.html': 'goals',
-            'alerts.html': 'activity',
-            'activity.html': 'activity',
-            'profile.html': 'me'
-        };
-        
-        const currentKey = pageMap[currentPage] || 'home';
-        
-        document.querySelectorAll('.menu-item').forEach(item => {
-            if (item.getAttribute('data-page') === currentKey) {
-                item.classList.add('active');
-            }
-            
-            // Efecto ripple al click
-            item.addEventListener('click', function(e) {
-                createRipple(this, e);
-                
-                // Haptic feedback si está disponible
-                if (navigator.vibrate) {
-                    navigator.vibrate(8);
-                }
-            });
-        });
-        
-        function createRipple(element, event) {
-            const ripple = document.createElement('span');
-            ripple.classList.add('ripple');
-            
-            const rect = element.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const x = event.clientX - rect.left - size / 2;
-            const y = event.clientY - rect.top - size / 2;
-            
-            ripple.style.width = ripple.style.height = size + 'px';
-            ripple.style.left = x + 'px';
-            ripple.style.top = y + 'px';
-            
-            element.appendChild(ripple);
-            setTimeout(() => ripple.remove(), 600);
-        }
-        
-        // Prevenir zoom en double tap (iOS)
-        document.addEventListener('dblclick', function(e) {
-            e.preventDefault();
-        }, { passive: false });
-    })();
-</script>
+    <div class="floating-menu-container">
+        <nav class="floating-menu">
+            <a href="index.html" class="menu-item" data-page="home">
+                <ion-icon name="home-outline"></ion-icon>
+                <strong>Home</strong>
+                <div class="active-indicator"></div>
+            </a>
+            <a href="goals.html" class="menu-item active" data-page="goals">
+                <ion-icon name="flag-outline"></ion-icon>
+                <strong>Goals</strong>
+                <div class="active-indicator"></div>
+            </a>
+            <a href="alerts.html" class="menu-item" data-page="activity">
+                <ion-icon name="notifications-outline"></ion-icon>
+                <strong>Activity</strong>
+                <div class="active-indicator"></div>
+            </a>
+            <a href="profile.html" class="menu-item" data-page="me">
+                <ion-icon name="person-outline"></ion-icon>
+                <strong>Me</strong>
+                <div class="active-indicator"></div>
+            </a>
+        </nav>
+    </div>
 
     <!-- Ionicons -->
     <script type="module" src="https://unpkg.com/ionicons@5.0.0/dist/ionicons/ionicons.js"></script>
     
-    <!-- Script al final del body -->
     <script>
         // ==================== CONFIGURACIÓN ====================
         const DB_NAME = 'PessoDB';
@@ -261,60 +436,30 @@
 
         // ==================== INICIALIZACIÓN ====================
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM cargado, inicializando...');
-            
-            // Aplicar tema
             const isDarkMode = localStorage.getItem('pesso_dark_mode') === 'true';
             if (isDarkMode) {
                 document.documentElement.setAttribute('data-theme', 'dark');
             }
             
-            // Asignar event listeners
             setupEventListeners();
-            
-            // Inicializar DB y cargar datos
             initGoals();
         });
 
         function setupEventListeners() {
-            console.log('Configurando event listeners...');
-            
             // FAB
             const fab = document.getElementById('fabAddGoal');
             if (fab) {
-                fab.addEventListener('click', showAddGoalModal);
-                console.log('FAB listener asignado');
-            } else {
-                console.error('No se encontró fabAddGoal');
+                fab.addEventListener('click', openGoalModal);
             }
             
-            // Botón cerrar modal
-            const closeBtn = document.getElementById('closeModalBtn');
-            if (closeBtn) {
-                closeBtn.addEventListener('click', hideAddGoalModal);
-            }
-            
-            // Botón cancelar
-            const cancelBtn = document.getElementById('cancelBtn');
-            if (cancelBtn) {
-                cancelBtn.addEventListener('click', hideAddGoalModal);
-            }
-            
-            // Botón guardar
-            const saveBtn = document.getElementById('saveGoalBtn');
-            if (saveBtn) {
-                saveBtn.addEventListener('click', saveNewGoal);
-                console.log('Save button listener asignado');
-            } else {
-                console.error('No se encontró saveGoalBtn');
-            }
-            
-            // Cerrar modal al hacer click fuera
-            const modal = document.getElementById('addGoalModal');
-            if (modal) {
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                        hideAddGoalModal();
+            // Emoji picker
+            const picker = document.getElementById('emojiPicker');
+            if (picker) {
+                picker.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('emoji-option-goal')) {
+                        picker.querySelectorAll('.emoji-option-goal').forEach(el => el.classList.remove('selected'));
+                        e.target.classList.add('selected');
+                        selectedEmoji = e.target.dataset.emoji;
                     }
                 });
             }
@@ -324,8 +469,6 @@
             try {
                 await initDB();
                 await loadGoals();
-                setupEmojiPicker();
-                console.log('Goals inicializado. Total goals:', goals.length);
             } catch (error) {
                 console.error('Error inicializando goals:', error);
                 showToast('Error loading goals');
@@ -336,19 +479,14 @@
             return new Promise((resolve, reject) => {
                 const request = indexedDB.open(DB_NAME, DB_VERSION);
                 
-                request.onerror = () => {
-                    console.error('Error abriendo DB:', request.error);
-                    reject(request.error);
-                };
+                request.onerror = () => reject(request.error);
                 
                 request.onsuccess = () => {
                     db = request.result;
-                    console.log('Goals: DB conectada, version:', db.version);
                     resolve(db);
                 };
                 
                 request.onupgradeneeded = (event) => {
-                    console.log('Goals: Actualizando DB a version:', event.newVersion);
                     const db = event.target.result;
                     
                     if (!db.objectStoreNames.contains('envelopes')) {
@@ -371,7 +509,6 @@
         async function loadGoals() {
             try {
                 goals = await getAllFromStore('goals');
-                console.log('Goals cargados:', goals.length);
                 updateTotalGoals();
                 renderGoals();
             } catch (error) {
@@ -399,136 +536,83 @@
             }
         }
 
-// En goals.html, reemplaza la función renderGoals() con esta:
-
-function renderGoals() {
-    const goalsList = document.getElementById('goalsList');
-    if (!goalsList) return;
-    
-    goalsList.innerHTML = '';
-    
-    if (goals.length === 0) {
-        goalsList.innerHTML = `
-            <div class="empty-state">
-                <ion-icon name="flag-outline" style="font-size: 48px; color: var(--text-secondary);"></ion-icon>
-                <p>No goals yet</p>
-                <p style="font-size:13px; margin-top:8px;">Tap + to create your first goal</p>
-            </div>
-        `;
-        return;
-    }
-    
-    goals.forEach(goal => {
-        const saved = goal.saved || 0;
-        const target = goal.target || 1;
-        const percent = Math.min(100, (saved / target) * 100);
-        const emoji = goal.emoji || '🎯';
-        const remaining = target - saved;
-        
-        // Color según progreso
-        let progressColor = 'var(--primary)';
-        if (percent >= 100) progressColor = 'var(--success)';
-        else if (percent >= 75) progressColor = '#30D158';
-        else if (percent >= 50) progressColor = '#FF9500';
-        else if (percent >= 25) progressColor = '#FF9F0A';
-        
-        const card = document.createElement('div');
-        card.className = 'ios-card goal-card-modern';
-        card.style.cssText = `
-            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(245,245,247,0.8) 100%);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.5);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
-            position: relative;
-            overflow: hidden;
-            transform: translateZ(0);
-        `;
-        
-        // Barra de progreso decorativa arriba
-        const progressBar = `
-            <div style="position: absolute; top: 0; left: 0; right: 0; height: 4px; background: rgba(0,0,0,0.05);">
-                <div style="width: ${percent}%; height: 100%; background: ${progressColor}; transition: width 0.5s ease;"></div>
-            </div>
-        `;
-        
-        // Fecha formateada
-        let dateText = '';
-        if (goal.date) {
-            const date = new Date(goal.date);
-            const daysLeft = Math.ceil((date - new Date()) / (1000 * 60 * 60 * 24));
-            if (daysLeft > 0) {
-                dateText = `<span style="font-size: 12px; color: var(--text-secondary);">⏰ ${daysLeft} days left</span>`;
-            } else if (daysLeft === 0) {
-                dateText = `<span style="font-size: 12px; color: var(--danger);">📅 Due today</span>`;
-            } else {
-                dateText = `<span style="font-size: 12px; color: var(--danger);">⚠️ Overdue</span>`;
+        function renderGoals() {
+            const goalsList = document.getElementById('goalsList');
+            if (!goalsList) return;
+            
+            goalsList.innerHTML = '';
+            
+            if (goals.length === 0) {
+                goalsList.innerHTML = `
+                    <div class="empty-state">
+                        <ion-icon name="flag-outline" style="font-size: 48px; color: var(--text-secondary);"></ion-icon>
+                        <p>No goals yet</p>
+                        <p style="font-size:13px; margin-top:8px;">Tap + to create your first goal</p>
+                    </div>
+                `;
+                return;
             }
+            
+            goals.forEach(goal => {
+                const saved = goal.saved || 0;
+                const target = goal.target || 1;
+                const percent = Math.min(100, (saved / target) * 100);
+                const emoji = goal.emoji || '🎯';
+                const remaining = target - saved;
+                
+                // Color según progreso
+                let progressColor = 'var(--primary)';
+                if (percent >= 100) progressColor = 'var(--success)';
+                else if (percent >= 75) progressColor = '#30D158';
+                else if (percent >= 50) progressColor = '#FF9500';
+                
+                const card = document.createElement('div');
+                card.className = 'goal-card-modern';
+                
+                // Fecha formateada
+                let dateText = '';
+                if (goal.date) {
+                    const date = new Date(goal.date);
+                    const daysLeft = Math.ceil((date - new Date()) / (1000 * 60 * 60 * 24));
+                    if (daysLeft > 0) {
+                        dateText = `<div class="goal-date"><ion-icon name="time-outline"></ion-icon> ${daysLeft} days left</div>`;
+                    } else if (daysLeft === 0) {
+                        dateText = `<div class="goal-date" style="color: var(--danger);"><ion-icon name="today-outline"></ion-icon> Due today</div>`;
+                    } else {
+                        dateText = `<div class="goal-date" style="color: var(--danger);"><ion-icon name="alert-circle-outline"></ion-icon> Overdue</div>`;
+                    }
+                }
+                
+                card.innerHTML = `
+                    <div class="goal-header">
+                        <div class="goal-emoji-box" style="background: ${progressColor}20; box-shadow: 0 4px 12px ${progressColor}30;">
+                            ${emoji}
+                        </div>
+                        <div class="goal-info">
+                            <div class="goal-name">${escapeHtml(goal.name) || 'Goal'}</div>
+                            <div class="goal-amount">
+                                <strong style="color: ${progressColor};">$${saved.toLocaleString()}</strong> of $${target.toLocaleString()}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- UNA SOLA barra de progreso -->
+                    <div class="goal-progress-container">
+                        <div class="goal-progress-header">
+                            <span style="font-size: 13px; color: var(--text-secondary);">${percent >= 100 ? 'Completed!' : `$${remaining.toLocaleString()} to go`}</span>
+                            <span class="goal-percent" style="color: ${progressColor};">${percent.toFixed(0)}%</span>
+                        </div>
+                        <div class="goal-progress-bg">
+                            <div class="goal-progress-fill" style="width: ${percent}%; background: ${progressColor};"></div>
+                        </div>
+                    </div>
+                    
+                    ${dateText}
+                `;
+                
+                goalsList.appendChild(card);
+            });
         }
-        
-        card.innerHTML = `
-            ${progressBar}
-            <div style="display: flex; align-items: center; gap: 16px; margin-top: 4px;">
-                <div style="
-                    width: 60px; 
-                    height: 60px; 
-                    border-radius: 16px; 
-                    background: linear-gradient(135deg, ${progressColor}20 0%, ${progressColor}40 100%);
-                    display: flex; 
-                    align-items: center; 
-                    justify-content: center; 
-                    font-size: 28px;
-                    box-shadow: 0 4px 12px ${progressColor}30;
-                    border: 2px solid ${progressColor}40;
-                ">
-                    ${emoji}
-                </div>
-                <div style="flex: 1;">
-                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 4px;">
-                        <h3 style="font-size: 18px; font-weight: 700; color: var(--text); margin: 0; letter-spacing: -0.3px;">${escapeHtml(goal.name) || 'Goal'}</h3>
-                        <span style="font-size: 16px; font-weight: 700; color: ${progressColor};">$${saved.toLocaleString()}</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <span style="font-size: 13px; color: var(--text-secondary);">of $${target.toLocaleString()} target</span>
-                        <span style="font-size: 13px; font-weight: 600; color: ${progressColor};">${percent.toFixed(0)}%</span>
-                    </div>
-                    <div style="
-                        height: 8px; 
-                        background: rgba(0,0,0,0.05); 
-                        border-radius: 4px; 
-                        overflow: hidden;
-                        position: relative;
-                    ">
-                        <div style="
-                            width: ${percent}%; 
-                            height: 100%; 
-                            background: linear-gradient(90deg, ${progressColor} 0%, ${progressColor}dd 100%);
-                            border-radius: 4px;
-                            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-                            box-shadow: 0 0 10px ${progressColor}50;
-                        "></div>
-                    </div>
-                    ${dateText ? `<div style="margin-top: 8px;">${dateText}</div>` : ''}
-                </div>
-            </div>
-        `;
-        
-        goalsList.appendChild(card);
-    });
-}
-
-// Tema oscuro para las cards
-const style = document.createElement('style');
-style.textContent = `
-    [data-theme="dark"] .goal-card-modern {
-        background: linear-gradient(135deg, rgba(44,44,46,0.9) 0%, rgba(30,30,30,0.8) 100%) !important;
-        border-color: rgba(255,255,255,0.1) !important;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.2) !important;
-    }
-`;
-document.head.appendChild(style);
 
         function escapeHtml(text) {
             if (!text) return '';
@@ -537,28 +621,8 @@ document.head.appendChild(style);
             return div.innerHTML;
         }
 
-        // ==================== EMOJI PICKER ====================
-        function setupEmojiPicker() {
-            const picker = document.getElementById('emojiPicker');
-            if (!picker) {
-                console.error('No se encontró emojiPicker');
-                return;
-            }
-            
-            picker.addEventListener('click', (e) => {
-                if (e.target.classList.contains('emoji-option')) {
-                    picker.querySelectorAll('.emoji-option').forEach(el => el.classList.remove('selected'));
-                    e.target.classList.add('selected');
-                    selectedEmoji = e.target.dataset.emoji;
-                    console.log('Emoji seleccionado:', selectedEmoji);
-                }
-            });
-        }
-
         // ==================== MODAL FUNCTIONS ====================
-        function showAddGoalModal() {
-            console.log('Abriendo modal...');
-            
+        function openGoalModal() {
             const modal = document.getElementById('addGoalModal');
             const nameInput = document.getElementById('newGoalName');
             const targetInput = document.getElementById('newGoalTarget');
@@ -572,42 +636,38 @@ document.head.appendChild(style);
             selectedEmoji = '🎯';
             
             if (picker) {
-                picker.querySelectorAll('.emoji-option').forEach(el => el.classList.remove('selected'));
+                picker.querySelectorAll('.emoji-option-goal').forEach(el => el.classList.remove('selected'));
                 const defaultEmoji = picker.querySelector('[data-emoji="🎯"]');
                 if (defaultEmoji) defaultEmoji.classList.add('selected');
             }
             
             if (modal) {
-                modal.classList.remove('hidden');
-                console.log('Modal abierto');
-            } else {
-                console.error('No se encontró el modal');
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
             }
         }
 
-        function hideAddGoalModal() {
+        function closeGoalModal() {
             const modal = document.getElementById('addGoalModal');
-            if (modal) modal.classList.add('hidden');
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
         }
 
         async function saveNewGoal() {
-            console.log('Guardando nueva meta...');
-            
             const nameInput = document.getElementById('newGoalName');
             const targetInput = document.getElementById('newGoalTarget');
             const dateInput = document.getElementById('newGoalDate');
             
             if (!nameInput || !targetInput) {
-                console.error('No se encontraron los inputs');
-                showToast('Error: Formulario no encontrado');
+                showToast('Error: Form not found');
                 return;
             }
             
             const name = nameInput.value.trim();
             const target = parseFloat(targetInput.value);
             const date = dateInput && dateInput.value ? dateInput.value : null;
-            
-            console.log('Datos:', { name, target, date, emoji: selectedEmoji });
             
             if (!name) {
                 showToast('Enter a goal name');
@@ -629,16 +689,10 @@ document.head.appendChild(style);
                 created: new Date().toISOString()
             };
             
-            console.log('Nueva meta:', newGoal);
-            
             try {
                 await saveToStore('goals', newGoal);
-                console.log('Meta guardada en DB');
-                
                 goals.push(newGoal);
-                console.log('Meta agregada al array. Total:', goals.length);
                 
-                // Agregar notificación
                 await addNotification(
                     'goal_created',
                     'New Goal Created',
@@ -647,25 +701,17 @@ document.head.appendChild(style);
                 
                 updateTotalGoals();
                 renderGoals();
-                hideAddGoalModal();
-                showToast('Goal created successfully');
+                closeGoalModal();
+                showToast('Goal created successfully!');
             } catch (error) {
                 console.error('Error creating goal:', error);
-                showToast('Error creating goal: ' + error.message);
+                showToast('Error creating goal');
             }
         }
 
         // ==================== NOTIFICACIONES ====================
         async function addNotification(type, title, description, amount = null) {
-            if (!db) {
-                console.error('DB no inicializada');
-                return;
-            }
-            
-            if (!db.objectStoreNames.contains('notifications')) {
-                console.error('Object store notifications no existe');
-                return;
-            }
+            if (!db || !db.objectStoreNames.contains('notifications')) return;
             
             const notification = {
                 type: type,
@@ -678,9 +724,8 @@ document.head.appendChild(style);
             
             try {
                 await saveToStore('notifications', notification);
-                console.log('Notificación guardada:', title);
             } catch (error) {
-                console.error('Error guardando notificación:', error);
+                console.error('Error saving notification:', error);
             }
         }
 
@@ -688,12 +733,12 @@ document.head.appendChild(style);
         async function saveToStore(storeName, data) {
             return new Promise((resolve, reject) => {
                 if (!db) {
-                    reject(new Error('DB no inicializada'));
+                    reject(new Error('DB not initialized'));
                     return;
                 }
                 
                 if (!db.objectStoreNames.contains(storeName)) {
-                    reject(new Error(`Object store ${storeName} no existe`));
+                    reject(new Error(`Object store ${storeName} does not exist`));
                     return;
                 }
                 
@@ -712,13 +757,11 @@ document.head.appendChild(style);
         async function getAllFromStore(storeName) {
             return new Promise((resolve) => {
                 if (!db) {
-                    console.log('DB no lista');
                     resolve([]);
                     return;
                 }
                 
                 if (!db.objectStoreNames.contains(storeName)) {
-                    console.warn(`Object store ${storeName} no existe`);
                     resolve([]);
                     return;
                 }
@@ -727,15 +770,9 @@ document.head.appendChild(style);
                     const tx = db.transaction(storeName, 'readonly');
                     const store = tx.objectStore(storeName);
                     const request = store.getAll();
-                    request.onsuccess = () => {
-                        resolve(request.result || []);
-                    };
-                    request.onerror = () => {
-                        console.error(`Error obteniendo ${storeName}`);
-                        resolve([]);
-                    };
+                    request.onsuccess = () => resolve(request.result || []);
+                    request.onerror = () => resolve([]);
                 } catch (error) {
-                    console.error('Error en transacción:', error);
                     resolve([]);
                 }
             });
@@ -755,114 +792,59 @@ document.head.appendChild(style);
                 toast.classList.add('hidden');
             }, 3000);
         }
-    </script>
 
- <script>
-// Manejo de modales con clase body
-function openModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.remove('hidden');
-        document.body.classList.add('modal-open');
-    }
-}
-
-function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.add('hidden');
-        document.body.classList.remove('modal-open');
-    }
-}
-
-// Cerrar al hacer click fuera
-document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('modal')) {
-        e.target.classList.add('hidden');
-        document.body.classList.remove('modal-open');
-    }
-});
-
-// Cerrar con botón X o Cancel
-document.querySelectorAll('.close-btn, .btn-text-secondary').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const modal = this.closest('.modal');
-        if (modal) {
-            modal.classList.add('hidden');
-            document.body.classList.remove('modal-open');
-        }
-    });
-});
-
-// Aplicar tema inmediatamente (prevenir flash)
-(function() {
-    const isDarkMode = localStorage.getItem('pesso_dark_mode') === 'true';
-    if (isDarkMode) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-    }
-})();
-</script>
-
-<script>
-    // Asegurar que el menú siempre esté visible
-    document.addEventListener('DOMContentLoaded', function() {
-        const menu = document.querySelector('.floating-menu-container');
-        if (menu) {
-            menu.style.display = 'block';
-            menu.style.visibility = 'visible';
-            menu.style.opacity = '1';
-        }
-    });
-    
-    // Prevenir que el menú desaparezca al hacer scroll
-    window.addEventListener('scroll', function() {
-        const menu = document.querySelector('.floating-menu-container');
-        if (menu) {
-            menu.style.transform = 'translateX(-50%) translateZ(0)';
-        }
-    });
-</script>
-
-<script>
-    // Registrar Service Worker
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js')
-                .then((registration) => {
-                    console.log('✅ SW registrado:', registration.scope);
-                    
-                    // Verificar actualizaciones cada vez que carga la página
-                    registration.addEventListener('updatefound', () => {
-                        const newWorker = registration.installing;
-                        newWorker.addEventListener('statechange', () => {
-                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                console.log('🔄 Nueva versión disponible');
-                                // Opcional: Mostrar toast para actualizar
-                                if (confirm('Nueva versión disponible. ¿Actualizar ahora?')) {
-                                    newWorker.postMessage('SKIP_WAITING');
-                                    window.location.reload();
-                                }
-                            }
-                        });
-                    });
-                })
-                .catch((error) => {
-                    console.error('❌ Error registrando SW:', error);
-                });
-                
-            // Escuchar cuando el SW tome control
-            let refreshing = false;
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (!refreshing) {
-                    refreshing = true;
-                    window.location.reload();
-                }
+        // Menu ripple effect
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                ripple.classList.add('ripple');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = (rect.width/2 - size/2) + 'px';
+                ripple.style.top = (rect.height/2 - size/2) + 'px';
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
             });
         });
-    } else {
-        console.warn('Service Worker no soportado en este navegador');
-    }
-</script>
+    </script>
+
+    <script>
+        // Aplicar tema inmediatamente
+        (function() {
+            const isDarkMode = localStorage.getItem('pesso_dark_mode') === 'true';
+            if (isDarkMode) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+    
+    <script>
+        // Asegurar que el menú siempre esté visible
+        document.addEventListener('DOMContentLoaded', function() {
+            const menu = document.querySelector('.floating-menu-container');
+            if (menu) {
+                menu.style.display = 'block';
+                menu.style.visibility = 'visible';
+                menu.style.opacity = '1';
+            }
+        });
+    </script>
+
+    <script>
+        // Registrar Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('✅ SW registrado:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.error('❌ Error registrando SW:', error);
+                    });
+            });
+        }
+    </script>
 
 </body>
 </html>
