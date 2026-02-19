@@ -164,16 +164,13 @@ body::-webkit-scrollbar {
 }
 
 /* ==================== LOGIN - PANTALLA COMPLETA ==================== */
+
+/* Login screen ajustada */
 .fixed-login {
     position: fixed;
     inset: 0;
     overflow: hidden;
     touch-action: none;
-}
-
-/* Login screen ajustada */
-.fixed-login {
-        padding-top: env(safe-area-inset-top);
 }
 
 .login-container {
@@ -186,27 +183,6 @@ body::-webkit-scrollbar {
     padding: calc(20px + env(safe-area-inset-top)) 20px 20px;
     background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
     overflow: hidden;
-}
-
-/* Forzar color de fondo en toda la pantalla */
-#loginScreen {
-    position: fixed;
-    inset: 0;
-    background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
-    z-index: 99999;
-}
-
-/* FIX: Pseudo-elemento para cubrir línea inferior en login */
-#loginScreen::after {
-    content: '';
-    position: fixed;
-    bottom: -10px;
-    left: 0;
-    right: 0;
-    height: 20px;
-    background: var(--primary-dark);
-    z-index: 999999;
-    pointer-events: none;
 }
 
 .varela-round-regular {
@@ -307,8 +283,7 @@ body::-webkit-scrollbar {
 
 /* ==================== HEADER ==================== */
 .header-large-title {
-    padding: max(8px, env(safe-area-inset-top)) 0 16px 0;
-    margin-bottom: 4px;
+    padding: calc(8px + env(safe-area-inset-top)) 0 16px 0;
 }
 
 .title {
