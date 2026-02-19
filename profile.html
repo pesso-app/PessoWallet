@@ -8,7 +8,9 @@
     <meta name="theme-color" content="#1C5CCF" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
     <title>Profile - Pesso</title>
+    <!-- Manifest PWA -->  
     <link rel="manifest" href="manifest.json">
+    <!-- Style CSS / ICONS -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png" sizes="32x32">    
     <link rel="apple-touch-icon" href="assets/icon/iconicon-192.png">
     <link rel="stylesheet" href="style.css">
@@ -18,7 +20,7 @@
             padding-top: env(safe-area-inset-top) !important;
         }
         
-        /* Glassmorphism profile */
+        /* ==================== PROFILE HEADER ==================== */
         .profile-header-glass {
             text-align: center;
             padding: 20px 20px 30px;
@@ -73,46 +75,61 @@
             font-weight: 500;
         }
 
-        /* Settings sections */
+        /* ==================== SECTIONS - Estilo Home ==================== */
+
+#appCapsule.profile-container {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.profile-container {
+    position: relative;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: clip;           /* Clip en lugar de hidden para mejor rendimiento */
+}
+
         .settings-section-glass {
-            margin-bottom: 20px;
-            padding: 0;
+            margin-bottom: 24px;
+            padding: 0 16px;  /* Mismo padding que home */
         }
 
+        /* Títulos de sección igual que "Savings accounts" y "Discover more" */
         .settings-header-glass {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            margin: 0 20px 10px;
-            padding-left: 4px;
+            font-size: 20px;           /* Igual que section-title en home */
+            font-weight: 700;
+            color: var(--text);
+            margin: 0 0 12px 0;        /* Igual que home */
+            padding: 0;
+            text-transform: none;      /* Sin mayúsculas */
+            letter-spacing: normal;    /* Sin espaciado extra */
         }
 
+        /* Grupo de settings igual que cards de home */
         .settings-group-glass {
-            margin: 0 16px;
-            background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            margin: 0;
+            background: var(--bg-card);  /* Mismo fondo que ios-card */
+            border-radius: 16px;         /* Mismo radio que ios-card */
+            border: none;                /* Sin borde extra */
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.02);
+            width: 100%;           /* Ancho completo del contenedor */
             overflow: hidden;
         }
 
         [data-theme="dark"] .settings-group-glass {
-            background: rgba(40, 40, 40, 0.65);
-            border-color: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            background: rgba(44, 44, 46, 0.8);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
 
+        /* Items de settings */
         .settings-item-glass {
             display: flex;
             align-items: center;
-            padding: 16px 18px;
-            border-bottom: 0.5px solid rgba(0, 0, 0, 0.04);
+            padding: 16px 18px;        /* Mismo padding que items de home */
+            border-bottom: 0.5px solid rgba(0, 0, 0, 0.05);
             cursor: pointer;
             transition: all 0.2s ease;
+            background: transparent;
         }
 
         .settings-item-glass:last-child {
@@ -121,29 +138,40 @@
 
         .settings-item-glass:active {
             background: rgba(0, 0, 0, 0.02);
+            transform: scale(0.98);
         }
 
+        [data-theme="dark"] .settings-item-glass {
+            border-bottom-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Iconos SIN cuadrado, solo el icono negro */
         .settings-icon-glass {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
+            width: auto;               /* Sin ancho fijo */
+            height: auto;              /* Sin alto fijo */
+            border-radius: 0;          /* Sin redondeo */
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 14px;
-            font-size: 20px;
-            color: white;
-            flex-shrink: 0;
+            margin-right: 16px;
+            font-size: 24px;           /* Tamaño del icono */
+            color: var(--text);        /* Color negro (o blanco en dark mode) */
+            background: transparent !important;   /* Sin fondo */
+            box-shadow: none !important;          /* Sin sombra */
         }
 
-        .settings-icon-glass.blue { background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%); }
-        .settings-icon-glass.green { background: linear-gradient(135deg, #34C759 0%, #30D158 100%); }
-        .settings-icon-glass.orange { background: linear-gradient(135deg, #FF9500 0%, #FFCC00 100%); }
-        .settings-icon-glass.purple { background: linear-gradient(135deg, #AF52DE 0%, #BF5AF2 100%); }
-        .settings-icon-glass.red { background: linear-gradient(135deg, #FF3B30 0%, #FF453A 100%); }
-        .settings-icon-glass.gray { background: linear-gradient(135deg, #8E8E93 0%, #636366 100%); }
-        .settings-icon-glass.teal { background: linear-gradient(135deg, #5AC8FA 0%, #64D2FF 100%); }
-        .settings-icon-glass.pink { background: linear-gradient(135deg, #FF2D55 0%, #FF375F 100%); }
+        /* Remover gradientes de iconos */
+        .settings-icon-glass.blue,
+        .settings-icon-glass.green,
+        .settings-icon-glass.orange,
+        .settings-icon-glass.purple,
+        .settings-icon-glass.red,
+        .settings-icon-glass.gray,
+        .settings-icon-glass.teal,
+        .settings-icon-glass.pink {
+            background: transparent !important;
+            color: var(--text) !important;
+        }
 
         .settings-content-glass {
             flex: 1;
@@ -153,13 +181,13 @@
         }
 
         .settings-label-glass {
-            font-size: 17px;
+            font-size: 16px;           /* Igual que texto de home */
             color: var(--text);
             font-weight: 400;
         }
 
         .settings-value-glass {
-            font-size: 16px;
+            font-size: 15px;
             color: var(--text-secondary);
             margin-right: 8px;
             font-weight: 400;
@@ -167,7 +195,7 @@
 
         .settings-arrow-glass {
             color: var(--text-secondary);
-            font-size: 18px;
+            font-size: 20px;
             opacity: 0.4;
         }
 
@@ -205,7 +233,7 @@
 
         /* Logout button */
         .logout-section-glass {
-            margin: 32px 16px;
+            margin: 32px 16px;         /* Mismo padding horizontal que secciones */
         }
 
         .logout-btn-glass {
@@ -237,13 +265,13 @@
             opacity: 0.8;
         }
 
-        /* MODAL SHEET STYLES - Slide up from bottom */
+        /* ==================== MODAL SHEETS ==================== */
         .modal-sheet {
             position: fixed;
             inset: 0;
             z-index: 10000;
             display: flex;
-            align-items: flex-end;
+            align-items: flex-end;     /* Siempre desde abajo */
             justify-content: center;
             opacity: 0;
             visibility: hidden;
@@ -289,7 +317,7 @@
             transform: translateY(0);
         }
 
-        /* Modal handle bar */
+        /* Handle bar */
         .modal-handle {
             width: 40px;
             height: 5px;
@@ -315,7 +343,6 @@
         .modal-sheet-title {
             font-size: 18px;
             font-weight: 700;
-            color: var(--text);
         }
 
         .modal-sheet-body {
@@ -364,7 +391,7 @@
             opacity: 0.9;
         }
 
-        /* Form fields in modal */
+        /* Form fields */
         .sheet-form-group {
             margin-bottom: 20px;
         }
@@ -460,7 +487,7 @@
             font-weight: 600;
         }
 
-        /* PIN dots in modal */
+        /* PIN dots */
         .pin-dots-sheet {
             display: flex;
             justify-content: center;
@@ -516,7 +543,7 @@
             transform: scale(0.92);
         }
 
-        /* Referral section */
+        /* Referral */
         .referral-box {
             background: linear-gradient(135deg, var(--primary) 0%, var(--info) 100%);
             border-radius: 16px;
@@ -559,6 +586,40 @@
         .btn-copy:active {
             background: rgba(255,255,255,0.35);
         }
+
+        /* ==================== LOGOUT MODAL - CORREGIDO ==================== */
+        #logoutSheet .modal-sheet-content {
+            max-width: 340px;          /* Más estrecho */
+            margin: 0 auto 20px;       /* Centrado con margen inferior */
+            border-radius: 20px;       /* Redondeo completo */
+            transform: scale(0.9) translateY(100%);  /* Escala inicial */
+            max-height: none;          /* Sin altura máxima */
+            padding-bottom: 20px;      /* Padding normal */
+        }
+
+        #logoutSheet.active .modal-sheet-content {
+            transform: scale(1) translateY(0);  /* Escala normal cuando activo */
+        }
+
+        #logoutSheet .modal-sheet-header {
+            border-bottom: none;
+            padding-top: 24px;
+        }
+
+        #logoutSheet .modal-sheet-body {
+            padding-top: 0;
+        }
+
+        #logoutSheet .modal-sheet-footer {
+            flex-direction: column;
+            gap: 8px;
+            border-top: none;
+            padding-top: 0;
+        }
+
+        #logoutSheet .btn-sheet {
+            width: 100%;
+        }
     </style>
 </head>
 
@@ -582,11 +643,6 @@
                 <div class="col-12 pr-5 text-center">
                     <span class="balance" id="profileBalance">$0.00</span>
                     <p class="text-balance">Total Balance</p>
-                </div>
-                <div class="col-12 mt-3 text-center">
-                    <button class="btn btn-success rounded btn-block btn-lg" onclick="showToast('Premium coming soon!')">
-                        Get Pesso+
-                    </button>
                 </div>
             </div>
         </div>
@@ -772,7 +828,7 @@
                         <ion-icon name="backspace-outline"></ion-icon>
                     </button>
                     <button onclick="enterPinChange('0')">0</button>
-                    <button onclick="cancelPinChange()">Cancel</button>
+                    <button onclick="cancelPinChange()">C</button>
                 </div>
             </div>
         </div>
@@ -807,7 +863,7 @@
                         <ion-icon name="backspace-outline"></ion-icon>
                     </button>
                     <button onclick="enterNewPin('0')">0</button>
-                    <button onclick="cancelNewPin()">Cancel</button>
+                    <button onclick="cancelNewPin()">C</button>
                 </div>
             </div>
         </div>
@@ -842,7 +898,7 @@
                         <ion-icon name="backspace-outline"></ion-icon>
                     </button>
                     <button onclick="enterConfirmPin('0')">0</button>
-                    <button onclick="cancelConfirmPin()">Cancel</button>
+                    <button onclick="cancelConfirmPin()">C</button>
                 </div>
             </div>
         </div>
@@ -860,27 +916,18 @@
                 <div class="appearance-options">
                     <div class="appearance-option selected" data-theme="system" onclick="selectTheme('system')">
                         <div class="appearance-option-left">
-                            <div class="appearance-icon" style="background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);">
-                                <ion-icon name="phone-portrait-outline" style="color: white;"></ion-icon>
-                            </div>
                             <span class="appearance-label">System</span>
                         </div>
                         <ion-icon name="checkmark-outline" class="appearance-check"></ion-icon>
                     </div>
                     <div class="appearance-option" data-theme="light" onclick="selectTheme('light')">
                         <div class="appearance-option-left">
-                            <div class="appearance-icon" style="background: linear-gradient(135deg, #FFCC00 0%, #FF9500 100%);">
-                                <ion-icon name="sunny-outline" style="color: white;"></ion-icon>
-                            </div>
                             <span class="appearance-label">Light</span>
                         </div>
                         <ion-icon name="checkmark-outline" class="appearance-check"></ion-icon>
                     </div>
                     <div class="appearance-option" data-theme="dark" onclick="selectTheme('dark')">
                         <div class="appearance-option-left">
-                            <div class="appearance-icon" style="background: linear-gradient(135deg, #5856D6 0%, #AF52DE 100%);">
-                                <ion-icon name="moon-outline" style="color: white;"></ion-icon>
-                            </div>
                             <span class="appearance-label">Dark</span>
                         </div>
                         <ion-icon name="checkmark-outline" class="appearance-check"></ion-icon>
@@ -923,14 +970,14 @@
         </div>
     </div>
 
-    <!-- Logout Sheet -->
+    <!-- Logout Sheet - CORREGIDO: centrado en pantalla -->
     <div id="logoutSheet" class="modal-sheet">
         <div class="modal-sheet-backdrop" onclick="closeSheet('logoutSheet')"></div>
-        <div class="modal-sheet-content" style="max-width: 340px; margin: 0 auto; border-radius: 20px; transform: scale(0.9) translateY(100%);">
-            <div class="modal-sheet-header" style="border-bottom: none; padding-top: 24px;">
+        <div class="modal-sheet-content">
+            <div class="modal-sheet-header">
                 <h3 class="modal-sheet-title">Log Out?</h3>
             </div>
-            <div class="modal-sheet-body" style="padding-top: 0; text-align: center;">
+            <div class="modal-sheet-body" style="text-align: center;">
                 <p style="color: var(--text-secondary);">Are you sure you want to log out of Pesso?</p>
             </div>
             <div class="modal-sheet-footer" style="flex-direction: column; gap: 8px;">
@@ -1257,7 +1304,6 @@
             navigator.clipboard.writeText(code).then(() => {
                 showToast('Code copied!');
             }).catch(() => {
-                // Fallback
                 const input = document.createElement('input');
                 input.value = code;
                 document.body.appendChild(input);

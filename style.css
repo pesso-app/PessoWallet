@@ -15,17 +15,25 @@
 }
 
 [data-theme="dark"] {
-    --primary: #0A84FF;
-    --primary-dark: #0051D5;
-    --bg: #000000;
-    --bg-dark: #1c1c1e;
-    --bg-card: #2c2c2e;
-    --text: #ffffff;
-    --text-secondary: #8e8e93;
-    --success: #30d158;
-    --danger: #ff453a;
-    --warning: #ff9f0a;
-    --info: #5e5ce6;
+    /* Colores principales más suaves para dark mode */
+    --primary: #4A9EFF;           /* Azul más brillante pero no saturado */
+    --primary-dark: #0A84FF;      /* Azul iOS */
+    
+    /* Fondos - Jerarquía de superficies Material Design 3 */
+    --bg: #121212;                /* Fondo principal (no negro puro) */
+    --bg-dark: #1E1E1E;           /* Superficie elevada 1 */
+    --bg-card: #2C2C2E;           /* Superficie elevada 2 (tarjetas) */
+    
+    /* Texto con opacidades para jerarquía */
+    --text: #E0E0E0;              /* 87% blanco - texto principal */
+    --text-secondary: #A0A0A0;    /* 60% blanco - texto secundario */
+    
+    /* Colores de estado desaturados */
+    --success: #66BB6A;           /* Verde más suave */
+    --danger: #CF6679;            /* Rojo Material Design dark */
+    --warning: #FFB74D;           /* Naranja más suave */
+    --info: #64B5F6;              /* Azul claro */
+    
     --card-shadow: 0 2px 12px rgba(0,0,0,0.3);
 }
 
@@ -137,6 +145,8 @@ body::-webkit-scrollbar {
     inset: 0;
     overflow: hidden;
     touch-action: none;
+    width: 100%;
+    height: 100%;
 }
 
 .login-container {
@@ -145,6 +155,8 @@ body::-webkit-scrollbar {
     left: 0;
     right: 0;
     bottom: 0;
+    width: 100%;
+    height: 100%;
     min-height: 100vh;
     min-height: 100dvh;
     min-height: -webkit-fill-available;
@@ -155,14 +167,52 @@ body::-webkit-scrollbar {
     padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom);
     background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
     overflow: hidden;
+    /* FIX: Prevenir el scroll bounce en iOS */
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: auto;
 }
 
-/* Forzar color de fondo en toda la pantalla */
+/* FIX: Para iOS standalone (app instalada) */
+@supports (-webkit-touch-callout: none) {
+    @media (display-mode: standalone) {
+        #loginScreen,
+        .login-container {
+            height: 100vh;
+            height: 100dvh;
+            height: -webkit-fill-available;
+            min-height: 100vh;
+            min-height: 100dvh;
+            min-height: -webkit-fill-available;
+            /* FIX: Forzar altura completa */
+            max-height: 100vh;
+            max-height: 100dvh;
+            max-height: -webkit-fill-available;
+        }
+        
+        /* Prevenir la barra blanca en la parte inferior */
+        html, body {
+            background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+            background-attachment: fixed;
+        }
+    }
+}
+
+/* ==================== LOGIN - PANTALLA COMPLETA iOS ==================== */
 #loginScreen {
     position: fixed;
     inset: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;              /* Dynamic viewport height */
+    height: -webkit-fill-available; /* iOS fix */
+    min-height: 100vh;
+    min-height: 100dvh;
+    min-height: -webkit-fill-available;
     background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
     z-index: 99999;
+    overflow: hidden;
+    /* FIX: Asegurar que cubra toda la pantalla incluyendo safe areas */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 .login-logo {

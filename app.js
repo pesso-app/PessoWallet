@@ -373,12 +373,23 @@ function showTransferModal() {
         return;
     }
     
-    populateTransferSelects();
-    
-    const modal = document.getElementById('transferModal');
-    if (modal) {
-        modal.classList.remove('hidden');
-        document.body.classList.add('modal-open');
+    // Asegurar que los datos estén cargados antes de mostrar el modal
+    if (!envelopes || envelopes.length === 0) {
+        loadData().then(() => {
+            populateTransferSelects();
+            const modal = document.getElementById('transferModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                document.body.classList.add('modal-open');
+            }
+        });
+    } else {
+        populateTransferSelects();
+        const modal = document.getElementById('transferModal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            document.body.classList.add('modal-open');
+        }
     }
 }
 
@@ -488,11 +499,13 @@ function populateTransferSelects() {
     fromSelect.innerHTML = '';
     toSelect.innerHTML = '';
     
-    if (envelopes.length === 0) {
-        const emptyOption = document.createElement('option');
-        emptyOption.textContent = 'No accounts available';
-        fromSelect.appendChild(emptyOption.cloneNode(true));
-        toSelect.appendChild(emptyOption.cloneNode(true));
+    // Verificar si hay datos cargados
+    if (!envelopes || envelopes.length === 0) {
+        console.log('No envelopes data, loading...');
+        // Intentar recargar datos
+        loadData().then(() => {
+            populateTransferSelects();
+        });
         return;
     }
     
@@ -506,7 +519,7 @@ function populateTransferSelects() {
     }
     
     // Poblar ambos selects con las cuentas
-    envelopes.forEach(env => {
+    envelopes.forEach((env, index) => {
         const optionFrom = document.createElement('option');
         optionFrom.value = env.id;
         optionFrom.textContent = `${env.name} ($${env.amount.toFixed(2)})`;
@@ -523,7 +536,7 @@ function populateTransferSelects() {
         toSelect.selectedIndex = 1;
     }
     
-    console.log('Transfer selects populated:', envelopes.length, 'accounts');
+    console.log('Transfer selects populated with', envelopes.length, 'accounts');
 }
 
 function updateMaxAvailable() {
