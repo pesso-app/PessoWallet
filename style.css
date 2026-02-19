@@ -145,94 +145,57 @@ body::-webkit-scrollbar {
     inset: 0;
     overflow: hidden;
     touch-action: none;
-    width: 100%;
-    height: 100%;
+}
+
+/* Login screen ajustada */
+.fixed-login {
+        padding-top: env(safe-area-inset-top);
 }
 
 .login-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    min-height: 100vh;
-    min-height: 100dvh;
-    min-height: -webkit-fill-available;
+    height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom);
+    padding: calc(20px + env(safe-area-inset-top)) 20px 20px;
     background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
     overflow: hidden;
-    /* FIX: Prevenir el scroll bounce en iOS */
-    overscroll-behavior: none;
-    -webkit-overflow-scrolling: auto;
 }
 
-/* FIX: Para iOS standalone (app instalada) */
-@supports (-webkit-touch-callout: none) {
-    @media (display-mode: standalone) {
-        #loginScreen,
-        .login-container {
-            height: 100vh;
-            height: 100dvh;
-            height: -webkit-fill-available;
-            min-height: 100vh;
-            min-height: 100dvh;
-            min-height: -webkit-fill-available;
-            /* FIX: Forzar altura completa */
-            max-height: 100vh;
-            max-height: 100dvh;
-            max-height: -webkit-fill-available;
-        }
-        
-        /* Prevenir la barra blanca en la parte inferior */
-        html, body {
-            background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
-            background-attachment: fixed;
-        }
-    }
-}
-
-/* ==================== LOGIN - PANTALLA COMPLETA iOS ==================== */
+/* Forzar color de fondo en toda la pantalla */
 #loginScreen {
     position: fixed;
     inset: 0;
-    width: 100vw;
-    height: 100vh;
-    height: 100dvh;              /* Dynamic viewport height */
-    height: -webkit-fill-available; /* iOS fix */
-    min-height: 100vh;
-    min-height: 100dvh;
-    min-height: -webkit-fill-available;
     background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
     z-index: 99999;
-    overflow: hidden;
-    /* FIX: Asegurar que cubra toda la pantalla incluyendo safe areas */
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+.varela-round-regular {
+  font-family: "Varela Round", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 .login-logo {
-    width: 80px;
-    height: 80px;
+    width: 72px;
+    height: 72px;
     background: white;
-    border-radius: 20px;
+    border-radius: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 40px;
+    font-size: 55px;
     font-weight: 700;
     color: var(--primary);
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.15);
 }
 
 .login-title {
     color: white;
-    font-size: 32px;
+    font-size: 42px;
     font-weight: 700;
     margin-bottom: 8px;
 }
