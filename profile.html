@@ -429,7 +429,6 @@
         /* Appearance options */
         .appearance-options {
             padding: 8px 0;
-            color: #000000;
         }
 
         .appearance-option {
@@ -630,7 +629,183 @@
 [data-theme="dark"] #appearanceSheet .modal-sheet-title,
 [data-theme="dark"] #referSheet .modal-sheet-title {
     color: #E8ECF4 !important;
-}        
+}
+
+        /* ==================== BACKUP SECTION ==================== */
+        .backup-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .btn-backup {
+            flex: 1;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        
+        .btn-export {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-export:active {
+            transform: scale(0.96);
+            background: var(--primary-dark);
+        }
+        
+        .btn-import {
+            background: var(--bg-card);
+            color: var(--text);
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        [data-theme="dark"] .btn-import {
+            border-color: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .btn-import:active {
+            transform: scale(0.96);
+            background: var(--bg-dark);
+        }
+        
+        /* Backup Modal */
+        .backup-preview {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 16px 0;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'SF Mono', monospace;
+            font-size: 12px;
+            color: var(--text-secondary);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        [data-theme="dark"] .backup-preview {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.1);
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+        
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 16px;
+            background: var(--bg-card);
+            border: 2px dashed var(--text-secondary);
+            border-radius: 12px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+        
+        .file-input-label:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .file-input-label.has-file {
+            border-color: var(--success);
+            color: var(--success);
+            border-style: solid;
+        }
+        
+        .backup-info {
+            background: rgba(28, 92, 207, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        
+        [data-theme="dark"] .backup-info {
+            background: rgba(74, 158, 255, 0.15);
+        }
+        
+        .backup-info-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .backup-info-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        .backup-warning {
+            background: rgba(255, 149, 0, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 16px 0;
+            border-left: 4px solid var(--warning);
+        }
+        
+        .backup-warning-title {
+            font-weight: 600;
+            color: var(--warning);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .backup-warning-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        .import-summary {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .import-summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .import-summary-item:last-child {
+            border-bottom: none;
+        }
+        
+        [data-theme="dark"] .import-summary-item {
+            border-bottom-color: rgba(255,255,255,0.05);
+        }
     </style>
 </head>
 
@@ -762,6 +937,42 @@
                         <ion-icon name="chevron-forward-outline" class="settings-arrow-glass"></ion-icon>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Backup & Restore Section -->
+        <div class="settings-section-glass">
+            <div class="settings-header-glass">Backup & Restore</div>
+            <div class="settings-group-glass">
+                <div class="settings-item-glass" onclick="openSheet('exportSheet')">
+                    <div class="settings-icon-glass blue">
+                        <ion-icon name="download-outline"></ion-icon>
+                    </div>
+                    <div class="settings-content-glass">
+                        <span class="settings-label-glass">Exportar Datos</span>
+                        <ion-icon name="chevron-forward-outline" class="settings-arrow-glass"></ion-icon>
+                    </div>
+                </div>
+                
+                <div class="settings-item-glass" onclick="openSheet('importSheet')">
+                    <div class="settings-icon-glass green">
+                        <ion-icon name="upload-outline"></ion-icon>
+                    </div>
+                    <div class="settings-content-glass">
+                        <span class="settings-label-glass">Importar Datos</span>
+                        <ion-icon name="chevron-forward-outline" class="settings-arrow-glass"></ion-icon>
+                    </div>
+                </div>
+            </div>
+            <div class="backup-actions">
+                <button class="btn-backup btn-export" onclick="openSheet('exportSheet')">
+                    <ion-icon name="download-outline"></ion-icon>
+                    Exportar
+                </button>
+                <button class="btn-backup btn-import" onclick="openSheet('importSheet')">
+                    <ion-icon name="upload-outline"></ion-icon>
+                    Importar
+                </button>
             </div>
         </div>
 
@@ -981,6 +1192,107 @@
         </div>
     </div>
 
+    <!-- Export Sheet -->
+    <div id="exportSheet" class="modal-sheet">
+        <div class="modal-sheet-backdrop" onclick="closeSheet('exportSheet')"></div>
+        <div class="modal-sheet-content">
+            <div class="modal-handle"></div>
+            <div class="modal-sheet-header">
+                <h3 class="modal-sheet-title">Exportar Datos</h3>
+            </div>
+            <div class="modal-sheet-body">
+                <div class="backup-info">
+                    <div class="backup-info-title">
+                        <ion-icon name="information-circle-outline"></ion-icon>
+                        ¿Qué se exporta?
+                    </div>
+                    <div class="backup-info-text">
+                        Se exportarán todos tus datos: perfil, cuentas de ahorro, metas, historial de transacciones y configuración. El archivo es JSON y puedes usarlo para hacer backup o transferir a otro dispositivo.
+                    </div>
+                </div>
+                
+                <div class="sheet-form-group">
+                    <label>Vista previa de datos</label>
+                    <div class="backup-preview" id="exportPreview">
+                        Cargando...
+                    </div>
+                </div>
+            </div>
+            <div class="modal-sheet-footer">
+                <button class="btn-sheet btn-sheet-secondary" onclick="closeSheet('exportSheet')">Cancelar</button>
+                <button class="btn-sheet btn-sheet-primary" onclick="exportData()">
+                    <ion-icon name="download-outline"></ion-icon>
+                    Descargar JSON
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Sheet -->
+    <div id="importSheet" class="modal-sheet">
+        <div class="modal-sheet-backdrop" onclick="closeSheet('importSheet')"></div>
+        <div class="modal-sheet-content">
+            <div class="modal-handle"></div>
+            <div class="modal-sheet-header">
+                <h3 class="modal-sheet-title">Importar Datos</h3>
+            </div>
+            <div class="modal-sheet-body">
+                <div class="backup-warning">
+                    <div class="backup-warning-title">
+                        <ion-icon name="warning-outline"></ion-icon>
+                        ¡Atención!
+                    </div>
+                    <div class="backup-warning-text">
+                        Importar datos reemplazará TODA tu información actual. Esta acción no se puede deshacer. Asegúrate de haber exportado tus datos actuales primero si quieres conservarlos.
+                    </div>
+                </div>
+                
+                <div class="sheet-form-group">
+                    <label>Seleccionar archivo de backup</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="importFile" accept=".json" onchange="onFileSelected(event)">
+                        <label for="importFile" class="file-input-label" id="fileLabel">
+                            <ion-icon name="document-outline"></ion-icon>
+                            <span>Tap para seleccionar archivo .json</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div id="importPreview" style="display: none;">
+                    <div class="import-summary">
+                        <div class="import-summary-item">
+                            <span>Usuario</span>
+                            <strong id="importUserName">-</strong>
+                        </div>
+                        <div class="import-summary-item">
+                            <span>Cuentas de ahorro</span>
+                            <strong id="importEnvelopes">-</strong>
+                        </div>
+                        <div class="import-summary-item">
+                            <span>Metas</span>
+                            <strong id="importGoals">-</strong>
+                        </div>
+                        <div class="import-summary-item">
+                            <span>Transacciones</span>
+                            <strong id="importTransactions">-</strong>
+                        </div>
+                        <div class="import-summary-item">
+                            <span>Fecha del backup</span>
+                            <strong id="importDate">-</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-sheet-footer">
+                <button class="btn-sheet btn-sheet-secondary" onclick="closeSheet('importSheet')">Cancelar</button>
+                <button class="btn-sheet btn-sheet-danger" onclick="confirmImport()" id="importBtn" disabled>
+                    <ion-icon name="upload-outline"></ion-icon>
+                    Importar Datos
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Logout Sheet - CORREGIDO: centrado en pantalla -->
     <div id="logoutSheet" class="modal-sheet">
         <div class="modal-sheet-backdrop" onclick="closeSheet('logoutSheet')"></div>
@@ -1081,6 +1393,11 @@
                 // Reset PIN states if opening PIN sheet
                 if (sheetId === 'changePinSheet') {
                     resetPinChange();
+                }
+                
+                // Load export preview if opening export sheet
+                if (sheetId === 'exportSheet') {
+                    loadExportPreview();
                 }
             }
         }
@@ -1372,6 +1689,283 @@
                 setTimeout(() => ripple.remove(), 600);
             });
         });
+
+        // ==================== BACKUP & RESTORE ====================
+        
+        let importDataCache = null;
+        let db = null;
+        
+        // Initialize DB connection for backup functions
+        function initDBForBackup() {
+            return new Promise((resolve, reject) => {
+                if (db) {
+                    resolve(db);
+                    return;
+                }
+                
+                const request = indexedDB.open('PessoDB', 4);
+                
+                request.onsuccess = () => {
+                    db = request.result;
+                    resolve(db);
+                };
+                
+                request.onerror = () => reject(request.error);
+            });
+        }
+        
+        // Load export preview
+        async function loadExportPreview() {
+            const preview = document.getElementById('exportPreview');
+            if (!preview) return;
+            
+            try {
+                await initDBForBackup();
+                const data = await gatherAllData();
+                const summary = {
+                    usuario: data.user.name,
+                    ocupacion: data.user.role,
+                    cuentas: data.envelopes.length,
+                    metas: data.goals.length,
+                    transacciones: data.notifications.length,
+                    fecha: new Date().toLocaleString('es-ES'),
+                    version: '1.2.0'
+                };
+                
+                preview.innerHTML = Object.entries(summary)
+                    .map(([key, value]) => `${key}: ${value}`)
+                    .join('<br>');
+            } catch (error) {
+                preview.textContent = 'Error cargando datos';
+                console.error('Error:', error);
+            }
+        }
+        
+        async function gatherAllData() {
+            const user = {
+                name: localStorage.getItem('pesso_user') || 'Usuario',
+                role: localStorage.getItem('pesso_role') || '',
+                pin: localStorage.getItem('pesso_pin') || '',
+                theme: localStorage.getItem('pesso_theme') || 'system',
+                notifications: localStorage.getItem('pesso_notifications') !== 'false'
+            };
+            
+            const envelopes = await getAllFromStore('envelopes');
+            const goals = await getAllFromStore('goals');
+            const notifications = await getAllFromStore('notifications');
+            
+            return {
+                version: '1.2.0',
+                exportDate: new Date().toISOString(),
+                user,
+                envelopes,
+                goals,
+                notifications
+            };
+        }
+        
+        async function getAllFromStore(storeName) {
+            return new Promise((resolve) => {
+                if (!db) {
+                    resolve([]);
+                    return;
+                }
+                
+                if (!db.objectStoreNames.contains(storeName)) {
+                    resolve([]);
+                    return;
+                }
+                
+                try {
+                    const tx = db.transaction(storeName, 'readonly');
+                    const store = tx.objectStore(storeName);
+                    const request = store.getAll();
+                    request.onsuccess = () => resolve(request.result || []);
+                    request.onerror = () => resolve([]);
+                } catch (error) {
+                    resolve([]);
+                }
+            });
+        }
+        
+        async function saveToStore(storeName, data) {
+            return new Promise((resolve, reject) => {
+                if (!db) {
+                    reject(new Error('DB not initialized'));
+                    return;
+                }
+                
+                if (!db.objectStoreNames.contains(storeName)) {
+                    reject(new Error(`Object store ${storeName} does not exist`));
+                    return;
+                }
+                
+                try {
+                    const tx = db.transaction(storeName, 'readwrite');
+                    const store = tx.objectStore(storeName);
+                    const request = store.put(data);
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        }
+        
+        async function exportData() {
+            try {
+                await initDBForBackup();
+                const data = await gatherAllData();
+                const dataStr = JSON.stringify(data, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `pesso-backup-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                showToast('Backup descargado exitosamente');
+                closeSheet('exportSheet');
+            } catch (error) {
+                console.error('Error exportando:', error);
+                showToast('Error al exportar datos');
+            }
+        }
+        
+        function onFileSelected(event) {
+            const file = event.target.files[0];
+            const label = document.getElementById('fileLabel');
+            const importBtn = document.getElementById('importBtn');
+            const preview = document.getElementById('importPreview');
+            
+            if (!file) {
+                label.classList.remove('has-file');
+                label.innerHTML = '<ion-icon name="document-outline"></ion-icon><span>Tap para seleccionar archivo .json</span>';
+                importBtn.disabled = true;
+                preview.style.display = 'none';
+                importDataCache = null;
+                return;
+            }
+            
+            label.classList.add('has-file');
+            label.innerHTML = `<ion-icon name="checkmark-circle-outline"></ion-icon><span>${file.name}</span>`;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    // Validar estructura
+                    if (!data.user || !data.envelopes || !data.goals) {
+                        throw new Error('Formato inválido');
+                    }
+                    
+                    importDataCache = data;
+                    
+                    // Mostrar preview
+                    document.getElementById('importUserName').textContent = data.user.name || 'Desconocido';
+                    document.getElementById('importEnvelopes').textContent = data.envelopes.length;
+                    document.getElementById('importGoals').textContent = data.goals.length;
+                    document.getElementById('importTransactions').textContent = (data.notifications || []).length;
+                    document.getElementById('importDate').textContent = data.exportDate 
+                        ? new Date(data.exportDate).toLocaleString('es-ES') 
+                        : 'Desconocida';
+                    
+                    preview.style.display = 'block';
+                    importBtn.disabled = false;
+                    
+                } catch (error) {
+                    console.error('Error parsing:', error);
+                    showToast('Archivo inválido o corrupto');
+                    label.classList.remove('has-file');
+                    importBtn.disabled = true;
+                    preview.style.display = 'none';
+                    importDataCache = null;
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+        
+        async function confirmImport() {
+            if (!importDataCache) {
+                showToast('No hay datos para importar');
+                return;
+            }
+            
+            if (!confirm('¿Estás seguro? Esto reemplazará TODOS tus datos actuales. Esta acción no se puede deshacer.')) {
+                return;
+            }
+            
+            try {
+                await initDBForBackup();
+                const data = importDataCache;
+                
+                // Importar localStorage
+                if (data.user) {
+                    localStorage.setItem('pesso_user', data.user.name || 'Usuario');
+                    localStorage.setItem('pesso_role', data.user.role || '');
+                    localStorage.setItem('pesso_pin', data.user.pin || '1234');
+                    localStorage.setItem('pesso_theme', data.user.theme || 'system');
+                    localStorage.setItem('pesso_notifications', data.user.notifications ? 'true' : 'false');
+                    localStorage.setItem('pesso_dark_mode', data.user.theme === 'dark' ? 'true' : 'false');
+                }
+                
+                // Importar IndexedDB
+                // Limpiar datos actuales
+                await clearStore('envelopes');
+                await clearStore('goals');
+                await clearStore('notifications');
+                
+                // Insertar nuevos datos
+                for (const envelope of data.envelopes || []) {
+                    await saveToStore('envelopes', envelope);
+                }
+                
+                for (const goal of data.goals || []) {
+                    await saveToStore('goals', goal);
+                }
+                
+                for (const notification of data.notifications || []) {
+                    await saveToStore('notifications', notification);
+                }
+                
+                showToast('Datos importados exitosamente');
+                closeSheet('importSheet');
+                
+                // Recargar página para aplicar cambios
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Error importando:', error);
+                showToast('Error al importar datos');
+            }
+        }
+        
+        async function clearStore(storeName) {
+            return new Promise((resolve, reject) => {
+                if (!db) {
+                    resolve();
+                    return;
+                }
+                
+                try {
+                    const tx = db.transaction(storeName, 'readwrite');
+                    const store = tx.objectStore(storeName);
+                    const request = store.clear();
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                } catch (error) {
+                    resolve();
+                }
+            });
+        }
     </script>
 
     <script>
