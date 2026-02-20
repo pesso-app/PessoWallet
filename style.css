@@ -498,7 +498,7 @@ select.form-control:focus,
 
 .login-title {
     color: white;
-    font-size: 56px;
+    font-size: 60px;
     font-weight: 700;
     margin-bottom: 8px;
 }
@@ -603,7 +603,7 @@ select.form-control:focus,
     -webkit-text-fill-color: transparent;
     background-clip: text;
     color: transparent;
-    font-size: 64px;
+    font-size: 59px;
     font-weight: 800;
     letter-spacing: -2px;
     line-height: 1.1;

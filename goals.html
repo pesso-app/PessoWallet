@@ -449,7 +449,42 @@
         .emoji-option-goal:active {
             transform: scale(0.95);
         }
+
+/* FIX: Menú estable en Goals */
+.floating-menu-container {
+    transition: none !important;
+    animation: none !important;
+    transform: translateX(-50%) !important;
+}
+
+.floating-menu {
+    transition: none !important;
+    animation: none !important;
+}
+
+.menu-item {
+    transition: background-color 0.15s ease !important;
+    transform: none !important;
+}
+
+.menu-item ion-icon,
+.menu-item strong,
+.active-indicator {
+    transition: none !important;
+    transform: none !important;
+}
+
+/* Para el modal específico de New Goal */
+[data-theme="dark"] #addGoalModal .modal-sheet-title {
+    color: #E8ECF4 !important;
+}
+
+[data-theme="dark"] .modal-goal-title {
+    color: #E8ECF4;
+}
+
     </style>
+
 </head>
 
 <body class="fade-in">
