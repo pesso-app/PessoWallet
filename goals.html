@@ -268,8 +268,6 @@
         
         /* MODAL ESTILO HOME - Slide up from bottom */
         .modal-goal {
-            position: fixed;
-            box-sizing: border-box;
             width: 90%;
             inset: 0;
             z-index: 10000;
@@ -485,6 +483,11 @@
     color: #E8ECF4;
 }
 
+.small-input {
+    max-width: 200px;
+    padding: 6px 10px;
+}
+
     </style>
 
 </head>
@@ -547,7 +550,7 @@
             <div class="modal-goal-body">
                 <div class="sheet-form-group">
                     <label>Goal Name</label>
-                    <input type="text" class="form-control" id="newGoalName" placeholder="e.g. New Car, Vacation">
+                    <input type="text" class="form-control small-input" id="newGoalName" placeholder="e.g. New Car, Vacation">
                 </div>
                 
                 <div class="sheet-form-group">
