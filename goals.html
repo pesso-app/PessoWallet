@@ -8,38 +8,36 @@
     <meta name="theme-color" content="#1C5CCF" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
     <title>Goals - Pesso</title>
-    <!-- Manifest PWA -->  
     <link rel="manifest" href="manifest.json">
-    <!-- Style CSS / ICONS -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png" sizes="32x32">    
     <link rel="apple-touch-icon" href="assets/icon/iconicon-192.png">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Header más arriba */
+        /* Header alineado con FAB */
         .header-large-title {
-            padding-top: calc(8px + env(safe-area-inset-top)) !important;
+            padding-top: calc(12px + env(safe-area-inset-top)) !important;
             padding-bottom: 8px;
         }
         
-        /* FAB Position */
+        /* FAB Position - ALINEADO CON HEADER */
         #fabAddGoal {
             position: fixed !important;
-            top: calc(8px + env(safe-area-inset-top)) !important;
+            top: calc(12px + env(safe-area-inset-top)) !important;
             right: 20px !important;
             width: 44px !important;
             height: 44px !important;
             border-radius: 50% !important;
-            background: var(--primary) !important;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%) !important;
             color: white !important;
             border: none !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
             font-size: 24px !important;
-            box-shadow: 0 4px 15px rgba(28, 92, 207, 0.4) !important;
+            box-shadow: 0 4px 15px rgba(0, 122, 255, 0.4) !important;
             cursor: pointer !important;
             z-index: 1000 !important;
-            transition: transform 0.2s ease;
+            transition: transform 0.2s ease !important;
         }
         
         #fabAddGoal:active {
@@ -107,12 +105,14 @@
         }
         
         .goal-card-new {
-            background: var(--bg-card);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-radius: 20px;
             padding: 20px;
             position: relative;
             overflow: hidden;
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--shadow-sm), inset 0 1px 0 var(--glass-border-strong);
             border: 1px solid var(--glass-border);
             transform: translateZ(0);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -123,7 +123,6 @@
             box-shadow: var(--shadow-md);
         }
         
-        /* Header de la card con icono grande */
         .goal-card-header {
             display: flex;
             align-items: flex-start;
@@ -136,7 +135,7 @@
         .goal-icon-large {
             width: 60px;
             height: 60px;
-            background: var(--bg);
+            background: var(--bg-card);
             border-radius: 16px;
             display: flex;
             align-items: center;
@@ -155,7 +154,6 @@
             box-shadow: var(--shadow-sm);
         }
         
-        /* Info del goal */
         .goal-info-new {
             position: relative;
             z-index: 1;
@@ -180,7 +178,6 @@
             font-size: 18px;
         }
         
-        /* Barra de progreso */
         .goal-progress-new {
             background: var(--bg);
             height: 10px;
@@ -195,7 +192,6 @@
             transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        /* Meta info */
         .goal-meta {
             display: flex;
             align-items: center;
@@ -229,7 +225,7 @@
             opacity: 0.3;
         }
         
-        /* MODAL ESTILO HOME */
+        /* ==================== MODAL - ESTILO iOS 26 GLASS ==================== */
         .modal-goal {
             position: fixed;
             inset: 0;
@@ -255,40 +251,67 @@
         }
         
         .modal-goal.active .modal-goal-backdrop {
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(3px);
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(8px);
         }
         
         .modal-goal-content {
             width: 100%;
             max-width: 500px;
-            background: var(--bg-card);
-            border-radius: 24px 24px 0 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border-radius: 28px 28px 0 0;
+            border: 1px solid var(--glass-border);
+            border-bottom: none;
             transform: translateY(100%);
-            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             z-index: 10001;
             max-height: 90vh;
             overflow-y: auto;
-            padding-bottom: calc(20px + env(safe-area-inset-bottom));
-            border: 1px solid var(--glass-border);
-            border-bottom: none;
+            padding-bottom: calc(24px + env(safe-area-inset-bottom));
+            box-shadow: 0 -8px 40px rgba(0,0,0,0.2);
         }
         
         .modal-goal.active .modal-goal-content {
             transform: translateY(0);
         }
         
+        .modal-goal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+        }
+        
         .modal-goal-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 16px 20px;
+            padding: 20px 24px 16px;
             border-bottom: 1px solid var(--glass-border);
+            position: relative;
+        }
+        
+        .modal-goal-header::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 36px;
+            height: 4px;
+            background: var(--text-secondary);
+            opacity: 0.3;
+            border-radius: 2px;
         }
         
         .modal-goal-title {
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 700;
             flex: 1;
             text-align: center;
@@ -296,25 +319,34 @@
         }
         
         .modal-goal-close {
-            background: none;
+            background: rgba(0,0,0,0.05);
             border: none;
             font-size: 24px;
             color: var(--text-secondary);
             cursor: pointer;
-            padding: 4px;
+            padding: 8px;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .modal-goal-close:hover {
+            background: rgba(0,0,0,0.1);
+            transform: rotate(90deg);
         }
         
         .modal-goal-body {
-            padding: 20px;
+            padding: 24px;
         }
         
         .modal-goal-footer {
             display: flex;
             gap: 12px;
-            padding: 16px 20px;
+            padding: 16px 24px 0;
             border-top: 1px solid var(--glass-border);
         }
         
@@ -326,22 +358,38 @@
             font-size: 17px;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.2s ease;
         }
         
         .btn-goal-secondary {
-            background: var(--bg);
+            background: rgba(255,255,255,0.5);
             color: var(--text);
             border: 1px solid var(--glass-border);
+        }
+        
+        [data-theme="dark"] .btn-goal-secondary {
+            background: rgba(0,0,0,0.3);
+        }
+        
+        .btn-goal-secondary:active {
+            background: rgba(255,255,255,0.7);
         }
         
         .btn-goal-primary {
             background: var(--primary);
             color: white;
+            box-shadow: 0 4px 12px rgba(0,122,255,0.3);
         }
         
-        /* Form fields */
+        .btn-goal-primary:active {
+            transform: scale(0.96);
+            opacity: 0.9;
+        }
+        
+        /* Form fields alineados */
         .sheet-form-group {
             margin-bottom: 20px;
+            width: 100%;
         }
         
         .sheet-form-group label {
@@ -360,15 +408,26 @@
             border: 1px solid var(--glass-border);
             border-radius: 12px;
             font-size: 17px;
-            background: var(--bg);
+            background: rgba(255,255,255,0.5);
             color: var(--text);
             outline: none;
             box-sizing: border-box;
+            transition: all 0.2s ease;
         }
         
         .sheet-form-group input:focus {
             border-color: var(--primary);
-            background: var(--bg-card);
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 0 0 4px rgba(0,122,255,0.1);
+        }
+        
+        [data-theme="dark"] .sheet-form-group input {
+            background: rgba(0,0,0,0.3);
+            border-color: rgba(255,255,255,0.1);
+        }
+        
+        [data-theme="dark"] .sheet-form-group input:focus {
+            background: rgba(0,0,0,0.5);
         }
         
         /* Emoji picker */
@@ -382,7 +441,7 @@
         .emoji-option-goal {
             aspect-ratio: 1;
             border-radius: 12px;
-            background: var(--bg);
+            background: rgba(255,255,255,0.5);
             border: 2px solid transparent;
             font-size: 28px;
             cursor: pointer;
@@ -390,6 +449,10 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s;
+        }
+        
+        [data-theme="dark"] .emoji-option-goal {
+            background: rgba(0,0,0,0.3);
         }
         
         .emoji-option-goal.selected {
@@ -402,11 +465,10 @@
             transform: scale(0.95);
         }
 
-        /* FIX: Menú estable en Goals */
+        /* FIX: Menú estable */
         .floating-menu-container {
             transition: none !important;
             animation: none !important;
-            transform: translateX(-50%) !important;
         }
 
         .floating-menu {
@@ -416,23 +478,14 @@
 
         .menu-item {
             transition: background-color 0.15s ease !important;
-            transform: none !important;
         }
 
         .menu-item ion-icon,
         .menu-item strong,
         .active-indicator {
             transition: none !important;
-            transform: none !important;
-        }
-
-        .small-input {
-            max-width: 70%;
-            padding: 6px 8px;
         }
     </style>
-
-<base target="_blank">
 </head>
 
 <body class="fade-in">
@@ -474,12 +527,12 @@
 
     </div>
 
-    <!-- FAB - Agregar meta -->
+    <!-- FAB -->
     <button class="fab-wallet" id="fabAddGoal">
         <ion-icon name="add-outline"></ion-icon>
     </button>
 
-    <!-- Modal Agregar Meta -->
+    <!-- Modal Agregar Meta - ESTILO iOS 26 -->
     <div id="addGoalModal" class="modal-goal">
         <div class="modal-goal-backdrop" onclick="closeGoalModal()"></div>
         <div class="modal-goal-content">
@@ -488,12 +541,12 @@
                     <ion-icon name="close-outline"></ion-icon>
                 </button>
                 <h3 class="modal-goal-title">New Goal</h3>
-                <div style="width: 32px;"></div>
+                <div style="width: 36px;"></div>
             </div>
             <div class="modal-goal-body">
                 <div class="sheet-form-group">
                     <label>Goal Name</label>
-                    <input type="text" class="form-control small-input" id="newGoalName" placeholder="e.g. New Car, Vacation">
+                    <input type="text" id="newGoalName" placeholder="e.g. New Car, Vacation">
                 </div>
                 
                 <div class="sheet-form-group">
@@ -516,12 +569,12 @@
                 
                 <div class="sheet-form-group">
                     <label>Target Amount</label>
-                    <input type="number" inputmode="numeric" pattern="[0-9]*" class="form-control" id="newGoalTarget" placeholder="0.00" step="0.01">
+                    <input type="number" inputmode="numeric" pattern="[0-9]*" id="newGoalTarget" placeholder="0.00" step="0.01">
                 </div>
                 
                 <div class="sheet-form-group">
                     <label>Target Date (Optional)</label>
-                    <input type="date" class="form-control" id="newGoalDate">
+                    <input type="date" id="newGoalDate">
                 </div>
             </div>
             <div class="modal-goal-footer">
@@ -578,7 +631,6 @@
     </script>
 
     <script>
-        // ==================== CONFIGURACIÓN ====================
         const DB_NAME = 'PessoDB';
         const DB_VERSION = 4;
         
@@ -586,7 +638,6 @@
         let goals = [];
         let selectedEmoji = '🎯';
 
-        // ==================== INICIALIZACIÓN ====================
         document.addEventListener('DOMContentLoaded', () => {
             const isDarkMode = localStorage.getItem('pesso_dark_mode') === 'true';
             if (isDarkMode) {
@@ -598,13 +649,11 @@
         });
 
         function setupEventListeners() {
-            // FAB
             const fab = document.getElementById('fabAddGoal');
             if (fab) {
                 fab.addEventListener('click', openGoalModal);
             }
             
-            // Emoji picker
             const picker = document.getElementById('emojiPicker');
             if (picker) {
                 picker.addEventListener('click', (e) => {
@@ -712,7 +761,6 @@
                 const emoji = goal.emoji || '🎯';
                 const remaining = target - saved;
                 
-                // Calcular días restantes
                 let daysLeft = null;
                 let metaHTML = '';
                 if (goal.date) {
@@ -787,7 +835,6 @@
             return div.innerHTML;
         }
 
-        // ==================== MODAL FUNCTIONS ====================
         function openGoalModal() {
             const modal = document.getElementById('addGoalModal');
             const nameInput = document.getElementById('newGoalName');
@@ -875,7 +922,6 @@
             }
         }
 
-        // ==================== NOTIFICACIONES ====================
         async function addNotification(type, title, description, amount = null) {
             if (!db || !db.objectStoreNames.contains('notifications')) return;
             
@@ -895,7 +941,6 @@
             }
         }
 
-        // ==================== UTILIDADES ====================
         async function saveToStore(storeName, data) {
             return new Promise((resolve, reject) => {
                 if (!db) {
@@ -959,7 +1004,6 @@
             }, 3000);
         }
 
-        // Menu ripple effect
         document.querySelectorAll('.menu-item').forEach(item => {
             item.addEventListener('click', function(e) {
                 const ripple = document.createElement('span');
@@ -976,7 +1020,6 @@
     </script>
 
     <script>
-        // Aplicar tema inmediatamente
         (function() {
             const isDarkMode = localStorage.getItem('pesso_dark_mode') === 'true';
             if (isDarkMode) {
@@ -986,7 +1029,6 @@
     </script>
     
     <script>
-        // Asegurar que el menú siempre esté visible
         document.addEventListener('DOMContentLoaded', function() {
             const menu = document.querySelector('.floating-menu-container');
             if (menu) {
@@ -998,7 +1040,6 @@
     </script>
 
     <script>
-        // Registrar Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')

@@ -8,29 +8,29 @@
     <meta name="theme-color" content="#1C5CCF" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
     <title>Profile - Pesso</title>
-    <!-- Manifest PWA -->  
     <link rel="manifest" href="manifest.json">
-    <!-- Style CSS / ICONS -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png" sizes="32x32">    
     <link rel="apple-touch-icon" href="assets/icon/iconicon-192.png">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Header más arriba - igual que las demás páginas */
+        /* Header alineado con FAB */
         .profile-container {
-            padding-top: calc(4px + env(safe-area-inset-top)) !important;
+            padding-top: calc(12px + env(safe-area-inset-top)) !important;
         }
         
-        /* ==================== PROFILE HEADER - LAYOUT HORIZONTAL ESTILO CHIME ==================== */
+        /* ==================== PROFILE HEADER - HORIZONTAL ==================== */
         .profile-header-glass {
             display: flex;
             align-items: center;
             gap: 16px;
             padding: 16px 20px 20px;
             margin: 0 4px 24px;
-            background: var(--bg-card);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-radius: 20px;
             border: 1px solid var(--glass-border);
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--shadow-sm), inset 0 1px 0 var(--glass-border-strong);
         }
 
         .profile-avatar-glass {
@@ -74,7 +74,7 @@
             font-weight: 500;
         }
 
-        /* ==================== SETTINGS - ESTILO CHIME MEJORADO ==================== */
+        /* ==================== SETTINGS - ESTILO CHIME ==================== */
         .settings-section-glass {
             margin-bottom: 24px;
             padding: 0 4px;
@@ -89,18 +89,18 @@
             letter-spacing: 0.5px;
         }
 
-        /* Cards con mejor contraste - fondo blanco sólido */
         .settings-group-glass {
             margin: 0;
-            background: var(--bg-card);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-radius: 16px;
             border: 1px solid var(--glass-border);
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--shadow-sm), inset 0 1px 0 var(--glass-border-strong);
             width: 100%;
             overflow: hidden;
         }
 
-        /* Items más grandes estilo Chime */
         .settings-item-glass {
             display: flex;
             align-items: center;
@@ -119,7 +119,6 @@
             background: rgba(0, 122, 255, 0.05);
         }
 
-        /* Iconos con fondo de color sutil */
         .settings-icon-glass {
             width: 32px;
             height: 32px;
@@ -225,7 +224,7 @@
             transform: translateX(20px);
         }
 
-        /* Logout button */
+        /* ==================== LOGOUT BUTTON - ROJO Y ALINEADO ==================== */
         .logout-section-glass {
             margin: 32px 4px;
         }
@@ -234,14 +233,16 @@
             width: 100%;
             padding: 18px;
             background: rgba(255, 59, 48, 0.1);
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 59, 48, 0.2);
             border-radius: 16px;
             color: var(--danger);
             font-size: 17px;
-            font-weight: 600;
+            font-weight: 700;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
         }
 
         .logout-btn-glass:active {
@@ -258,7 +259,7 @@
             opacity: 0.8;
         }
 
-        /* ==================== MODAL SHEETS ==================== */
+        /* ==================== MODAL SHEETS - ESTILO iOS 26 GLASS ==================== */
         .modal-sheet {
             position: fixed;
             inset: 0;
@@ -284,28 +285,41 @@
         }
 
         .modal-sheet.active .modal-sheet-backdrop {
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(3px);
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(8px);
         }
 
         .modal-sheet-content {
             width: 100%;
             max-width: 500px;
-            background: var(--bg-card);
-            border-radius: 24px 24px 0 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border-radius: 28px 28px 0 0;
+            border: 1px solid var(--glass-border);
+            border-bottom: none;
             transform: translateY(100%);
-            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             z-index: 10001;
             max-height: 85vh;
             overflow-y: auto;
-            padding-bottom: calc(20px + env(safe-area-inset-bottom));
-            border: 1px solid var(--glass-border);
-            border-bottom: none;
+            padding-bottom: calc(24px + env(safe-area-inset-bottom));
+            box-shadow: 0 -8px 40px rgba(0,0,0,0.2);
         }
 
         .modal-sheet.active .modal-sheet-content {
             transform: translateY(0);
+        }
+
+        .modal-sheet-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
         }
 
         /* Handle bar */
@@ -325,6 +339,20 @@
             padding: 8px 20px 16px;
             text-align: center;
             border-bottom: 1px solid var(--glass-border);
+            position: relative;
+        }
+
+        .modal-sheet-header::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 36px;
+            height: 4px;
+            background: var(--text-secondary);
+            opacity: 0.3;
+            border-radius: 2px;
         }
 
         .modal-sheet-title {
@@ -356,19 +384,25 @@
         }
 
         .btn-sheet-secondary {
-            background: var(--bg);
+            background: rgba(255,255,255,0.5);
             color: var(--text);
             border: 1px solid var(--glass-border);
+        }
+
+        [data-theme="dark"] .btn-sheet-secondary {
+            background: rgba(0,0,0,0.3);
         }
 
         .btn-sheet-primary {
             background: var(--primary);
             color: white;
+            box-shadow: 0 4px 12px rgba(0,122,255,0.3);
         }
 
         .btn-sheet-danger {
             background: var(--danger);
             color: white;
+            box-shadow: 0 4px 12px rgba(255,59,48,0.3);
         }
 
         .btn-sheet:active {
@@ -379,6 +413,7 @@
         /* Form fields */
         .sheet-form-group {
             margin-bottom: 20px;
+            width: 100%;
         }
 
         .sheet-form-group label {
@@ -397,15 +432,26 @@
             border: 1px solid var(--glass-border);
             border-radius: 12px;
             font-size: 17px;
-            background: var(--bg);
+            background: rgba(255,255,255,0.5);
             color: var(--text);
             outline: none;
             box-sizing: border-box;
+            transition: all 0.2s ease;
         }
 
         .sheet-form-group input:focus {
             border-color: var(--primary);
-            background: var(--bg-card);
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 0 0 4px rgba(0,122,255,0.1);
+        }
+
+        [data-theme="dark"] .sheet-form-group input {
+            background: rgba(0,0,0,0.3);
+            border-color: rgba(255,255,255,0.1);
+        }
+
+        [data-theme="dark"] .sheet-form-group input:focus {
+            background: rgba(0,0,0,0.5);
         }
 
         /* Appearance options */
@@ -512,13 +558,18 @@
             height: 72px;
             border-radius: 50%;
             border: none;
-            background: var(--bg);
+            background: rgba(255,255,255,0.5);
             color: var(--text);
             font-size: 26px;
             font-weight: 500;
             cursor: pointer;
             margin: 0 auto;
             border: 1px solid var(--glass-border);
+            transition: all 0.2s ease;
+        }
+
+        [data-theme="dark"] .pin-pad-sheet button {
+            background: rgba(0,0,0,0.3);
         }
 
         .pin-pad-sheet button:active {
@@ -567,13 +618,14 @@
             font-weight: 600;
             cursor: pointer;
             margin-top: 16px;
+            transition: all 0.2s ease;
         }
 
         .btn-copy:active {
             background: rgba(255,255,255,0.35);
         }
 
-        /* ==================== LOGOUT MODAL ==================== */
+        /* ==================== LOGOUT MODAL - ROJO ==================== */
         #logoutSheet .modal-sheet-content {
             max-width: 340px;
             margin: 0 auto 20px;
@@ -592,6 +644,10 @@
             padding-top: 24px;
         }
 
+        #logoutSheet .modal-sheet-header::after {
+            display: none;
+        }
+
         #logoutSheet .modal-sheet-body {
             padding-top: 0;
         }
@@ -605,6 +661,12 @@
 
         #logoutSheet .btn-sheet {
             width: 100%;
+        }
+
+        #logoutSheet .btn-sheet-danger {
+            background: var(--danger);
+            color: white;
+            font-weight: 700;
         }
 
         /* ==================== BACKUP SECTION ==================== */
@@ -633,6 +695,7 @@
         .btn-export {
             background: var(--primary);
             color: white;
+            box-shadow: 0 4px 12px rgba(0,122,255,0.3);
         }
         
         .btn-export:active {
@@ -641,19 +704,19 @@
         }
         
         .btn-import {
-            background: var(--bg-card);
+            background: var(--glass-bg);
             color: var(--text);
             border: 1px solid var(--glass-border);
         }
         
         .btn-import:active {
             transform: scale(0.96);
-            background: var(--bg);
+            background: var(--glass-bg-hover);
         }
         
         /* Backup Modal */
         .backup-preview {
-            background: var(--bg);
+            background: rgba(255,255,255,0.5);
             border-radius: 12px;
             padding: 16px;
             margin: 16px 0;
@@ -663,6 +726,10 @@
             font-size: 12px;
             color: var(--text-secondary);
             border: 1px solid var(--glass-border);
+        }
+        
+        [data-theme="dark"] .backup-preview {
+            background: rgba(0,0,0,0.3);
         }
         
         .file-input-wrapper {
@@ -683,13 +750,17 @@
             justify-content: center;
             gap: 8px;
             padding: 16px;
-            background: var(--bg);
+            background: rgba(255,255,255,0.5);
             border: 2px dashed var(--text-secondary);
             border-radius: 12px;
             cursor: pointer;
             color: var(--text-secondary);
             font-size: 15px;
             transition: all 0.2s;
+        }
+        
+        [data-theme="dark"] .file-input-label {
+            background: rgba(0,0,0,0.3);
         }
         
         .file-input-label:hover {
@@ -752,11 +823,15 @@
         }
         
         .import-summary {
-            background: var(--bg);
+            background: rgba(255,255,255,0.5);
             border-radius: 12px;
             padding: 16px;
             margin: 16px 0;
             border: 1px solid var(--glass-border);
+        }
+        
+        [data-theme="dark"] .import-summary {
+            background: rgba(0,0,0,0.3);
         }
         
         .import-summary-item {
@@ -776,7 +851,6 @@
             font-weight: 600;
         }
     </style>
-<base target="_blank">
 </head>
 
 <body class="fade-in">
@@ -938,7 +1012,7 @@
             </div>
         </div>
 
-        <!-- Logout -->
+        <!-- Logout - ROJO Y ALINEADO -->
         <div class="logout-section-glass">
             <div class="logout-btn-glass" onclick="openSheet('logoutSheet')">
                 Log Out
@@ -1255,7 +1329,7 @@
         </div>
     </div>
 
-    <!-- Logout Sheet -->
+    <!-- Logout Sheet - ROJO Y ALINEADO -->
     <div id="logoutSheet" class="modal-sheet">
         <div class="modal-sheet-backdrop" onclick="closeSheet('logoutSheet')"></div>
         <div class="modal-sheet-content">
@@ -1267,7 +1341,7 @@
             </div>
             <div class="modal-sheet-footer" style="flex-direction: column; gap: 8px;">
                 <button class="btn-sheet btn-sheet-danger" onclick="confirmLogout()">Log Out</button>
-                <button class="btn-sheet btn-sheet-secondary" onclick="closeSheet('logoutSheet')" style="background: transparent;">Cancel</button>
+                <button class="btn-sheet btn-sheet-secondary" onclick="closeSheet('logoutSheet')" style="background: transparent; border: none;">Cancel</button>
             </div>
         </div>
     </div>
