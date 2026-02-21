@@ -5,62 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#1C5CCF" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#007AFF" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">         
     <title>Pesso</title>
+
     <!-- Manifest PWA -->  
     <link rel="manifest" href="manifest.json">
-    <!-- Style CSS / ICONS -->
+
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png" sizes="32x32">    
-    <link rel="apple-touch-icon" href="assets/icon/iconicon-192.png">
-    <link rel="stylesheet" href="style2.css">
-    <!-- Font Logo --> 
+    <link rel="apple-touch-icon" href="assets/icon/icon-192.png">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">     
-<base target="_blank">
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+
+    <base target="_blank">
 <base target="_blank">
 </head>
 
-<body>
-
-    <!-- Login Screen -->
-    <div id="loginScreen" class="screen fixed-login">
-        <div class="login-container">
-            <br>
-            <br>
-            <br>
-            <h1 class="login-title varela-round-regular">pesso</h1>
-            <p class="login-subtitle" id="loginSubtitle">Enter your PIN to continue</p>
-
-            <div class="pin-dots" id="pinDots">
-                <span></span><span></span><span></span><span></span>
-            </div>
-            <div class="pin-error" id="pinError"></div>
-
-            <div class="pin-pad">
-                <button onclick="enterPin(1)">1</button>
-                <button onclick="enterPin(2)">2</button>
-                <button onclick="enterPin(3)">3</button>
-                <button onclick="enterPin(4)">4</button>
-                <button onclick="enterPin(5)">5</button>
-                <button onclick="enterPin(6)">6</button>
-                <button onclick="enterPin(7)">7</button>
-                <button onclick="enterPin(8)">8</button>
-                <button onclick="enterPin(9)">9</button>
-                <button onclick="biometric()" class="bio-btn">
-                    <ion-icon name="finger-print-outline"></ion-icon>
-                </button>
-                <button onclick="enterPin(0)">0</button>
-                <button onclick="deletePin()">
-                    <ion-icon name="backspace-outline"></ion-icon>
-                </button>
-            </div>
-        </div>
-    </div>
+<body class="fade-in">
 
     <!-- Main App -->
-    <div id="mainApp" class="hidden fade-in">
+    <div id="mainApp">
 
         <!-- App Capsule -->
         <div id="appCapsule" class="pfix">       
@@ -72,14 +43,11 @@
                 </div>
 
                 <div class="section mt-4">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="balance-container">
-    <div class="text-center">
-        <span class="balance font-weight-bold" id="totalBalance">$0.00</span>
-        <p class="text-balance">Total Balance</p>
-    </div>
-</div>
+                    <!-- Balance Container Glass -->
+                    <div class="balance-container">
+                        <div class="text-center">
+                            <span class="balance font-weight-bold" id="totalBalance">$0.00</span>
+                            <p class="text-balance">Total Balance</p>
                         </div>
                     </div>
 
@@ -88,10 +56,11 @@
                         <button type="button" class="btn btn-primary btn-lg rounded" onclick="showAddModal()">
                             Add Cash
                         </button>
-                        <button type="button" class="btn btn-secondary btn-lg rounded" onclick="showWithdrawModal()">Cash Out</button>
+                        <button type="button" class="btn btn-secondary btn-lg rounded" onclick="showWithdrawModal()">
+                            Cash Out
+                        </button>
                     </div>
                 </div>
-                <br>
 
                 <!-- Savings Accounts -->
                 <div class="section mt-4">
@@ -394,6 +363,19 @@
             const isDarkMode = localStorage.getItem('pesso_dark_mode') === 'true';
             if (isDarkMode) {
                 document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+
+        // Verificar sesión - si no hay, redirigir a login
+        (function checkAuth() {
+            const session = localStorage.getItem('pesso_session');
+            const lastActivity = parseInt(localStorage.getItem('pesso_last_activity') || '0');
+            const fiveMinutes = 5 * 60 * 1000;
+
+            if (!session || (Date.now() - lastActivity > fiveMinutes)) {
+                // No hay sesión válida, redirigir a login
+                localStorage.removeItem('pesso_session');
+                window.location.href = 'login.html';
             }
         })();
     </script>

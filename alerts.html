@@ -300,6 +300,7 @@
             margin-top: 12px;
         }
     </style>
+<base target="_blank">
 </head>
 
 <body class="fade-in">
@@ -403,6 +404,20 @@
 
     <!-- Ionicons -->
     <script type="module" src="https://unpkg.com/ionicons@5.0.0/dist/ionicons/ionicons.js"></script>
+    <script>
+        // Verificar sesión
+        (function checkAuth() {
+            const session = localStorage.getItem('pesso_session');
+            const lastActivity = parseInt(localStorage.getItem('pesso_last_activity') || '0');
+            const fiveMinutes = 5 * 60 * 1000;
+
+            if (!session || (Date.now() - lastActivity > fiveMinutes)) {
+                localStorage.removeItem('pesso_session');
+                window.location.href = 'login.html';
+            }
+        })();
+    </script>
+
     <script>
         // ==================== CONFIGURACIÓN ====================
         const DB_NAME = 'PessoDB';

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1C5CCF">
+    <title>Pesso</title>
+
+    <!-- Manifest PWA -->  
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/img/favicon.png" sizes="32x32">    
+    <link rel="apple-touch-icon" href="assets/icon/icon-192.png">
+
+    <!-- Google Fonts - Varela Round -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==================== LOGIN STYLES - AZUL PESSO ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Segoe UI', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overscroll-behavior-y: none;
+        }
+
+        /* Login Screen con Azul Pesso */
+        #loginScreen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, 
+                #1C5CCF 0%, 
+                #154aad 50%, 
+                #0f3d8a 100%);
+            z-index: 99999;
+            height: 100vh;
+            height: 100dvh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        /* Efectos de luz glassmórficos */
+        #loginScreen::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255,255,255,0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(255,255,255,0.1) 0%, transparent 40%);
+            pointer-events: none;
+        }
+
+        .login-container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: env(safe-area-inset-top) 24px env(safe-area-inset-bottom) 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Logo con Varela Round */
+        .login-title {
+            font-family: "Varela Round", sans-serif;
+            color: white;
+            font-size: 64px;
+            font-weight: 400;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .login-subtitle {
+            color: rgba(255,255,255,0.85);
+            font-size: 16px;
+            margin-bottom: 50px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        /* PIN Dots */
+        .pin-dots {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .pin-dots span {
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 50%;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(4px);
+        }
+
+        .pin-dots span.filled {
+            background: white;
+            border-color: white;
+            transform: scale(1.2);
+            box-shadow: 0 0 15px rgba(255,255,255,0.6);
+        }
+
+        .pin-error {
+            color: #FFD700;
+            font-size: 14px;
+            margin-bottom: 20px;
+            min-height: 20px;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* PIN Pad Glass */
+        .pin-pad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            width: 100%;
+            max-width: 280px;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 28px;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 
+                0 8px 32px rgba(0,0,0,0.2),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+
+        .pin-pad button {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.12);
+            color: white;
+            font-size: 28px;
+            font-weight: 400;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .pin-pad button:hover {
+            background: rgba(255,255,255,0.25);
+            transform: scale(1.05);
+        }
+
+        .pin-pad button:active {
+            background: rgba(255,255,255,0.35);
+            transform: scale(0.92);
+        }
+
+        .pin-pad .bio-btn {
+            font-size: 24px;
+        }
+
+        /* Animación de entrada */
+        @keyframes fadeIn {
+            from { 
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Responsive */
+        @media (max-width: 380px) {
+            .login-title {
+                font-size: 52px;
+            }
+
+            .pin-pad {
+                max-width: 260px;
+                padding: 16px;
+            }
+
+            .pin-pad button {
+                width: 64px;
+                height: 64px;
+                font-size: 24px;
+            }
+        }
+
+        /* Safe area iOS */
+        @supports (-webkit-touch-callout: none) {
+            .login-container {
+                padding-top: max(20px, env(safe-area-inset-top));
+                padding-bottom: max(20px, env(safe-area-inset-bottom));
+            }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+
+    <div id="loginScreen" class="fade-in">
+        <div class="login-container">
+            <h1 class="login-title">pesso</h1>
+            <p class="login-subtitle" id="loginSubtitle">Enter your PIN to continue</p>
+
+            <div class="pin-dots" id="pinDots">
+                <span></span><span></span><span></span><span></span>
+            </div>
+            <div class="pin-error" id="pinError"></div>
+
+            <div class="pin-pad">
+                <button onclick="enterPin(1)">1</button>
+                <button onclick="enterPin(2)">2</button>
+                <button onclick="enterPin(3)">3</button>
+                <button onclick="enterPin(4)">4</button>
+                <button onclick="enterPin(5)">5</button>
+                <button onclick="enterPin(6)">6</button>
+                <button onclick="enterPin(7)">7</button>
+                <button onclick="enterPin(8)">8</button>
+                <button onclick="enterPin(9)">9</button>
+                <button onclick="biometric()" class="bio-btn">
+                    <ion-icon name="finger-print-outline"></ion-icon>
+                </button>
+                <button onclick="enterPin(0)">0</button>
+                <button onclick="deletePin()">
+                    <ion-icon name="backspace-outline"></ion-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ionicons -->
+    <script type="module" src="https://unpkg.com/ionicons@5.0.0/dist/ionicons/ionicons.js"></script>
+
+    <script>
+        // ==================== LOGIN LOGIC ====================
+        let currentPin = '';
+        const correctPin = localStorage.getItem('pesso_pin') || '1234';
+
+        function enterPin(num) {
+            if (currentPin.length < 4) {
+                currentPin += num;
+                updatePinDots();
+
+                if (currentPin.length === 4) {
+                    setTimeout(verifyPin, 100);
+                }
+            }
+        }
+
+        function deletePin() {
+            currentPin = currentPin.slice(0, -1);
+            updatePinDots();
+            document.getElementById('pinError').textContent = '';
+        }
+
+        function updatePinDots() {
+            const dots = document.querySelectorAll('.pin-dots span');
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('filled', i < currentPin.length);
+            });
+        }
+
+        function verifyPin() {
+            if (currentPin === correctPin) {
+                // Guardar sesión
+                localStorage.setItem('pesso_session', 'active');
+                localStorage.setItem('pesso_login_time', Date.now().toString());
+                localStorage.setItem('pesso_last_activity', Date.now().toString());
+
+                // Redirigir a home
+                window.location.href = 'index.html';
+            } else {
+                document.getElementById('pinError').textContent = 'Incorrect PIN';
+                currentPin = '';
+                setTimeout(updatePinDots, 200);
+
+                // Shake animation
+                const dots = document.getElementById('pinDots');
+                dots.style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    dots.style.animation = '';
+                }, 500);
+            }
+        }
+
+        function biometric() {
+            showToast('Face ID not available');
+        }
+
+        function showToast(message) {
+            // Crear toast temporal
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 100px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(0,0,0,0.8);
+                color: white;
+                padding: 12px 24px;
+                border-radius: 20px;
+                font-weight: 600;
+                z-index: 100000;
+                backdrop-filter: blur(10px);
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 2000);
+        }
+
+        // Shake animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-10px); }
+                75% { transform: translateX(10px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Verificar si ya hay sesión activa
+        (function checkSession() {
+            const session = localStorage.getItem('pesso_session');
+            const lastActivity = parseInt(localStorage.getItem('pesso_last_activity') || '0');
+            const fiveMinutes = 5 * 60 * 1000;
+
+            if (session && (Date.now() - lastActivity < fiveMinutes)) {
+                // Sesión válida, redirigir a home
+                window.location.href = 'index.html';
+            }
+        })();
+    </script>
+
+</body>
+</html>

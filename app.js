@@ -7,7 +7,7 @@ let db = null;
 let envelopes = [];
 let goals = [];
 let currentPin = '';
-let userName = 'Sixto';
+let userName = 'Maria';
 let isLoggedIn = false;
 let pendingWithdrawal = null;
 
@@ -21,29 +21,33 @@ async function initApp() {
     try {
         applyTheme();
 
-        // Inicializar DB primero
-        await initDB();
-
-        // Cargar datos ANTES de cualquier otra cosa
-        await loadData();
-
-        if (checkSession()) {
-            console.log('Sesión activa, entrando directo...');
-            showMainApp();
-            updateDate();
-            populateSelects();
-            renderSavingsCards();
-            updateUserName();
-            updateActivity();
+        // Verificar sesión primero
+        if (!checkSession()) {
+            console.log('No hay sesión válida, redirigiendo a login...');
+            window.location.href = 'login.html';
             return;
         }
 
-        setupLogin();
-        updateDate();
+        // Si hay sesión, marcar como logueado
+        login();
 
-        setTimeout(() => {
-            document.getElementById('loginScreen').classList.add('fade-in');
-        }, 100);
+        // Inicializar DB
+        await initDB();
+
+        // Cargar datos
+        await loadData();
+
+        // Marcar como logueado
+        isLoggedIn = true;
+
+        // Actualizar UI
+        updateDate();
+        populateSelects();
+        renderSavingsCards();
+        updateUserName();
+        updateActivity();
+
+        console.log('App inicializada correctamente. Usuario:', userName);
 
     } catch (error) {
         console.error('Error inicializando app:', error);
@@ -64,7 +68,7 @@ function showMainApp() {
 }
 
 function updateUserName() {
-    const savedName = localStorage.getItem('pesso_user') || 'Sixto';
+    const savedName = localStorage.getItem('pesso_user') || 'Maria';
     const userNameEl = document.getElementById('userName');
     if (userNameEl) {
         userNameEl.textContent = `Hi 👋🏼, ${savedName}`;
@@ -179,9 +183,9 @@ function setupLogin() {
 
     if (!savedPin) {
         localStorage.setItem('pesso_pin', '1234');
-        localStorage.setItem('pesso_user', userName);
+        localStorage.setItem('pesso_user', 'Maria');
     } else {
-        userName = savedName || 'Usuario';
+        userName = savedName || 'Maria';
     }
 
     const userNameEl = document.getElementById('userName');
