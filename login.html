@@ -7,21 +7,14 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#1C5CCF">
     <title>Pesso</title>
-
-    <!-- Manifest PWA -->  
     <link rel="manifest" href="manifest.json">
-
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png" sizes="32x32">    
     <link rel="apple-touch-icon" href="assets/icon/icon-192.png">
-
-    <!-- Google Fonts - Varela Round -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
 
     <style>
-        /* ==================== LOGIN STYLES - AZUL PESSO ==================== */
         * {
             margin: 0;
             padding: 0;
@@ -29,17 +22,28 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        html, body {
+        html {
+            height: 100%;
+            background: #1C5CCF;
+        }
+
+        body {
             margin: 0;
             padding: 0;
-            height: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            width: 100%;
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Segoe UI', sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            background: linear-gradient(135deg, 
+                #1C5CCF 0%, 
+                #154aad 50%, 
+                #0f3d8a 100%);
+            background-attachment: fixed;
             overscroll-behavior-y: none;
         }
 
-        /* Login Screen con Azul Pesso */
         #loginScreen {
             position: fixed;
             inset: 0;
@@ -48,13 +52,17 @@
                 #154aad 50%, 
                 #0f3d8a 100%);
             z-index: 99999;
-            height: 100vh;
-            height: 100dvh;
-            width: 100vw;
-            overflow: hidden;
+            min-height: 100vh;
+            min-height: 100dvh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
         }
 
-        /* Efectos de luz glassmórficos */
         #loginScreen::before {
             content: '';
             position: absolute;
@@ -66,17 +74,19 @@
         }
 
         .login-container {
-            height: 100%;
+            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: env(safe-area-inset-top) 24px env(safe-area-inset-bottom) 24px;
+            padding: 20px;
             position: relative;
             z-index: 1;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
         }
 
-        /* Logo con Varela Round */
         .login-title {
             font-family: "Varela Round", sans-serif;
             color: white;
@@ -95,7 +105,6 @@
             letter-spacing: 0.3px;
         }
 
-        /* PIN Dots */
         .pin-dots {
             display: flex;
             gap: 16px;
@@ -128,7 +137,6 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
-        /* PIN Pad Glass */
         .pin-pad {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -141,9 +149,7 @@
             -webkit-backdrop-filter: blur(20px);
             border-radius: 28px;
             border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 
-                0 8px 32px rgba(0,0,0,0.2),
-                inset 0 1px 0 rgba(255,255,255,0.2);
+            margin: 0 auto;
         }
 
         .pin-pad button {
@@ -151,7 +157,7 @@
             height: 72px;
             border-radius: 50%;
             border: none;
-            background: rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.15);
             color: white;
             font-size: 28px;
             font-weight: 400;
@@ -181,7 +187,6 @@
             font-size: 24px;
         }
 
-        /* Animación de entrada */
         @keyframes fadeIn {
             from { 
                 opacity: 0;
@@ -197,7 +202,6 @@
             animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Responsive */
         @media (max-width: 380px) {
             .login-title {
                 font-size: 52px;
@@ -206,6 +210,7 @@
             .pin-pad {
                 max-width: 260px;
                 padding: 16px;
+                gap: 12px;
             }
 
             .pin-pad button {
@@ -215,15 +220,12 @@
             }
         }
 
-        /* Safe area iOS */
         @supports (-webkit-touch-callout: none) {
-            .login-container {
-                padding-top: max(20px, env(safe-area-inset-top));
-                padding-bottom: max(20px, env(safe-area-inset-bottom));
+            #loginScreen {
+                min-height: -webkit-fill-available;
             }
         }
     </style>
-<base target="_blank">
 </head>
 <body>
 
@@ -258,11 +260,9 @@
         </div>
     </div>
 
-    <!-- Ionicons -->
     <script type="module" src="https://unpkg.com/ionicons@5.0.0/dist/ionicons/ionicons.js"></script>
 
     <script>
-        // ==================== LOGIN LOGIC ====================
         let currentPin = '';
         const correctPin = localStorage.getItem('pesso_pin') || '1234';
 
@@ -292,19 +292,16 @@
 
         function verifyPin() {
             if (currentPin === correctPin) {
-                // Guardar sesión
                 localStorage.setItem('pesso_session', 'active');
                 localStorage.setItem('pesso_login_time', Date.now().toString());
                 localStorage.setItem('pesso_last_activity', Date.now().toString());
 
-                // Redirigir a home
                 window.location.href = 'index.html';
             } else {
                 document.getElementById('pinError').textContent = 'Incorrect PIN';
                 currentPin = '';
                 setTimeout(updatePinDots, 200);
 
-                // Shake animation
                 const dots = document.getElementById('pinDots');
                 dots.style.animation = 'shake 0.5s';
                 setTimeout(() => {
@@ -318,7 +315,6 @@
         }
 
         function showToast(message) {
-            // Crear toast temporal
             const toast = document.createElement('div');
             toast.style.cssText = `
                 position: fixed;
@@ -341,7 +337,6 @@
             }, 2000);
         }
 
-        // Shake animation
         const style = document.createElement('style');
         style.textContent = `
             @keyframes shake {
@@ -352,14 +347,12 @@
         `;
         document.head.appendChild(style);
 
-        // Verificar si ya hay sesión activa
         (function checkSession() {
             const session = localStorage.getItem('pesso_session');
             const lastActivity = parseInt(localStorage.getItem('pesso_last_activity') || '0');
             const fiveMinutes = 5 * 60 * 1000;
 
             if (session && (Date.now() - lastActivity < fiveMinutes)) {
-                // Sesión válida, redirigir a home
                 window.location.href = 'index.html';
             }
         })();

@@ -15,19 +15,19 @@
     <link rel="apple-touch-icon" href="assets/icon/iconicon-192.png">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Fix header to edge of notch */
+        /* Header más arriba */
         .header-large-title {
-            padding-top: env(safe-area-inset-top) !important;
+            padding-top: calc(8px + env(safe-area-inset-top)) !important;
             padding-bottom: 8px;
         }
         
         /* FAB Position */
         #fabAddGoal {
             position: fixed !important;
-            top: calc(60px + env(safe-area-inset-top)) !important;
+            top: calc(8px + env(safe-area-inset-top)) !important;
             right: 20px !important;
-            width: 50px !important;
-            height: 50px !important;
+            width: 44px !important;
+            height: 44px !important;
             border-radius: 50% !important;
             background: var(--primary) !important;
             color: white !important;
@@ -35,25 +35,25 @@
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            font-size: 28px !important;
+            font-size: 24px !important;
             box-shadow: 0 4px 15px rgba(28, 92, 207, 0.4) !important;
             cursor: pointer !important;
             z-index: 1000 !important;
-            transform: translateZ(0) !important;
-            will-change: transform !important;
+            transition: transform 0.2s ease;
         }
         
         #fabAddGoal:active {
             transform: scale(0.9) !important;
         }
         
-        /* ==================== TOTAL GOALS CARD (Referencia) ==================== */
+        /* ==================== TOTAL GOALS CARD ==================== */
         .total-goals-card {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
             padding: 24px;
             border-radius: 20px;
             margin: 0 4px;
+            border: 1px solid rgba(255,255,255,0.2);
         }
         
         .total-goals-info {
@@ -98,7 +98,7 @@
             opacity: 0.9;
         }
         
-        /* ==================== GOAL CARDS - NUEVO FLOW ==================== */
+        /* ==================== GOAL CARDS ==================== */
         .goals-container {
             display: flex;
             flex-direction: column;
@@ -107,36 +107,20 @@
         }
         
         .goal-card-new {
-            background: linear-gradient(135deg, #7DD3D3 0%, #B8E6E6 50%, #E0F4F4 100%);
+            background: var(--bg-card);
             border-radius: 20px;
-            padding: 16px 20px; 
+            padding: 20px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 24px rgba(125, 211, 211, 0.3);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--glass-border);
             transform: translateZ(0);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         
         .goal-card-new:active {
             transform: scale(0.98) translateY(2px);
-            box-shadow: 0 4px 12px rgba(125, 211, 211, 0.2);
-        }
-        
-        [data-theme="dark"] .goal-card-new {
-            background: linear-gradient(135deg, #5AA8A8 0%, #7DD3D3 50%, #A8E0E0 100%);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-        }
-        
-        /* Patrón decorativo sutil */
-        .goal-card-new::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
-            pointer-events: none;
+            box-shadow: var(--shadow-md);
         }
         
         /* Header de la card con icono grande */
@@ -144,36 +128,31 @@
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             position: relative;
             z-index: 1;
         }
         
         .goal-icon-large {
-            width: 70px;
-            height: 70px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 20px;
+            width: 60px;
+            height: 60px;
+            background: var(--bg);
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 36px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
+            font-size: 32px;
+            box-shadow: var(--shadow-sm);
         }
         
         .goal-percent-badge {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 8px 16px;
+            background: var(--primary);
+            padding: 8px 14px;
             border-radius: 20px;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
-            color: #5AA8A8;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        [data-theme="dark"] .goal-percent-badge {
-            color: #3D8A8A;
+            color: white;
+            box-shadow: var(--shadow-sm);
         }
         
         /* Info del goal */
@@ -183,73 +162,57 @@
         }
         
         .goal-name-new {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
-            color: #2C5F5F;
+            color: var(--text);
             margin-bottom: 6px;
-            text-shadow: 0 1px 2px rgba(255,255,255,0.5);
-        }
-        
-        [data-theme="dark"] .goal-name-new {
-            color: #1A4040;
-            text-shadow: none;
         }
         
         .goal-amount-new {
-            font-size: 16px;
-            color: #4A8080;
+            font-size: 15px;
+            color: var(--text-secondary);
             font-weight: 500;
             margin-bottom: 16px;
         }
         
-        [data-theme="dark"] .goal-amount-new {
-            color: #2C5F5F;
-        }
-        
         .goal-amount-new strong {
-            color: #2C5F5F;
-            font-size: 20px;
+            color: var(--text);
+            font-size: 18px;
         }
         
-        /* Barra de progreso única */
+        /* Barra de progreso */
         .goal-progress-new {
-            background: rgba(255, 255, 255, 0.5);
-            height: 12px;
-            border-radius: 6px;
+            background: var(--bg);
+            height: 10px;
+            border-radius: 5px;
             overflow: hidden;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
         }
         
         .goal-progress-fill-new {
             height: 100%;
-            background: linear-gradient(90deg, #2C5F5F 0%, #4A8080 100%);
-            border-radius: 6px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 5px;
             transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 8px rgba(44, 95, 95, 0.3);
         }
         
-        /* Meta info (días restantes) */
+        /* Meta info */
         .goal-meta {
             display: flex;
             align-items: center;
             gap: 6px;
             margin-top: 12px;
             font-size: 14px;
-            color: #4A8080;
+            color: var(--text-secondary);
             font-weight: 500;
         }
         
-        [data-theme="dark"] .goal-meta {
-            color: #2C5F5F;
-        }
-        
         .goal-meta.overdue {
-            color: #D9534F;
+            color: var(--danger);
             font-weight: 600;
         }
         
         .goal-meta.due-today {
-            color: #F0AD4E;
+            color: var(--warning);
             font-weight: 600;
         }
         
@@ -266,9 +229,9 @@
             opacity: 0.3;
         }
         
-        /* MODAL ESTILO HOME - Slide up from bottom */
+        /* MODAL ESTILO HOME */
         .modal-goal {
-            width: 90%;
+            position: fixed;
             inset: 0;
             z-index: 10000;
             display: flex;
@@ -299,7 +262,7 @@
         .modal-goal-content {
             width: 100%;
             max-width: 500px;
-            background: var(--bg);
+            background: var(--bg-card);
             border-radius: 24px 24px 0 0;
             transform: translateY(100%);
             transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -308,10 +271,8 @@
             max-height: 90vh;
             overflow-y: auto;
             padding-bottom: calc(20px + env(safe-area-inset-bottom));
-        }
-        
-        [data-theme="dark"] .modal-goal-content {
-            background: var(--bg-dark);
+            border: 1px solid var(--glass-border);
+            border-bottom: none;
         }
         
         .modal-goal.active .modal-goal-content {
@@ -323,11 +284,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 16px 20px;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-        }
-        
-        [data-theme="dark"] .modal-goal-header {
-            border-bottom-color: rgba(255,255,255,0.1);
+            border-bottom: 1px solid var(--glass-border);
         }
         
         .modal-goal-title {
@@ -335,6 +292,7 @@
             font-weight: 700;
             flex: 1;
             text-align: center;
+            color: var(--text);
         }
         
         .modal-goal-close {
@@ -357,11 +315,7 @@
             display: flex;
             gap: 12px;
             padding: 16px 20px;
-            border-top: 1px solid rgba(0,0,0,0.1);
-        }
-        
-        [data-theme="dark"] .modal-goal-footer {
-            border-top-color: rgba(255,255,255,0.1);
+            border-top: 1px solid var(--glass-border);
         }
         
         .btn-goal {
@@ -375,8 +329,9 @@
         }
         
         .btn-goal-secondary {
-            background: var(--bg-card);
+            background: var(--bg);
             color: var(--text);
+            border: 1px solid var(--glass-border);
         }
         
         .btn-goal-primary {
@@ -402,21 +357,18 @@
         .sheet-form-group input {
             width: 100%;
             padding: 16px;
-            border: 1px solid rgba(0,0,0,0.1);
+            border: 1px solid var(--glass-border);
             border-radius: 12px;
             font-size: 17px;
-            background: var(--bg-card);
+            background: var(--bg);
             color: var(--text);
             outline: none;
-        }
-        
-        [data-theme="dark"] .sheet-form-group input {
-            background: rgba(60, 60, 60, 0.5);
-            border-color: rgba(255,255,255,0.1);
+            box-sizing: border-box;
         }
         
         .sheet-form-group input:focus {
             border-color: var(--primary);
+            background: var(--bg-card);
         }
         
         /* Emoji picker */
@@ -430,7 +382,7 @@
         .emoji-option-goal {
             aspect-ratio: 1;
             border-radius: 12px;
-            background: var(--bg-card);
+            background: var(--bg);
             border: 2px solid transparent;
             font-size: 28px;
             cursor: pointer;
@@ -442,7 +394,7 @@
         
         .emoji-option-goal.selected {
             border-color: var(--primary);
-            background: rgba(28, 92, 207, 0.1);
+            background: rgba(0, 122, 255, 0.1);
             transform: scale(1.1);
         }
         
@@ -450,44 +402,34 @@
             transform: scale(0.95);
         }
 
-/* FIX: Menú estable en Goals */
-.floating-menu-container {
-    transition: none !important;
-    animation: none !important;
-    transform: translateX(-50%) !important;
-}
+        /* FIX: Menú estable en Goals */
+        .floating-menu-container {
+            transition: none !important;
+            animation: none !important;
+            transform: translateX(-50%) !important;
+        }
 
-.floating-menu {
-    transition: none !important;
-    animation: none !important;
-}
+        .floating-menu {
+            transition: none !important;
+            animation: none !important;
+        }
 
-.menu-item {
-    transition: background-color 0.15s ease !important;
-    transform: none !important;
-}
+        .menu-item {
+            transition: background-color 0.15s ease !important;
+            transform: none !important;
+        }
 
-.menu-item ion-icon,
-.menu-item strong,
-.active-indicator {
-    transition: none !important;
-    transform: none !important;
-}
+        .menu-item ion-icon,
+        .menu-item strong,
+        .active-indicator {
+            transition: none !important;
+            transform: none !important;
+        }
 
-/* Para el modal específico de New Goal */
-[data-theme="dark"] #addGoalModal .modal-sheet-title {
-    color: #E8ECF4 !important;
-}
-
-[data-theme="dark"] .modal-goal-title {
-    color: #E8ECF4;
-}
-
-.small-input {
-    max-width: 70%;
-    padding: 6px 8px;
-}
-
+        .small-input {
+            max-width: 70%;
+            padding: 6px 8px;
+        }
     </style>
 
 <base target="_blank">
@@ -537,7 +479,7 @@
         <ion-icon name="add-outline"></ion-icon>
     </button>
 
-    <!-- Modal Agregar Meta - ESTILO HOME -->
+    <!-- Modal Agregar Meta -->
     <div id="addGoalModal" class="modal-goal">
         <div class="modal-goal-backdrop" onclick="closeGoalModal()"></div>
         <div class="modal-goal-content">
