@@ -161,7 +161,7 @@ async function loadData() {
         const savedGoals = await getAllFromStore('goals');
         if (savedGoals.length === 0) {
             goals = [
-                { id: '1', name: 'New Car', target: 3000, saved: 0, emoji: '🚗', date: null },
+                { id: '1', name: 'New Car', target: 3000, saved: 0, emoji: '🚗', date: null, completedAt: null },
             ];
             for (let g of goals) await saveToStore('goals', g);
         } else {
@@ -634,14 +634,28 @@ async function confirmAdd() {
 
         goal.saved += amount;
 
-        try {
-            await saveToStore('goals', goal);
+        // Verificar si la meta se completó
+        const wasCompleted = goal.saved >= goal.target && !goal.completedAt;
+        if (wasCompleted) {
+            goal.completedAt = new Date().toISOString();
             await addNotification(
                 'goal',
-                'Goal Progress!',
-                `Added $${amount.toFixed(2)} to ${goal.name}. Total: $${goal.saved.toFixed(2)}`,
-                amount
+                'Goal Completed! 🎉',
+                `Congratulations! You've reached your goal for ${goal.name}`,
+                goal.saved
             );
+        }
+
+        try {
+            await saveToStore('goals', goal);
+            if (!wasCompleted) {
+                await addNotification(
+                    'goal',
+                    'Goal Progress!',
+                    `Added $${amount.toFixed(2)} to ${goal.name}. Total: $${goal.saved.toFixed(2)}`,
+                    amount
+                );
+            }
             populateSelects();
             showToast(`Agregado $${amount.toFixed(2)} a meta ${goal.name}`);
             updateActivity();

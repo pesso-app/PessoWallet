@@ -111,7 +111,7 @@ body::-webkit-scrollbar {
 
 /* ==================== HEADER - ALINEADO AL BOTÓN + ==================== */
 .header-large-title {
-    padding: calc(12px + env(safe-area-inset-top)) 20px 16px 20px;
+    padding: calc(20px + env(safe-area-inset-top)) 20px 16px 20px;
     margin-bottom: 4px;
 }
 
@@ -925,7 +925,7 @@ select.form-control,
 
 /* App Capsule - ALINEADO AL BOTÓN + */
 #appCapsule {
-    padding-top: calc(12px + env(safe-area-inset-top));
+    padding-top: calc(20px + env(safe-area-inset-top));
     padding-left: 20px;
     padding-right: 20px;
     padding-bottom: calc(140px + env(safe-area-inset-bottom));
@@ -1074,11 +1074,11 @@ select.form-control,
 /* iOS Safe Area */
 @supports (-webkit-touch-callout: none) {
     #appCapsule {
-        padding-top: calc(12px + env(safe-area-inset-top));
+        padding-top: calc(20px + env(safe-area-inset-top));
     }
 
     .header-large-title {
-        padding-top: calc(12px + env(safe-area-inset-top));
+        padding-top: calc(20px + env(safe-area-inset-top));
     }
 }
 
@@ -1097,7 +1097,7 @@ body.modal-open .floating-menu-container {
 /* FAB Button - ALINEADO CON HEADER */
 .fab-wallet {
     position: fixed;
-    top: calc(12px + env(safe-area-inset-top));
+    top: calc(20px + env(safe-area-inset-top));
     right: 20px;
     width: 44px;
     height: 44px;

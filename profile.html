@@ -13,9 +13,9 @@
     <link rel="apple-touch-icon" href="assets/icon/iconicon-192.png">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Header alineado con FAB */
+        /* Header alineado con FAB - MARGEN AUMENTADO */
         .profile-container {
-            padding-top: calc(12px + env(safe-area-inset-top)) !important;
+            padding-top: calc(20px + env(safe-area-inset-top)) !important;
         }
         
         /* ==================== PROFILE HEADER - HORIZONTAL ==================== */
@@ -226,7 +226,10 @@
 
         /* ==================== LOGOUT BUTTON - ROJO Y ALINEADO ==================== */
         .logout-section-glass {
-            margin: 32px 4px;
+            margin: 32px 0; /* CORREGIDO: de 32px 4px a 32px 0 */
+            overflow: hidden;
+            padding: 0 4px; /* AGREGADO: padding lateral para alineación */
+            box-sizing: border-box;
         }
 
         .logout-btn-glass {
@@ -243,6 +246,7 @@
             cursor: pointer;
             transition: all 0.2s ease;
             box-shadow: var(--shadow-sm);
+            box-sizing: border-box; /* AGREGADO */
         }
 
         .logout-btn-glass:active {
