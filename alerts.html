@@ -20,19 +20,6 @@
     <link rel="stylesheet" href="style.css">
 
     <style>
-
-    /* Esto pinta de rojo el área del header para ver el espacio */
-    .header-large-title {
-        background: rgba(255, 0, 0, 0.3) !important;
-        border: 2px solid red !important;
-    }
-    
-    /* Esto pinta de azul el área del FAB para comparar */
-    .fab-wallet, #fabAddGoal {
-        background: rgba(0, 0, 255, 0.5) !important;
-        border: 2px solid blue !important;
-    }
-        
         /* Header alineado con FAB - MARGEN AUMENTADO */
         .header-large-title {
             padding-top: env(safe-area-inset-top) !important;
@@ -333,6 +320,27 @@
         .mt-3 {
             margin-top: 12px;
         }
+
+    .header-large-title {
+        padding-top: env(safe-area-inset-top) !important;
+        padding-bottom: 8px !important;
+        margin: 0 !important;
+        position: relative !important;
+        top: 0 !important;
+    }
+    
+    .header-large-title h1,
+    .header-large-title h2,
+    .header-large-title .title {
+        margin: 0 !important;
+        padding: 0 !important;
+        line-height: 1.1 !important;
+    }
+    
+    .header-large-title .subtitle {
+        margin: 4px 0 0 0 !important;
+        padding: 0 !important;
+    }        
     </style>
 <base target="_blank">
 </head>
