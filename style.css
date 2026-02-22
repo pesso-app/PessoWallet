@@ -112,9 +112,8 @@ body::-webkit-scrollbar {
 /* ==================== HEADER - ALINEADO AL BOTÓN + ==================== */
 
 .header-large-title {
-    padding: calc(12px + env(safe-area-inset-top)) 20px 16px 20px;
-    margin-bottom: 4px;
-    margin-top: 0;
+    padding: env(safe-area-inset-top) 20px 12px 20px;
+    margin: 0;
 }
 
 #userName {
@@ -928,7 +927,7 @@ select.form-control,
 
 /* App Capsule - ALINEADO AL BOTÓN + */
 #appCapsule {
-    padding-top: calc(8px + env(safe-area-inset-top));
+    padding-top: env(safe-area-inset-top);
     padding-left: 20px;
     padding-right: 20px;
     padding-bottom: calc(140px + env(safe-area-inset-bottom));
