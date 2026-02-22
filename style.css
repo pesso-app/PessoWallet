@@ -106,7 +106,7 @@ body::-webkit-scrollbar {
 }
 
 [data-theme="dark"] #mainApp {
-    background: linear-gradient(180deg, #1C5CCF 0%, #0C0C0E 50%, #1C1C1E 100%);
+    background: linear-gradient(180deg, #0A1D3D 0%, #0C0C0E 50%, #1C1C1E 100%);
 }
 
 /* ==================== HEADER - ALINEADO AL BOTÓN + ==================== */
