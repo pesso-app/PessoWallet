@@ -8,10 +8,17 @@
     <meta name="theme-color" content="#1C5CCF" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
     <title>Goals - Pesso</title>
+
+    <!-- Manifest PWA -->
     <link rel="manifest" href="manifest.json">
+
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png" sizes="32x32">    
     <link rel="apple-touch-icon" href="assets/icon/iconicon-192.png">
+
+    <!-- Styles -->
     <link rel="stylesheet" href="style.css">
+    
     <style>
         /* Header alineado con FAB - MARGEN AUMENTADO */
         .header-large-title {
@@ -662,8 +669,8 @@
                 
                 <div class="sheet-form-group">
                     <label>Target Date (Optional)</label>
-                    <input type="date" id="newGoalDate">
-                </div>
+                    <input type="date" id="newGoalDate" class="form-control">
+                </div>                
             </div>
             <div class="modal-goal-footer">
                 <button class="btn-goal btn-goal-secondary" onclick="closeGoalModal()">Cancel</button>

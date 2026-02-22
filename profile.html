@@ -8,10 +8,22 @@
     <meta name="theme-color" content="#1C5CCF" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
     <title>Profile - Pesso</title>
+
+    <!-- Manifest PWA -->
     <link rel="manifest" href="manifest.json">
+
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png" sizes="32x32">    
     <link rel="apple-touch-icon" href="assets/icon/iconicon-192.png">
+
+    <!-- Styles -->
     <link rel="stylesheet" href="style.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+
     <style>
         /* Header alineado con FAB - MARGEN AUMENTADO */
         .profile-container {
@@ -854,6 +866,15 @@
             color: var(--text);
             font-weight: 600;
         }
+
+        .logo-footer {
+            font-family: "Varela Round", sans-serif;
+            color: black;
+            font-size: 12px;
+            font-weight: 400;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }      
     </style>
 </head>
 
@@ -1010,7 +1031,7 @@
                     </div>
                     <div class="settings-content-glass">
                         <span class="settings-label-glass">Importar Datos</span>
-                        <ion-icon name="chevron-forward-outline" class="settings-arrow-glass"></ion-icon>
+                        <ion-icon name="chevron-upload-outline" class="settings-arrow-glass"></ion-icon>
                     </div>
                 </div>
             </div>
@@ -1027,6 +1048,7 @@
         <div class="version-info-glass">
             <b>Made with ❤️ in New Jersey</b><br>
             Pesso App v1.2.18<br>
+            <p class="logo-footer">pesso</p>
             <a href="https://www.instagram.com/sixtohenriquez_" target="_blank" style="color: var(--primary); text-decoration: none;">
                 <ion-icon name="logo-instagram" style="font-size: 20px; margin-top: 8px;"></ion-icon>
             </a>
