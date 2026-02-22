@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1C5CCF" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+    <title>Challenges - Pesso</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="assets/img/favicon.png" sizes="32x32">    
+    <link rel="apple-touch-icon" href="assets/icon/iconicon-192.png">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Header alineado */
+        .header-large-title {
+            padding-top: env(safe-area-inset-top) !important;
+            padding-bottom: 12px;
+        }
+        
+        /* ==================== STATS CARDS ==================== */
+        .challenges-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 0 4px 24px;
+        }
+        
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 16px;
+            padding: 16px 12px;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            display: block;
+            line-height: 1;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            font-weight: 500;
+        }
+        
+        /* ==================== CHALLENGE CARDS ==================== */
+        .challenges-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 0 4px;
+        }
+        
+        .challenge-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+        
+        .challenge-card:active {
+            transform: scale(0.98);
+        }
+        
+        .challenge-card.completed {
+            background: linear-gradient(135deg, rgba(52, 199, 89, 0.1) 0%, var(--glass-bg) 100%);
+            border-color: rgba(52, 199, 89, 0.3);
+        }
+        
+        .challenge-card.failed {
+            background: linear-gradient(135deg, rgba(255, 59, 48, 0.05) 0%, var(--glass-bg) 100%);
+            border-color: rgba(255, 59, 48, 0.2);
+        }
+        
+        .challenge-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        
+        .challenge-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+        
+        .challenge-icon.streak { background: linear-gradient(135deg, #FF9500 0%, #FF6B35 100%); }
+        .challenge-icon.no-spend { background: linear-gradient(135deg, #30D158 0%, #34C759 100%); }
+        .challenge-icon.fixed { background: linear-gradient(135deg, #007AFF 0%, #5AC8FA 100%); }
+        .challenge-icon.roulette { background: linear-gradient(135deg, #AF52DE 0%, #BF5AF2 100%); }
+        .challenge-icon.weeks52 { background: linear-gradient(135deg, #FF2D55 0%, #FF6482 100%); }
+        
+        .challenge-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        
+        .challenge-status.active {
+            background: rgba(0, 122, 255, 0.15);
+            color: var(--primary);
+        }
+        
+        .challenge-status.completed {
+            background: rgba(52, 199, 89, 0.15);
+            color: var(--success);
+        }
+        
+        .challenge-status.failed {
+            background: rgba(255, 59, 48, 0.15);
+            color: var(--danger);
+        }
+        
+        .challenge-info h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+        
+        .challenge-info p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+        
+        .challenge-progress {
+            margin-top: 16px;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: var(--bg);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-fill.streak { background: linear-gradient(90deg, #FF9500 0%, #FF6B35 100%); }
+        .progress-fill.no-spend { background: linear-gradient(90deg, #30D158 0%, #34C759 100%); }
+        .progress-fill.fixed { background: linear-gradient(90deg, #007AFF 0%, #5AC8FA 100%); }
+        .progress-fill.roulette { background: linear-gradient(90deg, #AF52DE 0%, #BF5AF2 100%); }
+        .progress-fill.weeks52 { background: linear-gradient(90deg, #FF2D55 0%, #FF6482 100%); }
+        
+        .challenge-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        
+        .btn-challenge {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-challenge-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-challenge-secondary {
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid var(--glass-border);
+        }
+        
+        /* ==================== EMPTY STATE ==================== */
+        .empty-challenges {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+        
+        .empty-challenges ion-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+        
+        /* ==================== FAB ==================== */
+        #fabAddChallenge {
+            position: fixed;
+            top: calc(20px + env(safe-area-inset-top));
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 15px rgba(0, 122, 255, 0.4);
+            cursor: pointer;
+            z-index: 1000;
+            transition: transform 0.2s ease;
+        }
+        
+        #fabAddChallenge:active {
+            transform: scale(0.9);
+        }
+        
+        /* ==================== MODAL ==================== */
+.modal-challenge {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 10000;
+    align-items: flex-end;
+    justify-content: center;
+}
+        
+.modal-challenge.active {
+    display: flex;
+}
+        
+        .modal-challenge-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0);
+            transition: background 0.3s ease;
+        }
+        
+        .modal-challenge.active .modal-challenge-backdrop {
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(8px);
+        }
+        
+        .modal-challenge-content {
+            width: 100%;
+            max-width: 500px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px) saturate(200%);
+            border-radius: 28px 28px 0 0;
+            border: 1px solid var(--glass-border);
+            border-bottom: none;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 10001;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding-bottom: calc(24px + env(safe-area-inset-bottom));
+            box-shadow: 0 -8px 40px rgba(0,0,0,0.2);
+        }
+        
+        .modal-challenge.active .modal-challenge-content {
+            transform: translateY(0);
+        }
+        
+        .modal-challenge-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid var(--glass-border);
+            position: relative;
+        }
+        
+        .modal-challenge-header::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 36px;
+            height: 4px;
+            background: var(--text-secondary);
+            opacity: 0.3;
+            border-radius: 2px;
+        }
+        
+        .modal-challenge-title {
+            font-size: 18px;
+            font-weight: 700;
+            flex: 1;
+            text-align: center;
+            color: var(--text);
+        }
+        
+        .modal-challenge-close {
+            background: rgba(0,0,0,0.05);
+            border: none;
+            font-size: 24px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-challenge-body {
+            padding: 24px;
+        }
+        
+        .challenge-types {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .challenge-type-option {
+            background: rgba(255,255,255,0.5);
+            border: 2px solid transparent;
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .challenge-type-option.selected {
+            border-color: var(--primary);
+            background: rgba(0, 122, 255, 0.1);
+        }
+        
+        .challenge-type-option .emoji {
+            font-size: 32px;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .challenge-type-option .label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        [data-theme="dark"] .challenge-type-option {
+            background: rgba(0,0,0,0.3);
+        }
+        
+        .modal-challenge-footer {
+            display: flex;
+            gap: 12px;
+            padding: 16px 24px 0;
+            border-top: 1px solid var(--glass-border);
+        }
+        
+        .btn-modal {
+            flex: 1;
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-modal-secondary {
+            background: rgba(255,255,255,0.5);
+            color: var(--text);
+            border: 1px solid var(--glass-border);
+        }
+        
+        .btn-modal-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,122,255,0.3);
+        }
+        
+        /* Form groups */
+        .form-group-challenge {
+            margin-bottom: 20px;
+        }
+        
+        .form-group-challenge label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        
+        .form-group-challenge input,
+        .form-group-challenge select {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            font-size: 17px;
+            background: rgba(255,255,255,0.5);
+            color: var(--text);
+            outline: none;
+            box-sizing: border-box;
+        }
+        
+        [data-theme="dark"] .form-group-challenge input,
+        [data-theme="dark"] .form-group-challenge select {
+            background: rgba(0,0,0,0.3);
+        }
+        
+        /* Roulette animation */
+        .roulette-display {
+            background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .roulette-amount {
+            font-size: 48px;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        
+        .btn-roulette {
+            background: rgba(255,255,255,0.25);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Confetti animation */
+        @keyframes confetti {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            animation: confetti 1s ease-out forwards;
+            pointer-events: none;
+            z-index: 99999;
+        }
+    </style>
+</head>
+
+<body class="fade-in">
+
+    <!-- App Capsule -->
+    <div id="appCapsule" class="pfix">
+
+        <!-- Header -->
+        <div class="header-large-title">
+            <h1 class="title">Challenges</h1>
+            <p class="subtitle" style="color: var(--text-secondary);">Push your savings</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="challenges-stats">
+            <div class="stat-card">
+                <span class="stat-number" id="activeCount">0</span>
+                <span class="stat-label">Active</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="completedCount">0</span>
+                <span class="stat-label">Completed</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="totalSaved">$0</span>
+                <span class="stat-label">Saved</span>
+            </div>
+        </div>
+
+        <!-- Active Challenges -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">Active Challenges</h2>
+            </div>
+            <div id="activeChallenges" class="challenges-list">
+                <!-- Challenges loaded dynamically -->
+            </div>
+        </div>
+
+        <!-- Past Challenges -->
+        <div class="section mt-4">
+            <div class="section-header">
+                <h2 class="section-title">History</h2>
+            </div>
+            <div id="pastChallenges" class="challenges-list">
+                <!-- Past challenges loaded dynamically -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FAB -->
+<button id="fabAddChallenge" onclick="openModal(); return false;">
+    <ion-icon name="add-outline"></ion-icon>
+</button>
+
+    <!-- Modal New Challenge -->
+    <div id="newChallengeModal" class="modal-challenge">
+        <div class="modal-challenge-backdrop" onclick="closeChallengeModal()"></div>
+        <div class="modal-challenge-content">
+            <div class="modal-challenge-header">
+                <button class="modal-challenge-close" onclick="closeChallengeModal()">
+                    <ion-icon name="close-outline"></ion-icon>
+                </button>
+                <h3 class="modal-challenge-title">New Challenge</h3>
+                <div style="width: 36px;"></div>
+            </div>
+            <div class="modal-challenge-body">
+                <div class="form-group-challenge">
+                    <label>Challenge Type</label>
+                    <div class="challenge-types">
+                        <div class="challenge-type-option selected" data-type="streak" onclick="selectChallengeType('streak')">
+                            <span class="emoji">🔥</span>
+                            <span class="label">Streak</span>
+                        </div>
+                        <div class="challenge-type-option" data-type="no-spend" onclick="selectChallengeType('no-spend')">
+                            <span class="emoji">🚫</span>
+                            <span class="label">No-Spend</span>
+                        </div>
+                        <div class="challenge-type-option" data-type="fixed" onclick="selectChallengeType('fixed')">
+                            <span class="emoji">💵</span>
+                            <span class="label">Fixed</span>
+                        </div>
+                        <div class="challenge-type-option" data-type="roulette" onclick="selectChallengeType('roulette')">
+                            <span class="emoji">🎲</span>
+                            <span class="label">Roulette</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="challengeConfig">
+                    <!-- Dynamic config based on type -->
+                </div>
+            </div>
+            <div class="modal-challenge-footer">
+                <button class="btn-modal btn-modal-secondary" onclick="closeChallengeModal()">Cancel</button>
+                <button class="btn-modal btn-modal-primary" onclick="createChallenge()">Start Challenge</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- Bottom Menu -->
+    <div class="floating-menu-container">
+        <nav class="floating-menu">
+            <a href="index.html" class="menu-item" data-page="home">
+                <ion-icon name="home-outline"></ion-icon>
+                <strong>Home</strong>
+                <div class="active-indicator"></div>
+            </a>
+            <a href="goals.html" class="menu-item" data-page="goals">
+                <ion-icon name="flag-outline"></ion-icon>
+                <strong>Goals</strong>
+                <div class="active-indicator"></div>
+            </a>
+            <a href="challenges.html" class="menu-item active" data-page="challenges">
+                <ion-icon name="trophy-outline"></ion-icon>
+                <strong>Challenges</strong>
+                <div class="active-indicator"></div>
+            </a>
+            <a href="alerts.html" class="menu-item" data-page="activity">
+                <ion-icon name="notifications-outline"></ion-icon>
+                <strong>Activity</strong>
+                <div class="active-indicator"></div>
+            </a>
+            <a href="profile.html" class="menu-item" data-page="me">
+                <ion-icon name="person-outline"></ion-icon>
+                <strong>Me</strong>
+                <div class="active-indicator"></div>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Ionicons -->
+    <script type="module" src="https://unpkg.com/ionicons@5.0.0/dist/ionicons/ionicons.js"></script>
+    
+    <script>
+        // Verificar sesión
+        (function checkAuth() {
+            const session = localStorage.getItem('pesso_session');
+            const lastActivity = parseInt(localStorage.getItem('pesso_last_activity') || '0');
+            const fiveMinutes = 5 * 60 * 1000;
+
+            if (!session || (Date.now() - lastActivity > fiveMinutes)) {
+                localStorage.removeItem('pesso_session');
+                window.location.href = 'login.html';
+            }
+        })();
+    </script>
+
+
+    <script>
+        // Aplicar tema inmediatamente
+        (function() {
+            const isDarkMode = localStorage.getItem('pesso_dark_mode') === 'true';
+            if (isDarkMode) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+    
+    <script>
+        // Asegurar que el menú siempre esté visible
+        document.addEventListener('DOMContentLoaded', function() {
+            const menu = document.querySelector('.floating-menu-container');
+            if (menu) {
+                menu.style.display = 'block';
+                menu.style.visibility = 'visible';
+                menu.style.opacity = '1';
+            }
+        });
+    </script>
+
+    <script>
+        // Registrar Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('✅ SW registrado:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.error('❌ Error registrando SW:', error);
+                    });
+            });
+        }
+    </script>
+
+<script>
+// ==================== CÓDIGO INLINE ====================
+
+const DB_NAME = 'PessoDB';
+const DB_VERSION = 5;
+let db = null;
+let challenges = [];
+let currentChallengeType = 'streak';
+
+// Config de tipos
+const challengeConfigs = {
+    streak: {
+        emoji: '🔥',
+        title: 'Savings Streak',
+        description: 'Save something every day',
+        color: 'streak',
+        fields: [
+            { name: 'duration', label: 'Duration (days)', type: 'select', options: [7, 14, 30] },
+            { name: 'minAmount', label: 'Min. amount per day ($)', type: 'number', placeholder: '5' }
+        ]
+    },
+    'no-spend': {
+        emoji: '🚫',
+        title: 'No-Spend Challenge',
+        description: 'Avoid spending on specific category',
+        color: 'no-spend',
+        fields: [
+            { name: 'category', label: 'Category to avoid', type: 'select', options: ['Coffee', 'Delivery', 'Shopping'] },
+            { name: 'duration', label: 'Duration (days)', type: 'select', options: [3, 7, 14] }
+        ]
+    },
+    fixed: {
+        emoji: '💵',
+        title: 'Fixed Amount',
+        description: 'Save fixed amount daily/weekly',
+        color: 'fixed',
+        fields: [
+            { name: 'amount', label: 'Amount ($)', type: 'number', placeholder: '10' },
+            { name: 'frequency', label: 'Frequency', type: 'select', options: ['Daily', 'Weekly'] },
+            { name: 'duration', label: 'Duration (days)', type: 'select', options: [7, 14, 30] }
+        ]
+    },
+    roulette: {
+        emoji: '🎲',
+        title: 'Savings Roulette',
+        description: 'Random amount when you spin',
+        color: 'roulette',
+        fields: [
+            { name: 'minAmount', label: 'Min amount ($)', type: 'number', placeholder: '5' },
+            { name: 'maxAmount', label: 'Max amount ($)', type: 'number', placeholder: '50' },
+            { name: 'spins', label: 'Number of spins', type: 'select', options: [5, 10, 20] }
+        ]
+    }
+};
+
+// Inicialización
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM Content Loaded');
+    
+    // Tema
+    const isDarkMode = localStorage.getItem('pesso_dark_mode') === 'true';
+    if (isDarkMode) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+    }
+    
+    // Setup FAB
+    const fab = document.getElementById('fabAddChallenge');
+    if (fab) {
+        fab.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('FAB clicked!');
+            openModal();
+        };
+        console.log('FAB setup complete');
+    } else {
+        console.error('FAB not found!');
+    }
+    
+    // Cargar datos
+    initDB().then(() => {
+        loadChallenges().then(() => {
+            updateStats();
+            renderChallenges();
+        });
+    });
+});
+
+// DB
+function initDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        
+        request.onerror = () => {
+            console.error('DB Error:', request.error);
+            reject(request.error);
+        };
+        
+        request.onsuccess = () => {
+            db = request.result;
+            console.log('DB Opened');
+            resolve(db);
+        };
+        
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains('challenges')) {
+                db.createObjectStore('challenges', { keyPath: 'id' });
+            }
+            if (!db.objectStoreNames.contains('envelopes')) {
+                db.createObjectStore('envelopes', { keyPath: 'id' });
+            }
+            if (!db.objectStoreNames.contains('goals')) {
+                db.createObjectStore('goals', { keyPath: 'id' });
+            }
+            if (!db.objectStoreNames.contains('notifications')) {
+                const notifStore = db.createObjectStore('notifications', { 
+                    keyPath: 'id', 
+                    autoIncrement: true 
+                });
+                notifStore.createIndex('date', 'date', { unique: false });
+            }
+        };
+    });
+}
+
+// Modal simple
+function openModal() {
+    console.log('Opening modal...');
+    const modal = document.getElementById('newChallengeModal');
+    if (modal) {
+        modal.style.display = 'flex';
+        modal.style.opacity = '1';
+        modal.style.visibility = 'visible';
+        renderConfig();
+    }
+}
+
+function closeModal() {
+    const modal = document.getElementById('newChallengeModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+function selectType(type) {
+    currentChallengeType = type;
+    document.querySelectorAll('.challenge-type-option').forEach(el => {
+        el.classList.remove('selected');
+    });
+    const selected = document.querySelector(`[data-type="${type}"]`);
+    if (selected) selected.classList.add('selected');
+    renderConfig();
+}
+
+function renderConfig() {
+    const config = challengeConfigs[currentChallengeType];
+    const container = document.getElementById('challengeConfig');
+    
+    if (!config.fields.length) {
+        container.innerHTML = '<p>No config needed</p>';
+        return;
+    }
+    
+    container.innerHTML = config.fields.map(field => {
+        if (field.type === 'select') {
+            return `
+                <div class="form-group-challenge">
+                    <label>${field.label}</label>
+                    <select id="cfg_${field.name}" class="form-control">
+                        ${field.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                    </select>
+                </div>
+            `;
+        }
+        return `
+            <div class="form-group-challenge">
+                <label>${field.label}</label>
+                <input type="${field.type}" id="cfg_${field.name}" 
+                       placeholder="${field.placeholder || ''}" 
+                       class="form-control">
+            </div>
+        `;
+    }).join('');
+}
+
+function createChallenge() {
+    const config = challengeConfigs[currentChallengeType];
+    const challenge = {
+        id: Date.now().toString(),
+        type: currentChallengeType,
+        title: config.title,
+        description: config.description,
+        emoji: config.emoji,
+        color: config.color,
+        status: 'active',
+        createdAt: new Date().toISOString(),
+        savedAmount: 0,
+        targetAmount: 100,
+        history: []
+    };
+    
+    // Get values
+    config.fields.forEach(field => {
+        const el = document.getElementById(`cfg_${field.name}`);
+        challenge[field.name] = el ? (field.type === 'number' ? parseFloat(el.value) || 0 : el.value) : null;
+    });
+    
+    saveToStore('challenges', challenge).then(() => {
+        challenges.push(challenge);
+        updateStats();
+        renderChallenges();
+        closeModal();
+        showToast('Challenge started! 🚀');
+    });
+}
+
+function renderChallenges() {
+    const container = document.getElementById('activeChallenges');
+    const active = challenges.filter(c => c.status === 'active');
+    
+    if (!active.length) {
+        container.innerHTML = `
+            <div class="empty-challenges">
+                <ion-icon name="trophy-outline"></ion-icon>
+                <h3>No active challenges</h3>
+                <p>Start a challenge to push your savings!</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = active.map(c => `
+        <div class="challenge-card">
+            <div class="challenge-header">
+                <div class="challenge-icon ${c.color}">${c.emoji}</div>
+                <div class="challenge-status active">${c.status}</div>
+            </div>
+            <div class="challenge-info">
+                <h3>${c.title}</h3>
+                <p>${c.description}</p>
+            </div>
+            <div class="challenge-progress">
+                <div class="progress-header">
+                    <span>$${c.savedAmount.toFixed(2)} of $${c.targetAmount.toFixed(2)}</span>
+                    <span>0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill ${c.color}" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function updateStats() {
+    const active = challenges.filter(c => c.status === 'active').length;
+    const completed = challenges.filter(c => c.status === 'completed').length;
+    const totalSaved = challenges.reduce((sum, c) => sum + c.savedAmount, 0);
+    
+    document.getElementById('activeCount').textContent = active;
+    document.getElementById('completedCount').textContent = completed;
+    document.getElementById('totalSaved').textContent = '$' + totalSaved.toFixed(0);
+}
+
+function loadChallenges() {
+    return getAllFromStore('challenges').then(data => {
+        challenges = data;
+        console.log('Loaded challenges:', challenges.length);
+    });
+}
+
+function saveToStore(storeName, data) {
+    return new Promise((resolve, reject) => {
+        if (!db) {
+            reject(new Error('No DB'));
+            return;
+        }
+        const tx = db.transaction(storeName, 'readwrite');
+        const store = tx.objectStore(storeName);
+        const request = store.put(data);
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+}
+
+function getAllFromStore(storeName) {
+    return new Promise((resolve) => {
+        if (!db) {
+            resolve([]);
+            return;
+        }
+        const tx = db.transaction(storeName, 'readonly');
+        const store = tx.objectStore(storeName);
+        const request = store.getAll();
+        request.onsuccess = () => resolve(request.result || []);
+        request.onerror = () => resolve([]);
+    });
+}
+
+function showToast(msg) {
+    const toast = document.getElementById('toast');
+    if (toast) {
+        toast.textContent = msg;
+        toast.classList.remove('hidden');
+        setTimeout(() => toast.classList.add('hidden'), 3000);
+    }
+}
+
+console.log('=== INLINE SCRIPT LOADED ===');
+</script>    
+
+</body>
+</html>
