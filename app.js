@@ -148,7 +148,7 @@ async function loadData() {
             envelopes = [
                 { id: '1', name: 'Travels', icon: 'airplane', amount: 0, goal: null },
                 { id: '2', name: 'Car', icon: 'car', amount: 0, goal: null },
-                { id: '3', name: 'Vacation', icon: 'sunny', amount: 0, goal: null },
+                { id: '3', name: 'Saving', icon: 'cash', amount: 0, goal: null },
                 { id: '4', name: 'House', icon: 'home', amount: 0, goal: null },
                 { id: '5', name: 'Investments', icon: 'trending-up', amount: 0, goal: null },
                 { id: '6', name: 'Emergencies', icon: 'medical', amount: 0, goal: null }
@@ -161,7 +161,7 @@ async function loadData() {
         const savedGoals = await getAllFromStore('goals');
         if (savedGoals.length === 0) {
             goals = [
-                { id: '1', name: 'New Car', target: 3000, saved: 0, emoji: '🚗', date: null, completedAt: null },
+                { id: '1', name: 'New Car', target: 2500, saved: 0, emoji: '🚗', date: null, completedAt: null },
             ];
             for (let g of goals) await saveToStore('goals', g);
         } else {
@@ -964,3 +964,17 @@ document.addEventListener('click', (e) => {
         }
     }
 });
+
+
+// Registrar Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then((registration) => {
+        console.log('SW registrado:', registration.scope);
+      })
+      .catch((error) => {
+        console.log('Error al registrar SW:', error);
+      });
+  });
+}

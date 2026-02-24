@@ -1,7 +1,7 @@
 {
   "name": "Pesso",
   "short_name": "Pesso",
-  "description": "Tu app de ahorro personal. Gestiona tus metas de forma simple y segura.",
+  "description": "Tu App de ahorro personal. Gestiona tus metas de forma simple y segura.",
   "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#1C5CCF",
@@ -13,49 +13,49 @@
   "categories": ["finance", "productivity", "lifestyle"],
   "icons": [
     {
-      "src": "assets/icon/icon-72.png",
+      "src": "assets/icons/icon-72.png",
       "sizes": "72x72",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "assets/icon/icon-96.png",
+      "src": "assets/icons/icon-96.png",
       "sizes": "96x96",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "assets/icon/icon-128.png",
+      "src": "assets/icons/icon-128.png",
       "sizes": "128x128",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "assets/icon/icon-144.png",
+      "src": "assets/icons/icon-144.png",
       "sizes": "144x144",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "assets/icon/icon-152.png",
+      "src": "assets/icons/icon-152.png",
       "sizes": "152x152",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "assets/icon/icon-192.png",
+      "src": "assets/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "assets/icon/icon-384.png",
+      "src": "assets/icons/icon-384.png",
       "sizes": "384x384",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "assets/icon/icon-512.png",
+      "src": "assets/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"
@@ -77,22 +77,7 @@
       "label": "Gestión de sobres de ahorro"
     }
   ],
-  "shortcuts": [
-    {
-      "name": "Agregar Dinero",
-      "short_name": "Agregar",
-      "description": "Agregar dinero a un sobre",
-      "url": "/index.html?action=add",
-      "icons": [{ "src": "assets/icon/icon-96.png", "sizes": "96x96" }]
-    },
-    {
-      "name": "Ver Metas",
-      "short_name": "Metas",
-      "description": "Ver tus metas de ahorro",
-      "url": "/goals.html",
-      "icons": [{ "src": "assets/icon/icon-96.png", "sizes": "96x96" }]
-    }
-  ],
+
   "related_applications": [],
   "prefer_related_applications": false
 }
