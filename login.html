@@ -44,20 +44,36 @@
         -webkit-tap-highlight-color: transparent;
     }
 
-    html, body {
+    html {
+        height: 100%;
+        background: #1C5CCF;
+    }
+
+    body {
         margin: 0;
         padding: 0;
-        height: 100%;
+        min-height: 100vh;
+        min-height: 100dvh;
+        min-height: -webkit-fill-available;
         width: 100%;
-        overflow: hidden;
         font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Segoe UI', sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+        background: #1C5CCF;
+        background: linear-gradient(135deg, 
+            #1C5CCF 0%, 
+            #154aad 50%, 
+            #0f3d8a 100%);
+        background-attachment: fixed;
+        overscroll-behavior-y: none;
     }
 
     #loginScreen {
         position: fixed;
-        inset: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         background: linear-gradient(135deg, 
             #1C5CCF 0%, 
             #154aad 50%, 
@@ -67,7 +83,10 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: env(safe-area-inset-top) 20px calc(20px + env(safe-area-inset-bottom)) 20px;
+        padding-top: max(20px, env(safe-area-inset-top));
+        padding-bottom: max(20px, env(safe-area-inset-bottom));
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
     }
 
     #loginScreen::before {
@@ -81,20 +100,23 @@
     }
 
     .login-container {
+        flex: 1;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 100%;
-        max-width: 400px;
+        padding: 20px;
         position: relative;
         z-index: 1;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
     }
 
     .login-title {
         font-family: "Varela Round", sans-serif;
         color: white;
-        font-size: 56px;
+        font-size: 64px;
         font-weight: 400;
         margin-bottom: 8px;
         letter-spacing: -1px;
@@ -103,25 +125,26 @@
 
     .login-subtitle {
         color: rgba(255,255,255,0.85);
-        font-size: 15px;
-        margin-bottom: 40px;
+        font-size: 16px;
+        margin-bottom: 50px;
         font-weight: 500;
         letter-spacing: 0.3px;
     }
 
     .pin-dots {
         display: flex;
-        gap: 14px;
-        margin-bottom: 32px;
+        gap: 16px;
+        margin-bottom: 40px;
     }
 
     .pin-dots span {
-        width: 12px;
-        height: 12px;
+        width: 14px;
+        height: 14px;
         border: 2px solid rgba(255,255,255,0.4);
         border-radius: 50%;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(4px);
     }
 
     .pin-dots span.filled {
@@ -134,7 +157,7 @@
     .pin-error {
         color: #FFD700;
         font-size: 14px;
-        margin-bottom: 16px;
+        margin-bottom: 20px;
         min-height: 20px;
         font-weight: 600;
         text-shadow: 0 2px 4px rgba(0,0,0,0.2);
@@ -143,25 +166,26 @@
     .pin-pad {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
+        gap: 16px;
         width: 100%;
-        max-width: 260px;
-        padding: 14px;
+        max-width: 280px;
+        padding: 20px;
         background: rgba(255,255,255,0.1);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        border-radius: 22px;
+        border-radius: 28px;
         border: 1px solid rgba(255,255,255,0.2);
+        margin: 0 auto;
     }
 
     .pin-pad button {
-        width: 60px;
-        height: 60px;
+        width: 72px;
+        height: 72px;
         border-radius: 50%;
         border: none;
         background: rgba(255,255,255,0.15);
         color: white;
-        font-size: 24px;
+        font-size: 28px;
         font-weight: 400;
         cursor: pointer;
         display: flex;
@@ -186,7 +210,7 @@
     }
 
     .pin-pad .bio-btn {
-        font-size: 22px;
+        font-size: 24px;
     }
 
     @keyframes fadeIn {
@@ -204,66 +228,86 @@
         animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* iPhone SE / Small devices */
-    @media (max-height: 667px) {
+    @media (max-width: 380px) {
         .login-title {
-            font-size: 48px;
+            font-size: 56px;
+        }
+
+        .pin-pad {
+            max-width: 260px;
+            padding: 16px;
+            gap: 12px;
+        }
+
+        .pin-pad button {
+            width: 64px;
+            height: 64px;
+            font-size: 26px;
+        }
+    }
+
+    @media (max-height: 700px) {
+        .login-title {
+            font-size: 56px;
             margin-bottom: 6px;
         }
         
         .login-subtitle {
-            margin-bottom: 24px;
-            font-size: 14px;
+            margin-bottom: 30px;
         }
         
         .pin-dots {
-            margin-bottom: 20px;
-            gap: 12px;
-        }
-        
-        .pin-dots span {
-            width: 10px;
-            height: 10px;
+            margin-bottom: 24px;
         }
 
         .pin-pad {
-            max-width: 240px;
-            padding: 12px;
-            gap: 8px;
+            gap: 12px;
+            padding: 16px;
         }
 
         .pin-pad button {
-            width: 54px;
-            height: 54px;
-            font-size: 22px;
+            width: 64px;
+            height: 64px;
+            font-size: 26px;
         }
     }
 
-    /* Very small screens */
-    @media (max-height: 568px) {
+    @media (max-height: 600px) {
         .login-title {
-            font-size: 42px;
+            font-size: 48px;
             margin-bottom: 4px;
         }
         
         .login-subtitle {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
         
         .pin-dots {
-            margin-bottom: 12px;
+            margin-bottom: 16px;
+            gap: 12px;
+        }
+        
+        .pin-dots span {
+            width: 12px;
+            height: 12px;
         }
 
         .pin-pad {
-            max-width: 220px;
-            padding: 10px;
-            gap: 6px;
+            max-width: 260px;
+            padding: 14px;
+            gap: 10px;
         }
 
         .pin-pad button {
-            width: 48px;
-            height: 48px;
-            font-size: 20px;
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+        }
+    }
+
+    @supports (-webkit-touch-callout: none) {
+        body {
+            min-height: -webkit-fill-available;
         }
     }
 </style>
