@@ -159,21 +159,14 @@ async function loadData() {
         }
 
         const savedGoals = await getAllFromStore('goals');
-        if (savedGoals.length === 0) {
-            goals = [
-                { id: '1', name: 'New Car', target: 2500, saved: 0, emoji: '🚗', date: null, completedAt: null },
-            ];
-            for (let g of goals) await saveToStore('goals', g);
-        } else {
-            goals = savedGoals;
+        goals = savedGoals; // Sin metas de ejemplo
+
+                updateTotal();
+
+            } catch (error) {
+                console.error('Error cargando datos:', error);
+            }
         }
-
-        updateTotal();
-
-    } catch (error) {
-        console.error('Error cargando datos:', error);
-    }
-}
 
 // ==================== LOGIN ====================
 
