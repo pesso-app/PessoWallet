@@ -1110,7 +1110,7 @@
         <div class="settings-section-glass">
             <div class="settings-header-glass">Goals Insights</div>
             <div class="settings-group-glass">
-                <div class="settings-item-glass" onclick="openSheet('rankingSheet'); loadGoalsRanking();">
+                <div class="settings-item-glass" onclick="openRankingSheet()">
                     <div class="settings-icon-glass" style="background: rgba(255, 45, 85, 0.12); color: var(--pink);">
                         <ion-icon name="trophy-outline"></ion-icon>
                     </div>
@@ -1709,17 +1709,18 @@
 
     <script>
         // ==================== EMAILJS CONFIG ====================
-        // REEMPLAZA ESTOS VALORES CON LOS TUYOS DE EMAILJS
         const EMAILJS_CONFIG = {
-            publicKey: 'YOUR_PUBLIC_KEY', // Reemplazar
-            serviceId: 'YOUR_SERVICE_ID', // Reemplazar
-            feedbackTemplateId: 'YOUR_FEEDBACK_TEMPLATE_ID', // Reemplazar
-            bugTemplateId: 'YOUR_BUG_TEMPLATE_ID' // Reemplazar
+            publicKey: 'YOUR_PUBLIC_KEY',
+            serviceId: 'YOUR_SERVICE_ID',
+            feedbackTemplateId: 'YOUR_FEEDBACK_TEMPLATE_ID',
+            bugTemplateId: 'YOUR_BUG_TEMPLATE_ID'
         };
 
         // Inicializar EmailJS
         (function() {
-            emailjs.init(EMAILJS_CONFIG.publicKey);
+            if (EMAILJS_CONFIG.publicKey !== 'YOUR_PUBLIC_KEY') {
+                emailjs.init(EMAILJS_CONFIG.publicKey);
+            }
         })();
 
         // ==================== DATA & STATE ====================
@@ -2052,6 +2053,11 @@
         }
 
         // ==================== NEW: GOALS RANKING ====================
+        function openRankingSheet() {
+            openSheet('rankingSheet');
+            loadGoalsRanking();
+        }
+
         async function loadGoalsRanking() {
             try {
                 const goals = await getAllFromStore('goals');
@@ -2172,14 +2178,11 @@
 
         // ==================== NEW: TUTORIAL ====================
         function startTutorial() {
-            // Redirigir al home y mostrar tutorial
             localStorage.setItem('pesso_show_tutorial', 'true');
             window.location.href = 'index.html';
         }
 
         // ==================== NEW: FEEDBACK ====================
-        let currentRating = 0;
-
         function setRating(stars) {
             currentRating = stars;
             const starElements = document.querySelectorAll('#starRating span');
@@ -2207,20 +2210,22 @@
             btn.disabled = true;
             
             try {
-                const templateParams = {
-                    from_name: savedName,
-                    from_email: 'noreply@pesso.app',
-                    message: text,
-                    rating: currentRating,
-                    app_version: '1.2.22',
-                    user_agent: navigator.userAgent
-                };
-                
-                await emailjs.send(
-                    EMAILJS_CONFIG.serviceId,
-                    EMAILJS_CONFIG.feedbackTemplateId,
-                    templateParams
-                );
+                if (EMAILJS_CONFIG.publicKey !== 'YOUR_PUBLIC_KEY') {
+                    const templateParams = {
+                        from_name: savedName,
+                        from_email: 'noreply@pesso.app',
+                        message: text,
+                        rating: currentRating,
+                        app_version: '1.2.22',
+                        user_agent: navigator.userAgent
+                    };
+                    
+                    await emailjs.send(
+                        EMAILJS_CONFIG.serviceId,
+                        EMAILJS_CONFIG.feedbackTemplateId,
+                        templateParams
+                    );
+                }
                 
                 showToast('Thank you for your feedback! ⭐');
                 closeSheet('feedbackSheet');
@@ -2289,20 +2294,22 @@
             }
             
             try {
-                const templateParams = {
-                    from_name: savedName,
-                    from_email: 'noreply@pesso.app',
-                    message: JSON.stringify(bugInfo, null, 2),
-                    bug_description: text,
-                    app_version: '1.2.22',
-                    user_agent: navigator.userAgent
-                };
-                
-                await emailjs.send(
-                    EMAILJS_CONFIG.serviceId,
-                    EMAILJS_CONFIG.bugTemplateId,
-                    templateParams
-                );
+                if (EMAILJS_CONFIG.publicKey !== 'YOUR_PUBLIC_KEY') {
+                    const templateParams = {
+                        from_name: savedName,
+                        from_email: 'noreply@pesso.app',
+                        message: JSON.stringify(bugInfo, null, 2),
+                        bug_description: text,
+                        app_version: '1.2.22',
+                        user_agent: navigator.userAgent
+                    };
+                    
+                    await emailjs.send(
+                        EMAILJS_CONFIG.serviceId,
+                        EMAILJS_CONFIG.bugTemplateId,
+                        templateParams
+                    );
+                }
                 
                 showToast('Bug reported. We\'ll look into it! 🐛');
                 
